@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Player : MonoBehaviour {
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour {
         //gameManager.GetCityFromID(cityID).RemoveDiseaseCubes(1);
 
     }
-    private void buildResearchCenter(int cityID, cityCard city)
+    private void buildResearchCenter(int cityID, _cityCard city)
     {
         gameManager.GetCityFromID(cityID).researchCenter = true;
         if (cityID == city.cityID)
@@ -82,7 +82,7 @@ public class Player : MonoBehaviour {
             //hand.
         }
     }
-    private void checkForCure(int counter, cityCard[] hand)
+    private void checkForCure(int counter, _cityCard[] hand)
     {
         int[] counters = new int[4];
         for (int i = 0; i < hand.length; i++)
