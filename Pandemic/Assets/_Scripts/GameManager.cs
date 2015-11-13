@@ -117,7 +117,7 @@ public class GameManager : MonoBehaviour
             return blackDiseaseSpread;
         }
         return 0;
-    };
+    }
     int maxDiseaseSpread = 96;
 
     int redDiseaseSpread = 0;
@@ -141,9 +141,9 @@ public class GameManager : MonoBehaviour
         Testing();
 
         CheckForOutbreak();
-        System.out.println("currentDiseaseSpread: " + currentDiseaseSpread());
+        Debug.Log("currentDiseaseSpread: " + currentDiseaseSpread());
 
-        System.out.println("Outbreak Amount: " + outbreakCounter);
+        Debug.Log("Outbreak Amount: " + outbreakCounter);
         CheckForGameOver();
     }
 
