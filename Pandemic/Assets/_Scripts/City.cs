@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 public class City
 {
 
@@ -6,6 +8,7 @@ public class City
     public int[] connectedCityIDs;
     public string color;
     public string name;
+    public bool researchCenter;
 
     public bool locked;
     public int diseaseSpread;
@@ -16,8 +19,16 @@ public class City
         this.connectedCityIDs = connectedCityIDs;
         this.color = color;
         this.name = name;
+        researchCenter = false;
     }
 
+    internal void removePlayer(Player player)
+    {
+        throw new NotImplementedException();
+    }
 
-
+    internal void addPlayer(Player player)
+    {
+        throw new NotImplementedException();
+    }
 }

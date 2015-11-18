@@ -4,29 +4,29 @@ using System.Collections;
 public class GameManager : MonoBehaviour
 {
     Player[] players;
-
+    public City[] researchCenterCities;
     public static GameManager instance;
 
-    static Stacks infectCardStack;
-    static Stacks playerCardStack;
-    static Stacks infectDiscardStack;
-    static Stacks playerDiscardStack;
-    private Stacks CombineStacks(Stacks infectionStack, Stacks infectionDiscardStack)
+    static Stack infectCardStack;
+    static Stack playerCardStack;
+    static Stack infectDiscardStack;
+    static Stack playerDiscardStack;
+    private Stack CombineStacks(Stack infectionStack, Stack infectionDiscardStack)
     {
         return infectionStack;
     }
 
 
     static City[] cities = new City[48];
-    public static City GetCityFromID(int iD)
+    public City GetCityFromID(int iD)
     {
         return cities[iD - 1];
     }
     public static City GetCityFromName(string name)
     {
-        for (int i = 0; i < cityNames.length; i++)
+        for (int i = 0; i < cityNames.GetLength(0); i++)
         {
-            if (cityNames[i].equals(name))
+            if (cityNames[i].Equals(name))
             {
                 return cities[i];
             }
@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
 			"Bangkok", "Jakarta", "Ho Chi minh City", "Hong Kong", "Shanghai", "Beijing", "Seoul",
 			"Tokyo", "Osaka", "Taipei", "Manila", "Sydney" };
 	
-	int[][] connectedCities = {
+	public int[][] connectedCities = {
             new int[] { 13, 2, 44, 47 },
             new int[] { 1, 3, 13, 14, 4 },
             new int[] { 2, 6, 5 },
@@ -178,10 +178,10 @@ public class GameManager : MonoBehaviour
     public void CreateStacks()
     {
 
-            infectCardStack = new Stacks();
-            playerCardStack = new Stacks();
-            infectDiscardStack = new Stacks();
-            playerDiscardStack = new Stacks();
+            infectCardStack = new Stack();
+            playerCardStack = new Stack();
+            infectDiscardStack = new Stack();
+            playerDiscardStack = new Stack();
     }
     //Method responsible for creating the cities
     public void CreateCities()

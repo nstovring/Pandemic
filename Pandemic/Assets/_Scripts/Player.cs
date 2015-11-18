@@ -1,14 +1,24 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class Player : MonoBehaviour {
 
     Hand hand;
     int cityID;
-    _roleCards role;
+    _roleCard role;
     GameManager gameManager;
-	Player(GameManager gameManager)
+    int actionsLeft;
+    int[][] actionsTaken;
+    public delegate void cityNum(int ID);
+    public delegate void cardSel(int ID, _cityCard cityID);
+    public delegate void cureCheck(int ID, _cityCard hand);
+
+    Player(GameManager gameManager)
     {
+        
+        actionsTaken = new int[4][];
+        actionsLeft = 4;
 		
         hand = new Hand();
         cityID = 1;
@@ -28,19 +38,16 @@ public class Player : MonoBehaviour {
         if (gameManager.GetCityFromID(ID).researchCenter)
         {
             int choose = 0;
-            try
-            {
-                choose = Integer.getInteger(in.readLine());
-            }
-            catch (IOException e)
-            {
-
-                e.printStackTrace();
-            }
             MoveToCity(gameManager.researchCenterCities[choose].cityId);
         }
     }
-    private void MoveToCityCard(Cards cityCard)
+
+    private void MoveToCity(object cityId)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void MoveToCityCard(_cityCard cityCard)
     {
         int ID = cityCard.cityID;
         MoveToCity(ID);
@@ -84,8 +91,9 @@ public class Player : MonoBehaviour {
     }
     private void checkForCure(int counter, _cityCard[] hand)
     {
+        
         int[] counters = new int[4];
-        for (int i = 0; i < hand.length; i++)
+        for (int i = 0; i < hand.GetLength(0); i++)
         {
             if (hand[i] != null)
             {
@@ -109,6 +117,10 @@ public class Player : MonoBehaviour {
         }
 
     }
+    public void takeAction(cityNum method)
+    {
+
+    }
 
 }
-}
+
