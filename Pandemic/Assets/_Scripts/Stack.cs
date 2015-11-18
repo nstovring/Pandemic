@@ -12,7 +12,7 @@ public class Stack : MonoBehaviour {
 
 	public Card [] cards;
 
-	Stack (int stackSize, cardType type){
+	public Stack (int stackSize, cardType type){
 		cards = new Card [stackSize];
 		produceCards (type);
 	}
@@ -20,10 +20,15 @@ public class Stack : MonoBehaviour {
 	public void produceCards (cardType type){
 		switch (type){
 		case cardType.CITY:	createCityCards();
+		        break;
 		case cardType.INFECTION:	createInfectionCards();
+		        break;
 		case cardType.ROLE:	createRoleCards();
+		        break;
 		case cardType.EVENT:	createEventCards();
+		        break;
 		case cardType.EPIDEMIC:	createEpidemicCards();
+		        break;
 		default:
 			break;
 		}

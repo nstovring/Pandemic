@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class _eventCard : MonoBehaviour, Card{
+public class _eventCard : Card{
 
 	// Use this for initialization
 	void Start () {

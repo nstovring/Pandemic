@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class _roleCard : MonoBehaviour, Card {
+public class _roleCard : Card {
 
 	// Use this for initialization
 	void Start () {

@@ -178,10 +178,10 @@ public class GameManager : MonoBehaviour
     public void CreateStacks()
     {
 
-            infectCardStack = new Stack();
-            playerCardStack = new Stack();
-            infectDiscardStack = new Stack();
-            playerDiscardStack = new Stack();
+            infectCardStack = new Stack(48, Stack.cardType.INFECTION);
+            playerCardStack = new Stack(48, Stack.cardType.CITY);
+            infectDiscardStack = new Stack(48, Stack.cardType.INFECTION);
+            playerDiscardStack = new Stack(48, Stack.cardType.CITY);
     }
     //Method responsible for creating the cities
     public void CreateCities()
@@ -196,7 +196,7 @@ public class GameManager : MonoBehaviour
     }
     public void Epidemic()
     {
-        Cards bottomCard = infectCardStack.cardStack.get(0);
+        _infectionCard bottomCard = infectCardStack.infectionCards[0];
         InfectCity(bottomCard, 3);
         //Add bottom card to discards
         // infectCardStack.RemoveCard(bottomCard);
@@ -215,10 +215,10 @@ public class GameManager : MonoBehaviour
     public void InitialInfection()
     {
         int increment = -1;
-        for (int i = infectCardStack.cardStack.size() - 1, infectRate = 3; i > infectCardStack.cardStack.size() - 10; i--, increment++)
+        for (int i = infectCardStack.cards.Length - 1, infectRate = 3; i > infectCardStack.cards.Length - 10; i--, increment++)
         {
             increment = increment % 4 == 0 ? increment = 1 : increment % 4;
-            Cards infectionCard = infectCardStack.cardStack.get(i); ;
+            _infectionCard infectionCard = infectCardStack.infectionCards[i]; ;
             InfectCity(infectionCard, infectRate);
             infectRate = increment >= 3 ? infectRate - 1 : infectRate;
         }
@@ -227,15 +227,15 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 1; i < infectionRate; i++)
         {
-            Cards infectionCard = infectCardStack.cardStack.get(infectCardStack.cardStack.size() - i);
+            _infectionCard infectionCard = infectCardStack.infectionCards[infectCardStack.infectionCards.Length - i];//(infectCardStack.cardStack.size() - i);
             InfectCity(infectionCard, 1);
         }
         CheckForOutbreak();
     }
 
-    public void InfectCity(Cards infectionCard, int infectRate)
+    public void InfectCity(_infectionCard infectionCard, int infectRate)
     {
-        City infectedCity = GetCityFromID(infectionCard.cityID);
+        City infectedCity = GetCityFromID(infectionCard.infectionID);
         infectedCity.diseaseSpread += infectRate;
         // infectCardStack.RemoveCard(infectionCard);
         // infectDiscardStack.AddCard(infectionCard);
@@ -312,7 +312,7 @@ public class GameManager : MonoBehaviour
         {
             WinGame();
         }
-        if (outbreakCounter >= 8 || playerCardStack.cardStack.size() < 2 || currentDiseaseSpread() >= maxSingleDisease)
+        if (outbreakCounter >= 8 || playerCardStack.cityCards.Length < 2 || currentDiseaseSpread() >= maxSingleDisease)
         {
             LoseGame();
         }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class _cityCard: MonoBehaviour, Card {
+public class _cityCard: Card {
 
 	public int cityID;
 

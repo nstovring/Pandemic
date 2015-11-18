@@ -1,7 +1,8 @@
 ﻿
 using System;
+using UnityEngine;
 
-public class City
+public class City : MonoBehaviour
 {
 
     public int cityId;

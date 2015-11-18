@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class _infectionCard : MonoBehaviour, Card{
+public class _infectionCard : Card{
 
 	public int infectionID;
 	
