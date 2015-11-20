@@ -16,8 +16,8 @@ public class GameManager : MonoBehaviour
         return infectionStack;
     }
 
-
-    static City[] cities = new City[48];
+    public GameObject cityPrefab;
+    public static City[] cities = new City[48];
     public City GetCityFromID(int iD)
     {
         return cities[iD - 1];
@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+    private Vector2[] cityPositions = new Vector2[48];
     static readonly string[] cityColors = {"Blue", "Yellow", "Black", "Red"};
 	public static readonly string[] cityNames = { "San Fransisco", "Chicago", "Montreal", "Atlanta", "Washington", "New York", "London",
 			"Madrid", "Paris", "Essen", "Milan", "St. Petersbug", "Los Angeles", "Mexico City",
@@ -136,9 +137,9 @@ public class GameManager : MonoBehaviour
         instance = this;
         CreateCities();
         CreateStacks();
-        //InitialInfection();
+        InitialInfection();
 
-        Testing();
+        //Testing();
 
         CheckForOutbreak();
         Debug.Log("currentDiseaseSpread: " + currentDiseaseSpread());
@@ -154,7 +155,7 @@ public class GameManager : MonoBehaviour
         City Shanghai = GetCityFromName("Shanghai");
         City Taipei = GetCityFromName("Taipei");
 
-        //nfectCity(HongKong.cityId, 4);
+        //InfectCity(HongKong.cityId, 4);
         //InfectCity(Shanghai.cityId, 3);
         //InfectCity(Taipei.cityId, 3);
 
@@ -163,34 +164,53 @@ public class GameManager : MonoBehaviour
         //System.out.println(infectCardStack.cardStack.get(0).cardName);
 
         //System.out.println(GetCityFromName(infectCardStack.cardStack.get(0).cardName).diseaseSpread);
-        /* Epidemic testing code forthwith 
+         //Epidemic testing code forthwith 
 		Epidemic();
 		Epidemic();
 		Epidemic();
 		Epidemic();
 		City SanFran = GetCityFromName("San Fransisco");
-		System.out.println("Epidemic Count: "+ epidemicCount);
-		System.out.println(SanFran.diseaseSpread);
-		System.out.println("Infection Rate: " + infectionRate);
-		Testing code end*/
+		Debug.Log("Epidemic Count: "+ epidemicCount);
+        Debug.Log(SanFran.diseaseSpread);
+        Debug.Log("Infection Rate: " + infectionRate);
+		//Testing code end
     }
 
     public void CreateStacks()
     {
+        infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
+        infectCardStack.Initialize(48, Stack.cardType.INFECTION);
 
-            infectCardStack = new Stack(48, Stack.cardType.INFECTION);
-            playerCardStack = new Stack(48, Stack.cardType.CITY);
-            infectDiscardStack = new Stack(48, Stack.cardType.INFECTION);
-            playerDiscardStack = new Stack(48, Stack.cardType.CITY);
+        playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
+        playerCardStack.Initialize(48, Stack.cardType.CITY);
+
+        infectDiscardStack = new GameObject("infectCardStack").AddComponent<Stack>();
+        infectDiscardStack.Initialize(48, Stack.cardType.INFECTION);
+
+        playerDiscardStack = new GameObject("playerDiscardStack").AddComponent<Stack>();
+        playerDiscardStack.Initialize(48, Stack.cardType.CITY);
     }
+
+    private void Start()
+    {
+        InitializeGame();
+    }
+
     //Method responsible for creating the cities
     public void CreateCities()
     {
+        cityPositions = transform.GetChild(0).GetComponent<WriteCityPositions>().positions;
         int colorIncrement = 1;
+        GameObject cityParent = new GameObject("CityParent");
         for (int i = 0, colorGroup = 0; i < cities.Length; i++, colorIncrement++)
         {
+            GameObject cityGameObject = Instantiate(cityPrefab, cityPositions[i],Quaternion.Euler(-90,0,0)) as GameObject;
+            cityGameObject.transform.parent = cityParent.transform;
             colorIncrement = colorIncrement % 13 == 0 ? colorIncrement = 1 : (colorIncrement % 13);
-            cities[i] = new City(i + 1, connectedCities[i], cityColors[colorGroup], cityNames[i]);
+
+            cities[i] = cityGameObject.GetComponent<City>();
+            cities[i].Initialize(i + 1, connectedCities[i], cityColors[colorGroup], cityNames[i]);
+
             colorGroup = colorIncrement >= 12 ? colorGroup + 1 : colorGroup;
         }
     }
@@ -255,10 +275,10 @@ public class GameManager : MonoBehaviour
             case "Blue":
                 blueDiseaseSpread += infectRate;
                 break;
-            case "Black":
+            case "Yellow":
                 blackDiseaseSpread += infectRate;
                 break;
-            case "Yellow":
+            case "Black":
                 yellowDiseaseSpread += infectRate;
                 break;
             case "Red":
