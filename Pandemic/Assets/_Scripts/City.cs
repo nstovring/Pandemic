@@ -5,12 +5,15 @@ using UnityEngine;
 public class City : MonoBehaviour
 {
 
+    private Player[] players = new Player[4];
     public int cityId;
     public int[] connectedCityIDs;
     public string color;
     public Color cityColor;
     public string name;
-    public bool researchCenter;
+    public bool hasResearchCenter = false;
+    public SpriteRenderer[] diseaseCubes;
+    public SpriteRenderer researchCenter;
 
     public bool locked;
     public int diseaseSpread;
@@ -22,8 +25,7 @@ public class City : MonoBehaviour
         this.color = color;
         this.name = name;
         transform.name = name;
-        researchCenter = false;
-
+        hasResearchCenter = name == "Atlanta";
         switch (color)
         {
             case "Blue":
@@ -44,29 +46,35 @@ public class City : MonoBehaviour
 
     private void Update()
     {
-         switch (diseaseSpread)
+        for (int i = 0; i < diseaseCubes.Length; i++)
         {
-            case 1:
-                GetComponent<Renderer>().material.color = new Color(1, 0.8f, 0.8f);
-                //GetComponent<Renderer>().material.color *= 0.9f;
-                break;
-            case 2:
-                GetComponent<Renderer>().material.color = new Color(1, 0.6f, 0.6f);
-                break;
-            case 3:
-                GetComponent<Renderer>().material.color = new Color(1, 0.4f, 0.4f);
-                break;
+            diseaseCubes[i].enabled = i + 1 <= diseaseSpread;
         }
+
+        researchCenter.enabled = hasResearchCenter;
     }
+
 
     internal void removePlayer(Player player)
     {
-        throw new NotImplementedException();
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i] == player)
+            {
+                players[i] = null;
+            }
+        }
     }
 
     internal void addPlayer(Player player)
     {
-        throw new NotImplementedException();
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i] == null)
+            {
+                players[i] = player;
+            }
+        }
     }
 
     /*internal City Initialize(int v1, int[] v2, string v3, string v4)

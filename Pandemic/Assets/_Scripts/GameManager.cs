@@ -2,11 +2,10 @@
 using System.Collections;
 
 public class GameManager : MonoBehaviour
-{
-    Player[] players;
-    public City[] researchCenterCities;
+{ 
     public static GameManager instance;
 
+    //Stack Variables
     static Stack infectCardStack;
     static Stack playerCardStack;
     static Stack infectDiscardStack;
@@ -16,12 +15,15 @@ public class GameManager : MonoBehaviour
         return infectionStack;
     }
 
+    //City Variables
     public GameObject cityPrefab;
-    public static City[] cities = new City[48];
+
+    public City[] researchCenterCities;
     public City GetCityFromID(int iD)
     {
         return cities[iD - 1];
     }
+    public static City[] cities = new City[48];
     public static City GetCityFromName(string name)
     {
         for (int i = 0; i < cityNames.GetLength(0); i++)
@@ -35,6 +37,7 @@ public class GameManager : MonoBehaviour
     }
 
     private Vector2[] cityPositions = new Vector2[48];
+
     static readonly string[] cityColors = {"Blue", "Yellow", "Black", "Red"};
 	public static readonly string[] cityNames = { "San Fransisco", "Chicago", "Montreal", "Atlanta", "Washington", "New York", "London",
 			"Madrid", "Paris", "Essen", "Milan", "St. Petersbug", "Los Angeles", "Mexico City",
@@ -44,7 +47,7 @@ public class GameManager : MonoBehaviour
 			"Bangkok", "Jakarta", "Ho Chi minh City", "Hong Kong", "Shanghai", "Beijing", "Seoul",
 			"Tokyo", "Osaka", "Taipei", "Manila", "Sydney" };
 	
-	public int[][] connectedCities = {
+	public readonly int[][] connectedCities = {
             new int[] { 13, 2, 44, 47 },
             new int[] { 1, 3, 13, 14, 4 },
             new int[] { 2, 6, 5 },
@@ -94,6 +97,7 @@ public class GameManager : MonoBehaviour
             new int[] { 1, 39, 40, 46 },
             new int[] { 13, 38, 47 }
             };
+    //General Game Variables
     int infectionRate = 2;
     int epidemicCount = 0;
     int outbreakCounter = 0;
@@ -105,15 +109,15 @@ public class GameManager : MonoBehaviour
         {
             return redDiseaseSpread;
         }
-        else if (blueDiseaseSpread >= maxSingleDisease)
+        if (blueDiseaseSpread >= maxSingleDisease)
         {
             return blueDiseaseSpread;
         }
-        else if (yellowDiseaseSpread >= maxSingleDisease)
+        if (yellowDiseaseSpread >= maxSingleDisease)
         {
             return yellowDiseaseSpread;
         }
-        else if (blackDiseaseSpread >= maxSingleDisease)
+        if (blackDiseaseSpread >= maxSingleDisease)
         {
             return blackDiseaseSpread;
         }
@@ -131,6 +135,12 @@ public class GameManager : MonoBehaviour
     bool yellowCure;
     bool blackCure;
 
+    Player[] players;
+
+    private void Start()
+    {
+        InitializeGame();
+    }
 
     public void InitializeGame()
     {
@@ -151,9 +161,9 @@ public class GameManager : MonoBehaviour
     void Testing()
     {
         //Outbreak Testing code forthwith
-        City HongKong = GetCityFromName("Hong Kong");
-        City Shanghai = GetCityFromName("Shanghai");
-        City Taipei = GetCityFromName("Taipei");
+        //City HongKong = GetCityFromName("Hong Kong");
+        //City Shanghai = GetCityFromName("Shanghai");
+        //City Taipei = GetCityFromName("Taipei");
 
         //InfectCity(HongKong.cityId, 4);
         //InfectCity(Shanghai.cityId, 3);
@@ -191,15 +201,12 @@ public class GameManager : MonoBehaviour
         playerDiscardStack.Initialize(48, Stack.cardType.CITY);
     }
 
-    private void Start()
-    {
-        InitializeGame();
-    }
+
 
     //Method responsible for creating the cities
     public void CreateCities()
     {
-        cityPositions = transform.GetChild(0).GetComponent<WriteCityPositions>().positions;
+        cityPositions = transform.GetChild(0).GetComponent<SaveCityPositions>().positions;
         int colorIncrement = 1;
         GameObject cityParent = new GameObject("CityParent");
         for (int i = 0, colorGroup = 0; i < cities.Length; i++, colorIncrement++)
@@ -234,7 +241,7 @@ public class GameManager : MonoBehaviour
     //The cities are infected from the bottom of the stack up during initialization
     public void InitialInfection()
     {
-        int increment = -1;
+        int increment = 0;
         for (int i = infectCardStack.cards.Length - 1, infectRate = 3; i > infectCardStack.cards.Length - 10; i--, increment++)
         {
             increment = increment % 4 == 0 ? increment = 1 : increment % 4;
