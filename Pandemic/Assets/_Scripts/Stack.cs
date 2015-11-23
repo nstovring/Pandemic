@@ -12,12 +12,20 @@ public class Stack : MonoBehaviour {
 
 	public Card [] cards;
 
-	public Stack (int stackSize, cardType type){
+
+    // Nikolaj - Purely changes for unity
+    public void Initialize(int stackSize, cardType type)
+    {
+        cards = new Card[stackSize];
+        produceCards(type);
+    }
+
+    /*public Stack (int stackSize, cardType type){
 		cards = new Card [stackSize];
 		produceCards (type);
-	}
-	
-	public void produceCards (cardType type){
+	}*/
+
+    public void produceCards (cardType type){
 		switch (type){
 		case cardType.CITY:	createCityCards();
 		        break;
@@ -36,9 +44,11 @@ public class Stack : MonoBehaviour {
 
 	public void createCityCards (){
 		for (int i = 0; i < cityCards.Length; i++){
-			cityCards [i] = new _cityCard();
-		}
-		for (int i = 0; i < cityCards.Length; i++){
+			//cityCards [i] = new _cityCard();
+            cityCards[i] = new GameObject().AddComponent<_cityCard>();
+
+        }
+        for (int i = 0; i < cityCards.Length; i++){
 			cityCards [i].name = GameManager.cityNames [i];
 			cityCards [i].cityID = i + 1;
 			//System.out.println(cityCards [i].cityID);
@@ -51,9 +61,11 @@ public class Stack : MonoBehaviour {
 	}
 
 	public void createInfectionCards (){
+        //Nikolaj - another unity change
 		for (int i = 0; i < infectionCards.Length; i++){
-			infectionCards [i] = new _infectionCard();
-		}
+            infectionCards[i] = new GameObject().AddComponent<_infectionCard>();
+            //infectionCards [i] = new _infectionCard();
+        }
 		for (int i = 0; i < infectionCards.Length; i++){
 			infectionCards [i].name = GameManager.cityNames [i];
 			infectionCards [i].infectionID = i + 1;
@@ -68,9 +80,11 @@ public class Stack : MonoBehaviour {
 
 	public void createRoleCards () {
 		for (int i = 0; i < roleCards.Length; i++){
-			roleCards [i] = new _roleCard();
-		}
-		roleCards [0].name  = ("MEDIC");
+			//roleCards [i] = new _roleCard();
+            roleCards[i] = new GameObject().AddComponent<_roleCard>();
+
+        }
+        roleCards [0].name  = ("MEDIC");
 		roleCards [1].name  = ("DISPATCHER");
 		roleCards [2].name  = ("QURANTINE SPECIALIST");
 		roleCards [3].name  = ("CONTINGENCY");

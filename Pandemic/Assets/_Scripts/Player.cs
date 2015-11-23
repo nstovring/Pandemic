@@ -73,10 +73,10 @@ public class Player : MonoBehaviour {
     }
     private void buildResearchCenter(int cityID, _cityCard city)
     {
-        gameManager.GetCityFromID(cityID).researchCenter = true;
+        gameManager.GetCityFromID(cityID).hasResearchCenter = true;
         if (cityID == city.cityID)
         {
-            gameManager.GetCityFromID(cityID).researchCenter = true;
+            gameManager.GetCityFromID(cityID).hasResearchCenter = true;
             hand.discard(city);
         }
 
