@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class GameManager : MonoBehaviour
@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     //Stack Variables
-    static Stack infectCardStack;
+    public static Stack infectCardStack;
     static Stack playerCardStack;
     static Stack infectDiscardStack;
     static Stack playerDiscardStack;

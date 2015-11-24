@@ -54,7 +54,7 @@ public class Player : MonoBehaviour {
         //hand.discard(cityCard);
     }
 
-    private void MoveToCity(int ID)
+    public void MoveToCity(int ID)
     {
         gameManager.GetCityFromID(ID).removePlayer(this);
         gameManager.GetCityFromID(ID).addPlayer(this);
