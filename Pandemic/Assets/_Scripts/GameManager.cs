@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.Networking;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 { 
     public static GameManager instance;
 
@@ -10,7 +12,10 @@ public class GameManager : MonoBehaviour
     public static Stack playerCardStack;
     public static Stack infectDiscardStack;
     public static Stack playerDiscardStack;
-    //Method for combining stacks
+
+    public static List<NetworkConnection> Connections;
+
+        //Method for combining stacks
     private Stack CombineStacks(Stack infectionStack, Stack infectionDiscardStack)
     {
         return infectionStack;
@@ -173,6 +178,20 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         InitializeGame();
+        
+    }
+
+    public override void OnStartServer()
+    {
+        InitializeGame();
+        Connections = NetworkServer.connections;
+        Debug.Log(Connections);
+    }
+
+    public override void OnStartClient() {
+
+        if(!isLocalPlayer) InitializeGame();
+
     }
 
     public void InitializeGame()

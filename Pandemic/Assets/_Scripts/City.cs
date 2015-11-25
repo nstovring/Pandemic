@@ -36,6 +36,7 @@ public class City : MonoBehaviour
         }
     }
 
+    //make rpc 
     public void IncrementDiseaseSpread(string color, int infectRate)
     {
        
@@ -62,6 +63,8 @@ public class City : MonoBehaviour
     public void ReduceDiseaseSpread(string color, _roleCard role)
     {
         //Add a check which Player role is removing diseases
+
+        // add [command]
         if (GameManager.GetCureFromString(color))
         {
             foreach (SpriteRenderer t in diseaseCubes.Where(t => t.color == GetColorFromString(color)))
