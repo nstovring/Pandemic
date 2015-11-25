@@ -31,7 +31,7 @@ public class Player : MonoBehaviour {
     }
     public void MoveToResearchCity(int ID)
     {
-        if (gameManager.GetCityFromID(ID).researchCenter)
+        if (GameManager.GetCityFromID(ID).researchCenter)
         {
             int choose = 0;
             MoveToCity(gameManager.researchCenterCities[choose].cityId);
@@ -52,14 +52,14 @@ public class Player : MonoBehaviour {
 
     private void MoveToCity(int ID)
     {
-        gameManager.GetCityFromID(ID).removePlayer(this);
-        gameManager.GetCityFromID(ID).addPlayer(this);
+        GameManager.GetCityFromID(ID).removePlayer(this);
+        GameManager.GetCityFromID(ID).addPlayer(this);
         cityID = ID;
     }
 
     private void RemoveDiseaseCubes(String colour)
     {
-        gameManager.GetCityFromID(cityID).ReduceDiseaseSpread(colour, role);
+        GameManager.GetCityFromID(cityID).ReduceDiseaseSpread(colour, role);
 
     }
     private void buildResearchCenter(int cityID, _cityCard city)
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour {
         //gameManager.GetCityFromID(cityID).hasResearchCenter = true;
         if (cityID == city.cityID)
         {
-            gameManager.GetCityFromID(cityID).hasResearchCenter = true;
+            GameManager.GetCityFromID(cityID).hasResearchCenter = true;
             hand.discard(city);
         }
 
@@ -75,7 +75,7 @@ public class Player : MonoBehaviour {
     private void cureDisease()
     {
         int[] checker = checkForCure(5, hand.hand);
-        if (gameManager.GetCityFromID(cityID).researchCenter && checker[0] == 1)
+        if (GameManager.GetCityFromID(cityID).researchCenter && checker[0] == 1)
         {
             switch (checker[1])
             {
@@ -104,8 +104,8 @@ public class Player : MonoBehaviour {
         {
             if (hand[i] != null && hand[i] is _cityCard)
             {
-                String colour = gameManager.GetCityFromID(hand[i].cityID).color;
-                switch (gameManager.GetCityFromID(hand[i].cityID).color)
+                String colour = GameManager.GetCityFromID(hand[i].cityID).color;
+                switch (GameManager.GetCityFromID(hand[i].cityID).color)
                 {
                     case "Blue":
                         counters[0]++;
