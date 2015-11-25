@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     static Stack playerCardStack;
     static Stack infectDiscardStack;
     static Stack playerDiscardStack;
+    //Method for combining stacks
     private Stack CombineStacks(Stack infectionStack, Stack infectionDiscardStack)
     {
         return infectionStack;
@@ -19,11 +20,22 @@ public class GameManager : MonoBehaviour
     public GameObject cityPrefab;
 
     public City[] researchCenterCities;
+    /// <summary>
+    /// Returns the city coressponding to the ID provided
+    /// </summary>
+    /// <param name="iD"></param>
+    /// <returns></returns>
     public City GetCityFromID(int iD)
     {
         return cities[iD - 1];
     }
     public static City[] cities = new City[48];
+
+    /// <summary>
+    /// Returns the city corresponding to the string provided
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public static City GetCityFromName(string name)
     {
         for (int i = 0; i < cityNames.GetLength(0); i++)
@@ -46,7 +58,7 @@ public class GameManager : MonoBehaviour
 			"Baghdad", "Cairo", "Riyadh", "Karrachi", "Delhi", "Mumbai", "Chennai", "Kolkata",
 			"Bangkok", "Jakarta", "Ho Chi minh City", "Hong Kong", "Shanghai", "Beijing", "Seoul",
 			"Tokyo", "Osaka", "Taipei", "Manila", "Sydney" };
-	
+	//The city connections correspond in order to a city in the cities array 
 	public readonly int[][] connectedCities = {
             new int[] { 13, 2, 44, 47 },
             new int[] { 1, 3, 13, 14, 4 },
@@ -97,12 +109,18 @@ public class GameManager : MonoBehaviour
             new int[] { 1, 39, 40, 46 },
             new int[] { 13, 38, 47 }
             };
+    
     //General Game Variables
     int infectionRate = 2;
     int epidemicCount = 0;
     int outbreakCounter = 0;
     int maxSingleDisease = 24;
 
+
+    /// <summary>
+    /// Returns the current disease with the highest amount
+    /// </summary>
+    /// <returns></returns>
     int currentDiseaseSpread()
     {
         if (redDiseaseSpread >= maxSingleDisease)
@@ -130,10 +148,25 @@ public class GameManager : MonoBehaviour
     int yellowDiseaseSpread = 0;
     int blackDiseaseSpread = 0;
 
-    bool redCure;
-    bool blueCure;
-    bool yellowCure;
-    bool blackCure;
+    static bool redCure;
+    static bool blueCure;
+    static bool yellowCure;
+    static bool blackCure;
+    public static bool GetCureFromString(string color)
+    {
+        switch (color)
+        {
+            case "Blue":
+                return blueCure;
+            case "Yellow":
+                return yellowCure;
+            case "Black":
+                return blackCure;
+            case "Red":
+                return redCure;
+        }
+        return false;
+    }
 
     Player[] players;
 
@@ -147,46 +180,36 @@ public class GameManager : MonoBehaviour
         instance = this;
         CreateCities();
         CreateStacks();
-        InitialInfection();
+        //InitialInfection();
 
-        //Testing();
+        Testing();
 
-        CheckForOutbreak();
+        //CheckForOutbreak();
         Debug.Log("currentDiseaseSpread: " + currentDiseaseSpread());
 
         Debug.Log("Outbreak Amount: " + outbreakCounter);
         CheckForGameOver();
     }
 
-    void Testing()
+    private void Testing()
     {
         //Outbreak Testing code forthwith
-        //City HongKong = GetCityFromName("Hong Kong");
-        //City Shanghai = GetCityFromName("Shanghai");
-        //City Taipei = GetCityFromName("Taipei");
+        City HongKong = GetCityFromName("Hong Kong");
+        City Shanghai = GetCityFromName("Shanghai");
+        City Kolkata = GetCityFromName("Kolkata");
+        City Bangkok = GetCityFromName("Bangkok");
 
-        //InfectCity(HongKong.cityId, 4);
-        //InfectCity(Shanghai.cityId, 3);
-        //InfectCity(Taipei.cityId, 3);
-
-        //InfectCity(infectCardStack.cardStack.get(0), 4);
-
-        //System.out.println(infectCardStack.cardStack.get(0).cardName);
-
-        //System.out.println(GetCityFromName(infectCardStack.cardStack.get(0).cardName).diseaseSpread);
-         //Epidemic testing code forthwith 
-		Epidemic();
-		Epidemic();
-		Epidemic();
-		Epidemic();
-		City SanFran = GetCityFromName("San Fransisco");
-		Debug.Log("Epidemic Count: "+ epidemicCount);
-        Debug.Log(SanFran.diseaseSpread);
-        Debug.Log("Infection Rate: " + infectionRate);
-		//Testing code end
+        InfectCity(Bangkok.cityId, Bangkok, 2);
+        InfectCity(HongKong.cityId, HongKong, 2);
+        InfectCity(Shanghai.cityId, Shanghai, 3);
+        InfectCity(Kolkata.cityId, Kolkata, 4);
+        CheckForOutbreak();
     }
 
-    public void CreateStacks()
+    /// <summary>
+    /// Instantiates four different stacks and initializes them
+    /// </summary>
+    private void CreateStacks()
     {
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectCardStack.Initialize(48, Stack.cardType.INFECTION);
@@ -202,29 +225,34 @@ public class GameManager : MonoBehaviour
     }
 
 
-
-    //Method responsible for creating the cities
-    public void CreateCities()
+    /// <summary>
+    /// Method responsible for creating and initializing the cities
+    /// </summary>
+    private void CreateCities()
     {
-        cityPositions = transform.GetChild(0).GetComponent<SaveCityPositions>().positions;
+        cityPositions = transform.GetChild(0).GetComponent<SaveCityPositions>().positions; // Get the position of the city from the SaveCityPositions class array positions
         int colorIncrement = 1;
-        GameObject cityParent = new GameObject("CityParent");
-        for (int i = 0, colorGroup = 0; i < cities.Length; i++, colorIncrement++)
+        GameObject cityParent = new GameObject("CityParent"); // Instantiate an empty GameObject to serve as the parent to all cities
+        for (int iD = 0, colorGroup = 0; iD < cities.Length; iD++, colorIncrement++)
         {
-            GameObject cityGameObject = Instantiate(cityPrefab, cityPositions[i],Quaternion.Euler(-90,0,0)) as GameObject;
-            cityGameObject.transform.parent = cityParent.transform;
-            colorIncrement = colorIncrement % 13 == 0 ? colorIncrement = 1 : (colorIncrement % 13);
+            GameObject cityGameObject = Instantiate(cityPrefab, cityPositions[iD],Quaternion.Euler(-90,0,0)) as GameObject; // Instantiate the city
+            cityGameObject.transform.parent = cityParent.transform; // Set the parent
+            colorIncrement = colorIncrement % 13 == 0 ? colorIncrement = 1 : colorIncrement % 13; // Color increment loops from 1->12
+            cities[iD] = cityGameObject.GetComponent<City>(); // Assign the City class of the City GameObject to the cities array
+            cities[iD].Initialize(iD + 1, connectedCities[iD], cityColors[colorGroup], cityNames[iD]); // Initialize the city
 
-            cities[i] = cityGameObject.GetComponent<City>();
-            cities[i].Initialize(i + 1, connectedCities[i], cityColors[colorGroup], cityNames[i]);
-
-            colorGroup = colorIncrement >= 12 ? colorGroup + 1 : colorGroup;
+            colorGroup = colorIncrement >= 12 ? colorGroup + 1 : colorGroup; // If color increment oversteps or is equal to 12 increment colorGroup
         }
     }
+
+
+    /// <summary>
+    /// Epidemic Method
+    /// </summary>
     public void Epidemic()
     {
-        _infectionCard bottomCard = infectCardStack.infectionCards[0];
-        InfectCity(bottomCard, 3);
+        _infectionCard bottomCard = infectCardStack.infectionCards[0]; // Pick the bottom card of the stack
+        InfectCity(bottomCard, 3); // Infect the city coressponding to that card
         //Add bottom card to discards
         // infectCardStack.RemoveCard(bottomCard);
         // infectDiscardStack.AddCard(bottomCard);
@@ -238,19 +266,25 @@ public class GameManager : MonoBehaviour
         //Then infect cities
         //InfectCities();
     }
-    //The cities are infected from the bottom of the stack up during initialization
-    public void InitialInfection()
+    //The cities are infected from the top of the stack up during initialization
+    private void InitialInfection()
     {
         int increment = 0;
+        //Loop counts from the top nine cards down
         for (int i = infectCardStack.cards.Length - 1, infectRate = 3; i > infectCardStack.cards.Length - 10; i--, increment++)
         {
-            increment = increment % 4 == 0 ? increment = 1 : increment % 4;
+            increment = increment % 4 == 0 ? increment = 1 : increment % 4; //Infection progresses as such: 3 first cities get 3 diseaseMarker, 3 next get 2, 3 last gets 1
             _infectionCard infectionCard = infectCardStack.infectionCards[i]; ;
             InfectCity(infectionCard, infectRate);
             infectRate = increment >= 3 ? infectRate - 1 : infectRate;
         }
     }
-    public void InfectCities()
+
+
+    /// <summary>
+    /// General Infection method meant for end of turn infection
+    /// </summary>
+    private void InfectCities()
     {
         for (int i = 1; i < infectionRate; i++)
         {
@@ -260,18 +294,32 @@ public class GameManager : MonoBehaviour
         CheckForOutbreak();
     }
 
-    public void InfectCity(_infectionCard infectionCard, int infectRate)
+
+    /// <summary>
+    /// Infection method for directly infecting a specific city
+    /// </summary>
+    /// <param name="infectionCard"></param>
+    /// <param name="infectRate"></param>
+    private void InfectCity(_infectionCard infectionCard, int infectRate)
     {
         City infectedCity = GetCityFromID(infectionCard.infectionID);
-        infectedCity.diseaseSpread += infectRate;
+        infectedCity.IncrementDiseaseSpread(infectedCity.color, infectRate);
+        //infectedCity.diseaseSpread += infectRate;
         // infectCardStack.RemoveCard(infectionCard);
         // infectDiscardStack.AddCard(infectionCard);
         SetDiseaseSpread(infectedCity.color, infectRate);
     }
-    public void InfectCity(int cityID, int infectRate)
+
+    /// <summary>
+    /// Infection method for directly infecting a specific city
+    /// </summary>
+    /// <param name="cityID"></param>
+    /// <param name="infectRate"></param>
+    private void InfectCity(int cityID, City infectionSource, int infectRate)
     {
         City infectedCity = GetCityFromID(cityID);
-        infectedCity.diseaseSpread += infectRate;
+        infectedCity.IncrementDiseaseSpread(infectionSource.color, infectRate);
+        //infectedCity.diseaseSpread += infectRate;
         SetDiseaseSpread(infectedCity.color, infectRate);
     }
 
@@ -298,7 +346,7 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < cities.Length; i++)
         {
-            if (cities[i].diseaseSpread > 3 && !cities[i].locked)
+            if (cities[i].DiseaseSpread > 3 && !cities[i].locked)
             {
                 cities[i].locked = true;
                 Debug.Log("Outbreak happened in " + (cityNames[i]));
@@ -314,8 +362,8 @@ public class GameManager : MonoBehaviour
         for (int j = 0; j < outbreakSource.connectedCityIDs.Length; j++)
         {
             City infectedCity = GetCityFromID(outbreakSource.connectedCityIDs[j]);
-            InfectCity(outbreakSource.connectedCityIDs[j], 1);
-            Debug.Log("Disease has spread to " + infectedCity.name + " " + infectedCity.diseaseSpread);
+            InfectCity(outbreakSource.connectedCityIDs[j], outbreakSource, 1);
+            Debug.Log("Disease has spread to " + infectedCity.name + " " + infectedCity.DiseaseSpread);
         }
         CheckForOutbreak();
         outbreakCounter++;
@@ -323,16 +371,16 @@ public class GameManager : MonoBehaviour
 
     public void ResetCities()
     {
-        for (int i = 0; i < cities.Length; i++)
+        foreach (City t in cities)
         {
-            if (cities[i].diseaseSpread > 3 && cities[i].locked)
+            if (t.DiseaseSpread > 3 && t.locked)
             {
-                SetDiseaseSpread(cities[i].color, -(cities[i].diseaseSpread - 3));
-                cities[i].locked = false;
-                cities[i].diseaseSpread = 3;
+                SetDiseaseSpread(t.color, -(t.DiseaseSpread - 3));
+                t.ResetValues();
             }
         }
     }
+
     public void CheckForGameOver()
     {
         if (redCure && blackCure && blueCure && yellowCure)
@@ -352,6 +400,5 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Game lost!");
     }
-
 }
 

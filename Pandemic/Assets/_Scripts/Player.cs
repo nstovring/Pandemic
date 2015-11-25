@@ -63,9 +63,9 @@ public class Player : MonoBehaviour {
 
     private void RemoveDiseaseCubes(int cityID)
     {
-        if (gameManager.GetCityFromID(cityID).diseaseSpread > 0)
+        if (gameManager.GetCityFromID(cityID).DiseaseSpread > 0)
         {
-            gameManager.GetCityFromID(cityID).diseaseSpread--;
+            gameManager.GetCityFromID(cityID).DiseaseSpread--;
         }
 
         //gameManager.GetCityFromID(cityID).RemoveDiseaseCubes(1);

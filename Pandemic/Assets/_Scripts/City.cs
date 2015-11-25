@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class City : MonoBehaviour
@@ -16,7 +17,69 @@ public class City : MonoBehaviour
     public SpriteRenderer researchCenter;
 
     public bool locked;
-    public int diseaseSpread;
+
+    private int diseaseSpread;
+
+    public int DiseaseSpread
+    {
+        get { return diseaseSpread; }
+        set { diseaseSpread = value; }
+    }
+
+
+    public void ResetValues()
+    {
+        if (DiseaseSpread > 3 && locked)
+        {
+            locked = false;
+            DiseaseSpread = 3;
+        }
+    }
+
+    public void IncrementDiseaseSpread(string color, int infectRate)
+    {
+       
+       for (int i = 0; i < infectRate; i++)
+        {
+            foreach (SpriteRenderer t in diseaseCubes)
+            {
+                if (!t.enabled)
+                {
+                    t.enabled = true;
+                    t.color = GetColorFromString(color);
+                    break;
+                }
+            }
+            /*if (diseaseSpread < diseaseCubes.Length)
+            {
+                diseaseCubes[diseaseSpread].enabled = true;
+                diseaseCubes[diseaseSpread].color = GetColorFromString(color);
+            }*/
+            diseaseSpread++;
+        }
+    }
+
+    public void ReduceDiseaseSpread(string color, _roleCard role)
+    {
+        //Add a check which Player role is removing diseases
+        if (GameManager.GetCureFromString(color))
+        {
+            foreach (SpriteRenderer t in diseaseCubes.Where(t => t.color == GetColorFromString(color)))
+            {
+                t.enabled = false;
+                diseaseSpread--;
+            }
+        }
+        else
+        {
+            foreach (SpriteRenderer t in diseaseCubes.Where(t => t.color == GetColorFromString(color)))
+            {
+                t.enabled = false;
+                diseaseSpread--;
+                return;
+            }
+        }
+    }
 
     public void Initialize(int cityId, int[] connectedCityIDs, string color, string name)
     {
@@ -26,29 +89,33 @@ public class City : MonoBehaviour
         this.name = name;
         transform.name = name;
         hasResearchCenter = name == "Atlanta";
-        switch (color)
+        
+        GetComponent<Renderer>().material.color = GetColorFromString(color);
+    }
+
+    private Color GetColorFromString(string color)
+    {
+        switch(color)
         {
             case "Blue":
-                cityColor = Color.blue;
-                break;
+                return Color.blue;
             case "Yellow":
-                cityColor = Color.yellow;
-                break;
+                return Color.yellow;
             case "Black":
-                cityColor = Color.black;
-                break;
+                return Color.black;
             case "Red":
-                cityColor = Color.red;
-                break;
+                return Color.red;
         }
-        GetComponent<Renderer>().material.color = cityColor;
+        return Color.white;
     }
+
+    
 
     private void Update()
     {
         for (int i = 0; i < diseaseCubes.Length; i++)
         {
-            diseaseCubes[i].enabled = i + 1 <= diseaseSpread;
+            //diseaseCubes[i].enabled = i + 1 <= diseaseSpread();
         }
 
         researchCenter.enabled = hasResearchCenter;
