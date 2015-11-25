@@ -13,6 +13,7 @@ public class City : MonoBehaviour
     public Color cityColor;
     public string name;
     public bool hasResearchCenter = false;
+    public bool active = false;
     public SpriteRenderer[] diseaseCubes;
     public SpriteRenderer researchCenter;
 

@@ -11,9 +11,10 @@ public class Player : MonoBehaviour
     GameManager gameManager;
     int actionsLeft;
     int[][] actionsTaken;
+    int count;
     public void initialize()
     {
-
+        count = 0;
         actionsTaken = new int[4][];
         actionsLeft = 4;
 
@@ -25,17 +26,72 @@ public class Player : MonoBehaviour
         MoveToConnectedCity(cityID);
 
     }
+    public void deactivateCities()
+    {
+        for (int i = 0; i < GameManager.cities.GetLength(0); i++)
+        {
+            GameManager.GetCityFromID(i).active = false;
+        }
+    }
+
+    public void activateCities()
+    {
+        if (cardEqualToCity())
+        {
+            for(int i = 0; i < GameManager.cities.GetLength(0); i++)
+            {
+                GameManager.GetCityFromID(i).active = true;
+            }
+        }
+        else
+        {
+            int[] cityIDs = GameManager.GetCityFromID(cityID).connectedCityIDs;
+            
+            for (int i = 0; i < cityIDs.GetLength(0); i++)
+            {
+                GameManager.GetCityFromID(cityIDs[i]).active = true;
+            }
+            for (int i = 0; i < hand.hand.GetLength(0); i++)
+            {
+                if(hand.hand[i] is _cityCard)
+                {
+                    GameManager.GetCityFromID(hand.hand[i].cityID).active = true;
+                }
+            }
+            for (int i = 0; i < GameManager.researchCenterCities.GetLength(0); i++)
+            {
+                GameManager.researchCenterCities[i].active = true;
+            }
+        }
+    }
+    public bool cardEqualToCity()
+    {
+        for(int i = 0; i < hand.hand.GetLength(0); i++)
+        {
+            if (hand.hand[i] is _cityCard && hand.hand[i].cityID == cityID)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void MoveToConnectedCity(int newID)
     {
+        actionsTaken[count] = new int[] {0,cityID};
+        count++;
+        actionsLeft--;
         MoveToCity(gameManager.connectedCities[cityID][newID]);
     }
     public void MoveToResearchCity(int ID)
     {
-        if (GameManager.GetCityFromID(ID).researchCenter)
+        if (GameManager.GetCityFromID(cityID).researchCenter)
         {
+            actionsTaken[count] = new int[] { 1, cityID };
+            count++;
+            actionsLeft--;
             int choose = 0;
-            MoveToCity(gameManager.researchCenterCities[choose].cityId);
+            MoveToCity(GameManager.researchCenterCities[choose].cityId);
         }
     }
 
@@ -47,6 +103,9 @@ public class Player : MonoBehaviour
     private void MoveToCityCard(_cityCard cityCard)
     {
         int ID = cityCard.cityID;
+        actionsTaken[count] = new int[] { 2, cityID };
+        count++;
+        actionsLeft--;
         MoveToCity(ID);
         hand.discard(cityCard);
     }
@@ -60,6 +119,28 @@ public class Player : MonoBehaviour
 
     private void RemoveDiseaseCubes(String colour)
     {
+        switch (colour) {
+            case "Blue":
+                actionsTaken[count] = new int[] { 3,1, cityID};
+                count++;
+                actionsLeft--;
+                break;
+            case "Yellow":
+                actionsTaken[count] = new int[] { 3, 2, cityID};
+                count++;
+                actionsLeft--;
+                break;
+            case "Black":
+                actionsTaken[count] = new int[] { 3, 3, cityID};
+                count++;
+                actionsLeft--;
+                break;
+            case "Red":
+                actionsTaken[count] = new int[] { 3, 4, cityID};
+                count++;
+                actionsLeft--;
+                break;
+        }
         GameManager.GetCityFromID(cityID).ReduceDiseaseSpread(colour, role);
 
     }
@@ -70,6 +151,9 @@ public class Player : MonoBehaviour
         {
             GameManager.GetCityFromID(cityID).hasResearchCenter = true;
             hand.discard(city);
+            actionsTaken[count] = new int[] { 4, cityID};
+            count++;
+            actionsLeft--;
         }
 
     }
@@ -95,8 +179,12 @@ public class Player : MonoBehaviour
                     GameManager.redCure = true;
                     break;
             }
-            //hand.
+            //hand.        
+            actionsTaken[count] = new int[] { 5, checker[1], cards[0].cityID, cards[1].cityID, cards[2].cityID, cards[3].cityID, cards[4].cityID };
+            count++;
+            actionsLeft--;
         }
+
     }
     private int[] checkForCure(int counter, _cityCard[] hand)
     {
@@ -134,6 +222,17 @@ public class Player : MonoBehaviour
         }
         return new int[] { 0, 0 };
     }
+    public IEnumerator waitForCity()
+    {
+        bool done = false;
+        while (!done)
+        {
+            if (true)
+            {
 
+            }
+        }
+        yield return 0;
+    }
 }
 
