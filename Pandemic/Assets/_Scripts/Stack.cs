@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
+	
 
 public class Stack : MonoBehaviour {
 
@@ -41,6 +44,79 @@ public class Stack : MonoBehaviour {
 			break;
 		}
 	}
+
+
+	public Stack combineStacks (Stack one, Stack two){
+
+		Stack newStack = new Stack ();
+		int newStackLength = one.cards.Length + two.cards.Length;
+		newStack.cards = new Card[newStackLength];
+
+		Array.Copy (one.cards, 0, newStack.cards, 0, one.cards.Length); 
+		Array.Copy (two.cards, 0, newStack.cards, one.cards.Length+1, two.cards.Length);
+
+		return newStack;
+	}
+
+
+	public Stack shuffleStack (Stack input){
+
+		// Knuth shuffle algorithm
+		for (int i = 0; i < input.cards.Length; i++ )
+		{
+			Card tmp = input.cards[i];
+			int r = UnityEngine.Random.Range(i, input.cards.Length);
+			input.cards[i] = input.cards[r];
+			input.cards[r] = tmp;
+		}
+		return input;
+	}
+
+
+	public Stack removeCard (Stack input, String cardName){
+
+		Stack output = new Stack ();
+		output.cards = new Card[input.cards.Length - 1];
+
+		int index = 0;
+
+		for (int i = 0; i < input.cards.Length; i++) {
+			if (input.cards[i].name == cardName){
+				index = i;
+				break;
+			}
+		}
+
+		if (index > 0) {
+			Array.Copy (input.cards, 0, output.cards, 0, index);
+		}
+		if (index < input.cards.Length - 1) {
+			Array.Copy (input.cards, index+1, output.cards, index, input.cards.Length - index - 1);
+
+		}
+		return output;
+	}
+
+
+	public Stack addCard (Stack source, Stack target, String cardName){
+
+		int index = 0;
+
+		for (int i = 0; i < source.cards.Length; i++) {
+			if (source.cards[i].name == cardName){
+				index = i;
+				break;
+			}
+		}
+
+		int newSize = target.cards.Length + 1;
+
+		Array.Resize (ref target.cards, newSize);
+		target.cards [target.cards.Length] = source.cards [index];
+
+		return target;
+	}
+
 
 	public void createCityCards (){
 		for (int i = 0; i < cityCards.Length; i++){
