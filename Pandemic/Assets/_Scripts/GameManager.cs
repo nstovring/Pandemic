@@ -148,10 +148,10 @@ public class GameManager : MonoBehaviour
     int yellowDiseaseSpread = 0;
     int blackDiseaseSpread = 0;
 
-    static bool redCure;
-    static bool blueCure;
-    static bool yellowCure;
-    static bool blackCure;
+    public static bool redCure;
+    public static bool blueCure;
+    public static bool yellowCure;
+    public static bool blackCure;
     public static bool GetCureFromString(string color)
     {
         switch (color)

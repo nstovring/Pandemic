@@ -74,7 +74,8 @@ public class Player : MonoBehaviour {
     }
     private void cureDisease()
     {
-        int[] checker = checkForCure(5, hand.hand);
+        _cityCard[] cards = new _cityCard[5];
+        int[] checker = checkForCure(5, cards);
         if (GameManager.GetCityFromID(cityID).researchCenter && checker[0] == 1)
         {
             switch (checker[1])
