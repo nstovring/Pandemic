@@ -10,11 +10,7 @@ public class Player : MonoBehaviour {
     GameManager gameManager;
     int actionsLeft;
     int[][] actionsTaken;
-    public delegate void cityNum(int ID);
-    public delegate void cardSel(int ID, _cityCard cityID);
-    public delegate void cureCheck(int ID, _cityCard hand);
-
-    Player(GameManager gameManager)
+    public void initialize()
     {
         
         actionsTaken = new int[4][];
@@ -22,7 +18,7 @@ public class Player : MonoBehaviour {
 		
         hand = new Hand();
         cityID = 1;
-        this.gameManager = gameManager;
+        gameManager = GameManager.instance;
         MoveToCity(cityID);
 
         MoveToConnectedCity(cityID);
@@ -51,7 +47,7 @@ public class Player : MonoBehaviour {
     {
         int ID = cityCard.cityID;
         MoveToCity(ID);
-        //hand.discard(cityCard);
+        hand.discard(cityCard);
     }
 
     private void MoveToCity(int ID)
@@ -61,19 +57,14 @@ public class Player : MonoBehaviour {
         cityID = ID;
     }
 
-    private void RemoveDiseaseCubes(int cityID)
+    private void RemoveDiseaseCubes(String colour)
     {
-        if (gameManager.GetCityFromID(cityID).DiseaseSpread > 0)
-        {
-            gameManager.GetCityFromID(cityID).DiseaseSpread--;
-        }
-
-        //gameManager.GetCityFromID(cityID).RemoveDiseaseCubes(1);
+        gameManager.GetCityFromID(cityID).ReduceDiseaseSpread(colour, role);
 
     }
     private void buildResearchCenter(int cityID, _cityCard city)
     {
-        gameManager.GetCityFromID(cityID).hasResearchCenter = true;
+        //gameManager.GetCityFromID(cityID).hasResearchCenter = true;
         if (cityID == city.cityID)
         {
             gameManager.GetCityFromID(cityID).hasResearchCenter = true;
@@ -83,19 +74,35 @@ public class Player : MonoBehaviour {
     }
     private void cureDisease()
     {
-
-        if (gameManager.GetCityFromID(cityID).researchCenter)
+        int[] checker = checkForCure(5, hand.hand);
+        if (gameManager.GetCityFromID(cityID).researchCenter && checker[0] == 1)
         {
+            switch (checker[1])
+            {
+                case 0:
+                    GameManager.blueCure = true;
+                    break;
+                case 1:
+                    GameManager.yellowCure = true;
+                    break;
+                case 2:
+                    GameManager.blackCure = true;
+                    break;
+
+                case 3:
+                    GameManager.redCure = true;
+                    break;
+            }
             //hand.
         }
     }
-    private void checkForCure(int counter, _cityCard[] hand)
+    private int[] checkForCure(int counter, _cityCard[] hand)
     {
         
         int[] counters = new int[4];
         for (int i = 0; i < hand.GetLength(0); i++)
         {
-            if (hand[i] != null)
+            if (hand[i] != null && hand[i] is _cityCard)
             {
                 String colour = gameManager.GetCityFromID(hand[i].cityID).color;
                 switch (gameManager.GetCityFromID(hand[i].cityID).color)
@@ -114,12 +121,16 @@ public class Player : MonoBehaviour {
                         break;
                 }
             }
+            
         }
-
-    }
-    public void takeAction(cityNum method)
-    {
-
+        for (int i = 0; i < counters.GetLength(0); i++)
+        {
+            if(counters[i] >= counter)
+            {
+                return new int[] { 1, i };
+            }
+        }
+        return new int[] { 0, 0 };
     }
 
 }
