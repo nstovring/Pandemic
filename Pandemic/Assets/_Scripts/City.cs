@@ -2,8 +2,9 @@
 using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class City : MonoBehaviour
+public class City : NetworkBehaviour
 {
 
     private Player[] players = new Player[4];
@@ -37,7 +38,7 @@ public class City : MonoBehaviour
         }
     }
 
-    //make rpc 
+   [Client]
     public void IncrementDiseaseSpread(string color, int infectRate)
     {
        

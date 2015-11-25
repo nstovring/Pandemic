@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Networking;
 
 public class GameManager : NetworkBehaviour
-{ 
+{
     public static GameManager instance;
 
     //Stack Variables
@@ -15,7 +15,7 @@ public class GameManager : NetworkBehaviour
 
     public static List<NetworkConnection> Connections;
 
-        //Method for combining stacks
+    //Method for combining stacks
     private Stack CombineStacks(Stack infectionStack, Stack infectionDiscardStack)
     {
         return infectionStack;
@@ -55,16 +55,16 @@ public class GameManager : NetworkBehaviour
 
     private Vector2[] cityPositions = new Vector2[48];
 
-    static readonly string[] cityColors = {"Blue", "Yellow", "Black", "Red"};
-	public static readonly string[] cityNames = { "San Fransisco", "Chicago", "Montreal", "Atlanta", "Washington", "New York", "London",
-			"Madrid", "Paris", "Essen", "Milan", "St. Petersbug", "Los Angeles", "Mexico City",
-			"Miami", "Bogota", "Lima", "Santiago", "Buenos Aires", "Sao Paulo", "Lagos",
-			"Kinshasa", "Khartoum", "Johannesburg", "Algiers", "Istanbul", "Moscow", "Tehran",
-			"Baghdad", "Cairo", "Riyadh", "Karrachi", "Delhi", "Mumbai", "Chennai", "Kolkata",
-			"Bangkok", "Jakarta", "Ho Chi minh City", "Hong Kong", "Shanghai", "Beijing", "Seoul",
-			"Tokyo", "Osaka", "Taipei", "Manila", "Sydney" };
-	//The city connections correspond in order to a city in the cities array 
-	public readonly int[][] connectedCities = {
+    static readonly string[] cityColors = { "Blue", "Yellow", "Black", "Red" };
+    public static readonly string[] cityNames = { "San Fransisco", "Chicago", "Montreal", "Atlanta", "Washington", "New York", "London",
+            "Madrid", "Paris", "Essen", "Milan", "St. Petersbug", "Los Angeles", "Mexico City",
+            "Miami", "Bogota", "Lima", "Santiago", "Buenos Aires", "Sao Paulo", "Lagos",
+            "Kinshasa", "Khartoum", "Johannesburg", "Algiers", "Istanbul", "Moscow", "Tehran",
+            "Baghdad", "Cairo", "Riyadh", "Karrachi", "Delhi", "Mumbai", "Chennai", "Kolkata",
+            "Bangkok", "Jakarta", "Ho Chi minh City", "Hong Kong", "Shanghai", "Beijing", "Seoul",
+            "Tokyo", "Osaka", "Taipei", "Manila", "Sydney" };
+    //The city connections correspond in order to a city in the cities array 
+    public readonly int[][] connectedCities = {
             new int[] { 13, 2, 44, 47 },
             new int[] { 1, 3, 13, 14, 4 },
             new int[] { 2, 6, 5 },
@@ -114,7 +114,7 @@ public class GameManager : NetworkBehaviour
             new int[] { 1, 39, 40, 46 },
             new int[] { 13, 38, 47 }
             };
-    
+
     //General Game Variables
     int infectionRate = 2;
     int epidemicCount = 0;
@@ -178,7 +178,7 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         InitializeGame();
-        
+
     }
 
     public override void OnStartServer()
@@ -188,9 +188,10 @@ public class GameManager : NetworkBehaviour
         Debug.Log(Connections);
     }
 
-    public override void OnStartClient() {
+    public override void OnStartClient()
+    {
 
-        if(!isLocalPlayer) InitializeGame();
+        if (!isLocalPlayer) InitializeGame();
 
     }
 
@@ -212,11 +213,14 @@ public class GameManager : NetworkBehaviour
 
     private void Testing()
     {
+
+
+
         //Outbreak Testing code forthwith
-        City HongKong = GetCityFromName("Hong Kong");
-        City Shanghai = GetCityFromName("Shanghai");
-        City Kolkata = GetCityFromName("Kolkata");
-        City Bangkok = GetCityFromName("Bangkok");
+        City HongKong = cities[Random.Range(0, 48)];
+        City Shanghai = cities[Random.Range(0, 48)];
+        City Kolkata = cities[Random.Range(0, 48)];
+        City Bangkok = cities[Random.Range(0, 48)];
 
         InfectCity(Bangkok.cityId, Bangkok, 2);
         InfectCity(HongKong.cityId, HongKong, 2);
@@ -254,7 +258,7 @@ public class GameManager : NetworkBehaviour
         GameObject cityParent = new GameObject("CityParent"); // Instantiate an empty GameObject to serve as the parent to all cities
         for (int iD = 0, colorGroup = 0; iD < cities.Length; iD++, colorIncrement++)
         {
-            GameObject cityGameObject = Instantiate(cityPrefab, cityPositions[iD],Quaternion.Euler(-90,0,0)) as GameObject; // Instantiate the city
+            GameObject cityGameObject = Instantiate(cityPrefab, cityPositions[iD], Quaternion.Euler(-90, 0, 0)) as GameObject; // Instantiate the city
             cityGameObject.transform.parent = cityParent.transform; // Set the parent
             colorIncrement = colorIncrement % 13 == 0 ? colorIncrement = 1 : colorIncrement % 13; // Color increment loops from 1->12
             cities[iD] = cityGameObject.GetComponent<City>(); // Assign the City class of the City GameObject to the cities array

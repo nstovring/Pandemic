@@ -1,3 +1,13 @@
+Mono path[0] = 'C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/NetworkTest_Data/Managed'
+Mono path[1] = 'C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/NetworkTest_Data/Mono'
+Mono config path = 'C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/NetworkTest_Data/Mono/etc'
+PlayerConnection initialized from C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/NetworkTest_Data (debug = 0)
+PlayerConnection initialized network socket : 0.0.0.0 55295
+Multi-casting "[IP] 172.30.242.253 [Port] 55295 [Flags] 3 [Guid] 2737208190 [EditorId] 1223366128 [Version] 1048832 [Id] WindowsPlayer(Jeppes-Laptop) [Debug] 1" to [225.0.0.222:54997]...
+Waiting for connection from host on [172.30.242.253:55295]...
+PlayerConnection accepted from [172.30.242.253] handle:0x27c
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,defer=y,address=0.0.0.0:56190
+PlayerConnection already initialized - listening to [172.30.242.253:55295]
 Initialize engine version: 5.2.1f1 (44735ea161b3)
 GfxDevice: creating device client; threaded=1
 Direct3D:
@@ -15,163 +25,102 @@ Loading C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Manag
 Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.164 seconds
+- Completed reload, in  0.128 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-Initialize engine version: 5.2.1f1 (44735ea161b3)
-GfxDevice: creating device client; threaded=1
-Direct3D:
-    Version:  Direct3D 11.0 [level 11.0]
-    Renderer: Intel(R) HD Graphics 4600 (ID=0x416)
-    Vendor:   Intel
-    VRAM:     128 MB
-Begin MonoManager ReloadAssembly
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.052 seconds
-desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
-<RI> Initializing input.
-<RI> Input initialized.
-<RI> Initialized touch support.
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\System.dll (this message is harmless)
-Initialize engine version: 5.2.1f1 (44735ea161b3)
-GfxDevice: creating device client; threaded=1
-Direct3D:
-    Version:  Direct3D 11.0 [level 11.0]
-    Renderer: Intel(R) HD Graphics 4600 (ID=0x416)
-    Vendor:   Intel
-    VRAM:     128 MB
-Begin MonoManager ReloadAssembly
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.dll (this message is harmless)
-Loading C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.dll into Unity Child Domain
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\Assembly-CSharp.dll (this message is harmless)
-Loading C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.056 seconds
-desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
-<RI> Initializing input.
-<RI> Input initialized.
-<RI> Initialized touch support.
-Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\System.dll (this message is harmless)
-SeStingtting up 2 worker threads for Enlip 2 worker threads for Enlighten.
-ghten.
-  Thread -> id: 294c -> priority: 1 
-  Thrhread -> : d: 29950 -- >riprioity: :1 
-
-  Thread -> id: 2958 -> priority: 1 
 Platform assembly: C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\NetworkTest_Data\Managed\System.dll (this message is harmless)
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 2980 -> priority: 1 
-  Thread -> id: 2984 -> priority: 1 
+  Thread -> id: 2538 -> priority: 1 
+  Thread -> id: 2aa4 -> priority: 1 
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 16.618317 ms
+UnloadTime: 6.319481 ms
+Outbreak happened in Cairo
+UnityEngine.Debug:Internal_Log(Int32, String, Object)
+UnityEngine.Debug:Log(Object)
+GameManager:CheckForOutbreak() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:375)
+GameManager:Testing() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:229)
+GameManager:InitializeGame() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:205)
+GameManager:Start() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:180)
+ 
+(Filename: C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/Assets/_Scripts/GameManager.cs Line: 375)
+
+Disease has spread to Khartoum 1
+UnityEngine.Debug:Internal_Log(Int32, String, Object)
+UnityEngine.Debug:Log(Object)
+GameManager:SpreadOutbreak(Int32) (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:389)
+GameManager:CheckForOutbreak() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:376)
+GameManager:Testing() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:229)
+GameManager:InitializeGame() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:205)
+GameManager:Start() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:180)
+ 
+(Filename: C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/Assets/_Scripts/GameManager.cs Line: 389)
+
+Disease has spread to Algiers 1
+UnityEngine.Debug:Internal_Log(Int32, String, Object)
+UnityEngine.Debug:Log(Object)
+GameManager:SpreadOutbreak(Int32) (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:389)
+GameManager:CheckForOutbreak() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:376)
+GameManager:Testing() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:229)
+GameManager:InitializeGame() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:205)
+GameManager:Start() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:180)
+ 
+(Filename: C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/Assets/_Scripts/GameManager.cs Line: 389)
+
+Disease has spread to Istanbul 1
+UnityEngine.Debug:Internal_Log(Int32, String, Object)
+UnityEngine.Debug:Log(Object)
+GameManager:SpreadOutbreak(Int32) (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:389)
+GameManager:CheckForOutbreak() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:376)
+GameManager:Testing() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:229)
+GameManager:InitializeGame() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:205)
+GameManager:Start() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:180)
+ 
+(Filename: C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/Assets/_Scripts/GameManager.cs Line: 389)
+
+Disease has spread to Baghdad 1
+UnityEngine.Debug:Internal_Log(Int32, String, Object)
+UnityEngine.Debug:Log(Object)
+GameManager:SpreadOutbreak(Int32) (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:389)
+GameManager:CheckForOutbreak() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:376)
+GameManager:Testing() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:229)
+GameManager:InitializeGame() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:205)
+GameManager:Start() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:180)
+ 
+(Filename: C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/Assets/_Scripts/GameManager.cs Line: 389)
+
+Disease has spread to Riyadh 1
+UnityEngine.Debug:Internal_Log(Int32, String, Object)
+UnityEngine.Debug:Log(Object)
+GameManager:SpreadOutbreak(Int32) (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:389)
+GameManager:CheckForOutbreak() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:376)
+GameManager:Testing() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:229)
+GameManager:InitializeGame() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:205)
+GameManager:Start() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:180)
+ 
+(Filename: C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/Assets/_Scripts/GameManager.cs Line: 389)
+
 currentDiseaseSpread: 0
+UnityEngine.Debug:Internal_Log(Int32, String, Object)
+UnityEngine.Debug:Log(Object)
+GameManager:InitializeGame() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:208)
+GameManager:Start() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:180)
  
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
+(Filename: C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/Assets/_Scripts/GameManager.cs Line: 208)
 
-Outbreak Amount: 0
+Outbreak Amount: 1
+UnityEngine.Debug:Internal_Log(Int32, String, Object)
+UnityEngine.Debug:Log(Object)
+GameManager:InitializeGame() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:210)
+GameManager:Start() (at C:\Users\Jeppe\Documents\GitHub\Pandemic\Pandemic\Assets\_Scripts\GameManager.cs:180)
  
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
+(Filename: C:/Users/Jeppe/Documents/GitHub/Pandemic/Pandemic/Assets/_Scripts/GameManager.cs Line: 210)
 
+System memory in use before: 21.9 MB.
+System memory in use after: 21.9 MB.
 
-Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 1860.
-Total: 3.061133 ms (FindLiveObjects: 0.179613 ms CreateObjectMapping: 0.074044 ms MarkObjects: 2.661218 ms  DeleteObjects: 0.143691 ms)
+Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 1866.
+Total: 0.638912 ms (FindLiveObjects: 0.083208 ms CreateObjectMapping: 0.022726 ms MarkObjects: 0.482025 ms  DeleteObjects: 0.049852 ms)
 
-Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 10.145618 ms
-currentDiseaseSpread: 0
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-Outbreak Amount: 0
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-
-Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 1860.
-Total: 3.139211 ms (FindLiveObjects: 0.181080 ms CreateObjectMapping: 0.107768 ms MarkObjects: 2.680645 ms  DeleteObjects: 0.169350 ms)
-
-Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 15.809689 ms
-currentDiseaseSpread: 0
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-Outbreak Amount: 0
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-
-Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 1860.
-Total: 2.854761 ms (FindLiveObjects: 0.606655 ms CreateObjectMapping: 0.099704 ms MarkObjects: 2.067026 ms  DeleteObjects: 0.080276 ms)
-
-Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:7777}
-aissp: time {64576} lastRecTime {62535} DisTme {2000}, rtt {0} 
- 
-(Filename:  Line: 1848)
-
-UNet Client Disconnect Error: Timeout
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:7777}
-aissp: time {60661} lastRecTime {58618} DisTme {2000}, rtt {0} 
- 
-(Filename:  Line: 1848)
-
-UNet Client Disconnect Error: Timeout
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 3.894322 ms
-Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will not be used.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-
-Unloading 55 unused Assets to reduce memory usage. Loaded Objects now: 253.
-Total: 1.241168 ms (FindLiveObjects: 0.070379 ms CreateObjectMapping: 0.089440 ms MarkObjects: 1.043959 ms  DeleteObjects: 0.035189 ms)
-
-UnloadTime: 1.463303 ms
-Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will not be used.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-
-Unloading 55 unused Assets to reduce memory usage. Loaded Objects now: 253.
-Total: 2.149135 ms (FindLiveObjects: 0.109234 ms CreateObjectMapping: 0.151388 ms MarkObjects: 1.794672 ms  DeleteObjects: 0.091639 ms)
-
-Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:7777}
-aissp: time {68352} lastRecTime {66304} DisTme {2000}, rtt {0} 
- 
-(Filename:  Line: 1848)
-
-UNet Client Disconnect Error: Timeout
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 4.237055 ms
-Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will not be used.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-
-Unloading 55 unused Assets to reduce memory usage. Loaded Objects now: 253.
-Total: 1.359200 ms (FindLiveObjects: 0.052051 ms CreateObjectMapping: 0.049485 ms MarkObjects: 1.222474 ms  DeleteObjects: 0.033723 ms)
-
+Waiting for finish
