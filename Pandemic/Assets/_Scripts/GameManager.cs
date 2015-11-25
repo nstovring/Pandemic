@@ -6,10 +6,10 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     //Stack Variables
-    static Stack infectCardStack;
-    static Stack playerCardStack;
-    static Stack infectDiscardStack;
-    static Stack playerDiscardStack;
+    public static Stack infectCardStack;
+    public static Stack playerCardStack;
+    public static Stack infectDiscardStack;
+    public static Stack playerDiscardStack;
     //Method for combining stacks
     private Stack CombineStacks(Stack infectionStack, Stack infectionDiscardStack)
     {
@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="iD"></param>
     /// <returns></returns>
-    public City GetCityFromID(int iD)
+    public static City GetCityFromID(int iD)
     {
         return cities[iD - 1];
     }
