@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 public class City : NetworkBehaviour
 {
 
-    private Player[] players = new Player[4];
+    public Player[] players = new Player[4];
     public int cityId;
     public int[] connectedCityIDs;
     public string color;
@@ -39,22 +39,29 @@ public class City : NetworkBehaviour
         }
     }
 
+    
     public void UpdatePawns()
     {
-        for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < pawnSpriteRenderers.Length; i++)
         {
-            if (players[i] != null)
+            for (int j = 0; j < players.Length; j++)
             {
-                if (players[i].role.name == pawnSpriteRenderers[i].name)
+                if (players[j])
                 {
-                    pawnSpriteRenderers[i].enabled = true;
+                    if (players[j].role.transform.name == pawnSpriteRenderers[j].name)
+                    {
+                        pawnSpriteRenderers[j].enabled = true;
+                    }
+                    else
+                    {
+                        pawnSpriteRenderers[j].enabled = false;
+                    }
                 }
-                
-            }
-            else
-            {
-                pawnSpriteRenderers[i].enabled = false;
+                else
+                {
+                    pawnSpriteRenderers[i].enabled = false;
 
+                }
             }
         }
     }
@@ -81,7 +88,7 @@ public class City : NetworkBehaviour
     public void ReduceDiseaseSpread(string color, _roleCard role)
     {
         //Add a check which Player role is removing diseases
-
+        //if(role.name == "MEDIC")
         // add [command]
         if (GameManager.GetCureFromString(color))
         {

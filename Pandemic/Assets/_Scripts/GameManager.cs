@@ -12,6 +12,8 @@ public class GameManager : NetworkBehaviour
     public static Stack playerCardStack;
     public static Stack infectDiscardStack;
     public static Stack playerDiscardStack;
+    public static Stack roleCardStack;
+
 
     public static List<NetworkConnection> Connections;
 
@@ -181,24 +183,33 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         instance = this;
-        /* (isServer)
-            InitializeGame();
-        else
-        {
-
-        }*/
         netIdentity = GetComponent<NetworkIdentity>();
-
     }
-
 
     private void Update()
     {
         //if(netIdentity.observers.Count > 1 && initialize)
         if (initialize)
         {
-            Rpc_InitializeGame();
+            Rpc_InitializeBoard();
+            Rpc_InitializePlayers();
             initialize = false;
+        }
+    }
+
+    [ClientRpc]
+    private void Rpc_InitializePlayers()
+    {
+        GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
+
+        for (int i = 0; i < playersGameObjects.Length; i++)
+        {
+            //playerControllerId
+            if (playersGameObjects[i].GetComponent<NetworkIdentity>().localPlayerAuthority)
+            {
+                playersGameObjects[i].GetComponent<Player>().Rpc_Initialize();
+            }
+            //players[i] = playersGameObjects[i].GetComponent<Player>();
         }
     }
 
@@ -208,34 +219,12 @@ public class GameManager : NetworkBehaviour
         turnOrder = turnOrder == netIdentity.observers.Count+1 ? 1: turnOrder++;
     }
 
-    public override void OnStartServer()
-    {
-        /*InitializeGame();
-        Connections = NetworkServer.connections;
-        Debug.Log(Connections);*/
-    }
-
-    public override void OnStartClient()
-    {
-
-        //if (!isLocalPlayer) InitializeGame();
-
-    }
-
     [ClientRpc]
-    public void Rpc_InitializeGame()
+    public void Rpc_InitializeBoard()
     {
         CreateCities();
         Cmd_CreateStacks();
         Rpc_InitialInfection();
-
-        //Rpc_Testing(Random.Range(0, 47), Random.Range(0, 47), Random.Range(0, 47), Random.Range(0, 47));
-
-        //CheckForOutbreak();
-        Debug.Log("currentDiseaseSpread: " + currentDiseaseSpread());
-
-        Debug.Log("Outbreak Amount: " + outbreakCounter);
-        Rpc_CheckForGameOver();
     }
 
     [ClientRpc]
@@ -268,6 +257,7 @@ public class GameManager : NetworkBehaviour
         {
             i[j] = infectCardStack.infectionCards[j].infectionID-1;
         }
+
         //infectCardStack = infectCardStack.shuffleStack(ref infectCardStack);
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(48, Stack.cardType.CITY);
@@ -278,6 +268,9 @@ public class GameManager : NetworkBehaviour
 
         playerDiscardStack = new GameObject("playerDiscardStack").AddComponent<Stack>();
         playerDiscardStack.Initialize(48, Stack.cardType.CITY);
+
+        roleCardStack = new GameObject("roleCardStack").AddComponent<Stack>();
+        roleCardStack.Initialize(7, Stack.cardType.ROLE);
 
         Rpc_CreateStacks(i);
     }
@@ -294,19 +287,17 @@ public class GameManager : NetworkBehaviour
             infectCardStack.infectionCards[i[m]] = tempCards[i[m]];
         }
 
-        //infectCardStack.ShuffleInfectCards();
-        //infectCardStack = infectCardStack.shuffleStack(ref infectCardStack);
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(48, Stack.cardType.CITY);
-        playerCardStack = playerCardStack.shuffleStack(ref playerCardStack);
+        //playerCardStack = playerCardStack.shuffleStack(ref playerCardStack);
 
         infectDiscardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectDiscardStack.Initialize(48, Stack.cardType.INFECTION);
 
         playerDiscardStack = new GameObject("playerDiscardStack").AddComponent<Stack>();
         playerDiscardStack.Initialize(48, Stack.cardType.CITY);
-    }
 
+    }
 
     /// <summary>
     /// Method responsible for creating and initializing the cities
@@ -327,7 +318,6 @@ public class GameManager : NetworkBehaviour
             colorGroup = colorIncrement >= 12 ? colorGroup + 1 : colorGroup; // If color increment oversteps or is equal to 12 increment colorGroup
         }
     }
-
 
     /// <summary>
     /// Epidemic Method
@@ -362,8 +352,8 @@ public class GameManager : NetworkBehaviour
             InfectCity(infectionCard, infectRate);
             infectRate = increment >= 3 ? infectRate - 1 : infectRate;
         }
+        //CheckForOutbreak();
     }
-
 
     /// <summary>
     /// General Infection method meant for end of turn infection

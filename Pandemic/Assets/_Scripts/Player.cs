@@ -1,29 +1,43 @@
+using System;
 using UnityEngine;
 using System.Collections;
-using System;
+using System.Linq;
+using UnityEngine.Networking;
+using Random = UnityEngine.Random;
 
-public class Player : MonoBehaviour
+public class Player : NetworkBehaviour
 {
 
     Hand hand;
-    int cityID;
+    public City CurrentCity;
+    public int cityID;
     public _roleCard role;
     GameManager gameManager;
     int actionsLeft;
     int[][] actionsTaken;
     int count;
-    public void initialize()
+
+    [ClientRpc]
+    public void Rpc_Initialize()
     {
         count = 0;
         actionsTaken = new int[4][];
         actionsLeft = 4;
 
         hand = new Hand();
-        cityID = 1;
+        cityID = 4;
+        this.role = GameManager.roleCardStack.roleCards[Random.Range(0, 7)]; //GameManager.roleCardStack.roleCards.Contains(role);
+        //this.role = new _roleCard();
+        //role.name = "SCIENTIST";
+        /*role = new GameObject().AddComponent<_roleCard>();
+        role.name = "Scientist";*/
         gameManager = GameManager.instance;
         MoveToCity(cityID);
+        GameManager.GetCityFromID(cityID).UpdatePawns();
+        GameManager.GetCityFromID(cityID+1).UpdatePawns();
+        GameManager.GetCityFromID(cityID - 1).UpdatePawns();
 
-        MoveToConnectedCity(cityID);
+        //MoveToConnectedCity(cityID);
 
     }
     public void deactivateCities()
@@ -95,29 +109,27 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void MoveToCity(object cityId)
-    {
-        throw new NotImplementedException();
-    }
-
     private void MoveToCityCard(_cityCard cityCard)
     {
         int ID = cityCard.cityID;
         actionsTaken[count] = new int[] { 2, cityID };
         count++;
         actionsLeft--;
+       
         MoveToCity(ID);
         hand.discard(cityCard);
     }
 
     private void MoveToCity(int ID)
     {
-        GameManager.GetCityFromID(ID).removePlayer(this);
+        //GameManager.GetCityFromID(ID).removePlayer(this);
         GameManager.GetCityFromID(ID).addPlayer(this);
+        GameManager.GetCityFromID(ID).UpdatePawns();
+        CurrentCity = GameManager.GetCityFromID(ID);
         cityID = ID;
     }
 
-    private void RemoveDiseaseCubes(String colour)
+    private void RemoveDiseaseCubes(string colour)
     {
         switch (colour) {
             case "Blue":
