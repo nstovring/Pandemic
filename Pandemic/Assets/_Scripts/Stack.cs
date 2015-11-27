@@ -34,7 +34,7 @@ public class Stack : MonoBehaviour {
 		switch (type){
 		case cardType.CITY:	createCityCards();
 		        break;
-		case cardType.INFECTION:	 ();
+		case cardType.INFECTION: createInfectionCards ();
 		        break;
 		case cardType.ROLE:	createRoleCards();
 		        break;
