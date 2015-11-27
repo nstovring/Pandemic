@@ -16,6 +16,7 @@ public class City : NetworkBehaviour
     public bool hasResearchCenter = false;
     public bool active = false;
     public SpriteRenderer[] diseaseCubes;
+    public SpriteRenderer[] pawnSpriteRenderers;
     public SpriteRenderer researchCenter;
 
     public bool locked;
@@ -38,7 +39,27 @@ public class City : NetworkBehaviour
         }
     }
 
-   [Client]
+    public void UpdatePawns()
+    {
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i] != null)
+            {
+                if (players[i].role.name == pawnSpriteRenderers[i].name)
+                {
+                    pawnSpriteRenderers[i].enabled = true;
+                }
+                
+            }
+            else
+            {
+                pawnSpriteRenderers[i].enabled = false;
+
+            }
+        }
+    }
+
+
     public void IncrementDiseaseSpread(string color, int infectRate)
     {
        
@@ -53,11 +74,6 @@ public class City : NetworkBehaviour
                     break;
                 }
             }
-            /*if (diseaseSpread < diseaseCubes.Length)
-            {
-                diseaseCubes[diseaseSpread].enabled = true;
-                diseaseCubes[diseaseSpread].color = GetColorFromString(color);
-            }*/
             diseaseSpread++;
         }
     }
@@ -94,7 +110,7 @@ public class City : NetworkBehaviour
         this.name = name;
         transform.name = name;
         hasResearchCenter = name == "Atlanta";
-        
+        UpdatePawns();
         GetComponent<Renderer>().material.color = GetColorFromString(color);
     }
 
@@ -118,12 +134,11 @@ public class City : NetworkBehaviour
 
     private void Update()
     {
-        for (int i = 0; i < diseaseCubes.Length; i++)
-        {
-            //diseaseCubes[i].enabled = i + 1 <= diseaseSpread();
-        }
-
         researchCenter.enabled = hasResearchCenter;
+        if (hasResearchCenter)
+        {
+            //GameManager.researchCenterCities[cityId] = this;
+        }
     }
 
 
@@ -134,6 +149,7 @@ public class City : NetworkBehaviour
             if (players[i] == player)
             {
                 players[i] = null;
+                return;
             }
         }
     }
@@ -145,12 +161,8 @@ public class City : NetworkBehaviour
             if (players[i] == null)
             {
                 players[i] = player;
+                return;
             }
         }
     }
-
-    /*internal City Initialize(int v1, int[] v2, string v3, string v4)
-    {
-        throw new NotImplementedException();
-    }*/
 }

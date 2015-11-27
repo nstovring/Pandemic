@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
 
     Hand hand;
     int cityID;
-    _roleCard role;
+    public _roleCard role;
     GameManager gameManager;
     int actionsLeft;
     int[][] actionsTaken;

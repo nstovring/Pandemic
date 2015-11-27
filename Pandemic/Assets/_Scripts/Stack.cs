@@ -58,8 +58,19 @@ public class Stack : MonoBehaviour {
 		return newStack;
 	}
 
+    public void ShuffleInfectCards()
+    {
+        // Knuth shuffle algorithm
+        for (int i = 0; i < infectionCards.Length; i++)
+        {
+            _infectionCard tmp = infectionCards[i];
+            int r = UnityEngine.Random.Range(i, infectionCards.Length);
+            infectionCards[i] = infectionCards[r];
+            infectionCards[r] = tmp;
+        }
+    }
 
-	public Stack shuffleStack (Stack input){
+    public Stack shuffleStack (ref Stack input){
 
 		// Knuth shuffle algorithm
 		for (int i = 0; i < input.cards.Length; i++ )
