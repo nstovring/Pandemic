@@ -40,6 +40,16 @@ public class Player : NetworkBehaviour
         //MoveToConnectedCity(cityID);
 
     }
+
+    public void exchangeCards() {
+
+            
+    }
+
+
+
+
+
     public void deactivateCities()
     {
         for (int i = 0; i < GameManager.cities.GetLength(0); i++)

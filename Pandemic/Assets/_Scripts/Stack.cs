@@ -11,9 +11,11 @@ public class Stack : MonoBehaviour {
 	public _infectionCard [] infectionCards = new _infectionCard [48];
 	public _epidemicCard [] epidemicCards = new _epidemicCard [5];
 	public _roleCard [] roleCards = new _roleCard [7];	
-	public enum cardType {CITY, INFECTION, EVENT, EPIDEMIC, ROLE};	
+	public enum cardType {CITY, INFECTION, EVENT, EPIDEMIC, ROLE};
+    public enum roleType { MEDIC, DISPATCHER, QURANTINE_SPECIALIST, CONTINGENCY, RESEARCHER, SCIENTIST, OPERATIONS_EXPERT};
 
-	public Card [] cards;
+
+    public Card [] cards;
 
 
     // Nikolaj - Purely changes for unity
@@ -32,7 +34,7 @@ public class Stack : MonoBehaviour {
 		switch (type){
 		case cardType.CITY:	createCityCards();
 		        break;
-		case cardType.INFECTION:	createInfectionCards();
+		case cardType.INFECTION:	 ();
 		        break;
 		case cardType.ROLE:	createRoleCards();
 		        break;
@@ -44,6 +46,8 @@ public class Stack : MonoBehaviour {
 			break;
 		}
 	}
+
+
 
 
 	public Stack combineStacks (Stack one, Stack two){
@@ -83,7 +87,6 @@ public class Stack : MonoBehaviour {
 		return input;
 	}
 
-
 	public Stack removeCard (Stack input, String cardName){
 
 		Stack output = new Stack ();
@@ -108,7 +111,6 @@ public class Stack : MonoBehaviour {
 		return output;
 	}
 
-
 	public Stack addCard (Stack source, Stack target, String cardName){
 
 		int index = 0;
@@ -127,7 +129,6 @@ public class Stack : MonoBehaviour {
 
 		return target;
 	}
-
 
 	public void createCityCards (){
 		for (int i = 0; i < cityCards.Length; i++){
@@ -169,8 +170,8 @@ public class Stack : MonoBehaviour {
 		for (int i = 0; i < roleCards.Length; i++){
 			//roleCards [i] = new _roleCard();
             roleCards[i] = new GameObject().AddComponent<_roleCard>();
-
         }
+
         roleCards [0].name  = ("MEDIC");
 		roleCards [1].name  = ("DISPATCHER");
 		roleCards [2].name  = ("QURANTINE SPECIALIST");
