@@ -15,84 +15,22 @@ Loading C:\Users\nstovring\Documents\GitHub\Pandemic\Pandemic\New folder\Network
 Platform assembly: C:\Users\nstovring\Documents\GitHub\Pandemic\Pandemic\New folder\Network_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading C:\Users\nstovring\Documents\GitHub\Pandemic\Pandemic\New folder\Network_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\nstovring\Documents\GitHub\Pandemic\Pandemic\New folder\Network_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.181 seconds
-desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
+- Completed reload, in  0.171 seconds
+desktop: 1920x1080 59Hz; virtual: 1920x2160 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
 Platform assembly: C:\Users\nstovring\Documents\GitHub\Pandemic\Pandemic\New folder\Network_Data\Managed\System.dll (this message is harmless)
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 16a0 -> priority: 1 
-Network configuration mismatch detected. The number of networked scripts on the client does not match the number of networked scripts on the server. This could be caused by lazy loading of scripts on the client. This warning can be disabled by the checkbox NetworkManager Script CRC Check.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-CRC Local Dump Player : 0
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-CRC Remote Dump Player : 0
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-CRC Remote Dump GameManager : 0
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
+  Thread -> id: 28a0 -> priority: 1 
 The referenced script on this Behaviour is missing!
  
 (Filename:  Line: 1649)
 
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 19.238209 ms
+UnloadTime: 11.104443 ms
 
-Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 414.
-Total: 0.842070 ms (FindLiveObjects: 0.301217 ms CreateObjectMapping: 0.030791 ms MarkObjects: 0.444909 ms  DeleteObjects: 0.063367 ms)
+Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 418.
+Total: 0.850102 ms (FindLiveObjects: 0.317728 ms CreateObjectMapping: 0.025436 ms MarkObjects: 0.447587 ms  DeleteObjects: 0.058904 ms)
 
-Trying to send command for object without authority.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-RPC Function Rpc_InitialInfection called on client.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-RPC Function Rpc_Initialize called on client.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-RPC Function Rpc_Initialize called on client.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at Player.Rpc_Initialize () [0x00000] in <filename unknown>:0 
-  at Player.InvokeRpcRpc_Initialize (UnityEngine.Networking.NetworkBehaviour obj, UnityEngine.Networking.NetworkReader reader) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Networking.NetworkBehaviour.InvokeRpcDelegate (Int32 cmdHash, UnityEngine.Networking.NetworkReader reader) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Networking.NetworkBehaviour.InvokeRPC (Int32 cmdHash, UnityEngine.Networking.NetworkReader reader) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Networking.NetworkIdentity.HandleRPC (Int32 cmdHash, UnityEngine.Networking.NetworkReader reader) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Networking.ClientScene.OnRPCMessage (UnityEngine.Networking.NetworkMessage netMsg) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Networking.NetworkConnection.HandleReader (UnityEngine.Networking.NetworkReader reader, Int32 receivedSize, Int32 channelId) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Networking.NetworkConnection.HandleBytes (System.Byte[] buffer, Int32 receivedSize, Int32 channelId) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Networking.NetworkConnection.TransportRecieve (System.Byte[] bytes, Int32 numBytes, Int32 channelId) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Networking.NetworkClient.Update () [0x00000] in <filename unknown>:0 
-  at UnityEngine.Networking.NetworkClient.UpdateClients () [0x00000] in <filename unknown>:0 
-  at UnityEngine.Networking.NetworkIdentity.UNetStaticUpdate () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
-Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:7777}
-UNet Client Disconnect Error: Timeout
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 1.970186 ms
-Multiple NetworkManagers detected in the scene. Only one NetworkManager can exist at a time. The duplicate NetworkManager will not be used.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 64)
-
-
-Unloading 55 unused Assets to reduce memory usage. Loaded Objects now: 319.
-Total: 0.827790 ms (FindLiveObjects: 0.033468 ms CreateObjectMapping: 0.026328 ms MarkObjects: 0.712212 ms  DeleteObjects: 0.054888 ms)
-
+Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:54192}

@@ -1,6 +1,7 @@
 ﻿using System;
+using UnityEngine;
 
-internal class Hand
+internal class Hand : MonoBehaviour
 {
     public Card[] hand;
     GameManager gm;

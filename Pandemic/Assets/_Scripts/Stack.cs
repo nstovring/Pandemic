@@ -12,7 +12,6 @@ public class Stack : MonoBehaviour {
 	public _epidemicCard [] epidemicCards = new _epidemicCard [5];
 	public _roleCard [] roleCards = new _roleCard [7];	
 	public enum cardType {CITY, INFECTION, EVENT, EPIDEMIC, ROLE};
-    public enum roleType { MEDIC, DISPATCHER, QURANTINE_SPECIALIST, CONTINGENCY, RESEARCHER, SCIENTIST, OPERATIONS_EXPERT};
 
 
     public Card [] cards;
@@ -179,8 +178,17 @@ public class Stack : MonoBehaviour {
 		roleCards [4].name  = ("RESEARCHER");
 		roleCards [5].name  = "SCIENTIST";
 		roleCards [6].name  = "OPERATIONS EXPERT";
-		
-		for (int i = 0; i < roleCards.Length; i++){
+
+        roleCards[0].role = _roleCard.roleType.MEDIC;
+        roleCards[1].role = _roleCard.roleType.DISPATCHER;
+        roleCards[2].role = _roleCard.roleType.QURANTINE_SPECIALIST;
+        roleCards[3].role = _roleCard.roleType.CONTINGENCY;
+        roleCards[4].role = _roleCard.roleType.RESEARCHER;
+        roleCards[5].role = _roleCard.roleType.SCIENTIST;
+        roleCards[6].role = _roleCard.roleType.OPERATIONS_EXPERT;
+
+
+        for (int i = 0; i < roleCards.Length; i++){
 			cards[i] = roleCards [i];
 		}
 		

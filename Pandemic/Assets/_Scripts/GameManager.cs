@@ -1,8 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Networking;
 
+[Serializable]
 public class GameManager : NetworkBehaviour
 {
     public static GameManager instance;
@@ -16,12 +17,6 @@ public class GameManager : NetworkBehaviour
 
 
     public static List<NetworkConnection> Connections;
-
-    //Method for combining stacks
-    private Stack CombineStacks(Stack infectionStack, Stack infectionDiscardStack)
-    {
-        return infectionStack;
-    }
 
     //City Variables
     public GameObject cityPrefab;
@@ -177,39 +172,53 @@ public class GameManager : NetworkBehaviour
         return false;
     }
 
-    Player[] players;
+    public static List<Player> players = new List<Player>();
     private NetworkIdentity netIdentity;
-    [SyncVar] public bool initialize;
+    [SyncVar] public bool initialize = true;
+
     private void Start()
+    {
+        
+    }
+
+    public static void AddPlayer(GameObject playerGameObject, _roleCard playeRoleCard, int localID)
+    {
+        Player tmp = new Player();
+
+    }
+
+    void Awake()
     {
         instance = this;
         netIdentity = GetComponent<NetworkIdentity>();
     }
-
     private void Update()
     {
-        //if(netIdentity.observers.Count > 1 && initialize)
-        if (initialize)
+        if (isServer)
         {
-            Rpc_InitializeBoard();
-            Rpc_InitializePlayers();
-            initialize = false;
+            if (netIdentity.observers.Count > 1 && initialize)
+            {
+                Rpc_InitializeBoard();
+                int[] roles = new[]
+                {
+                    UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7),
+                    UnityEngine.Random.Range(0, 7)
+                };
+                Rpc_InitializePlayers(roles);
+                initialize = false;
+            }
         }
     }
 
+
     [ClientRpc]
-    private void Rpc_InitializePlayers()
+    private void Rpc_InitializePlayers(int[] roles)
     {
         GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
 
         for (int i = 0; i < playersGameObjects.Length; i++)
         {
-            //playerControllerId
-            if (playersGameObjects[i].GetComponent<NetworkIdentity>().localPlayerAuthority)
-            {
-                playersGameObjects[i].GetComponent<Player>().Rpc_Initialize();
-            }
-            //players[i] = playersGameObjects[i].GetComponent<Player>();
+            playersGameObjects[i].GetComponent<Player>().Initialize(roles[i]);
         }
     }
 
@@ -223,8 +232,7 @@ public class GameManager : NetworkBehaviour
     public void Rpc_InitializeBoard()
     {
         CreateCities();
-        Cmd_CreateStacks();
-        Rpc_InitialInfection();
+        CreateStacks();
     }
 
     [ClientRpc]
@@ -246,8 +254,8 @@ public class GameManager : NetworkBehaviour
     /// <summary>
     /// Instantiates four different stacks and initializes them
     /// </summary>
-    [Command]
-    private void Cmd_CreateStacks()
+    //[Command]
+    private void CreateStacks()
     {
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectCardStack.Initialize(48, Stack.cardType.INFECTION);
@@ -271,8 +279,11 @@ public class GameManager : NetworkBehaviour
 
         roleCardStack = new GameObject("roleCardStack").AddComponent<Stack>();
         roleCardStack.Initialize(7, Stack.cardType.ROLE);
-
-        Rpc_CreateStacks(i);
+        if (isServer)
+        {
+            Rpc_CreateStacks(i);
+            Rpc_InitialInfection();
+        }
     }
     [ClientRpc]
     private void Rpc_CreateStacks(int[] i)
@@ -290,7 +301,7 @@ public class GameManager : NetworkBehaviour
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(48, Stack.cardType.CITY);
         //playerCardStack = playerCardStack.shuffleStack(ref playerCardStack);
-
+        
         infectDiscardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectDiscardStack.Initialize(48, Stack.cardType.INFECTION);
 
@@ -332,7 +343,7 @@ public class GameManager : NetworkBehaviour
         //Shuffle discards here
         //infectDiscardStack.Shuffle();
         //And then combine stacks
-        infectCardStack = CombineStacks(infectCardStack, infectDiscardStack);
+        //infectCardStack = CombineStacks(infectCardStack, infectDiscardStack);
         //Set infectionRate & increment epidemicCount
         epidemicCount++;
         infectionRate = epidemicCount > 3 ? 3 : epidemicCount > 5 ? 4 : infectionRate;
@@ -340,6 +351,7 @@ public class GameManager : NetworkBehaviour
         //InfectCities();
     }
     //The cities are infected from the top of the stack up during initialization
+
     [ClientRpc]
     private void Rpc_InitialInfection()
     {
@@ -367,7 +379,6 @@ public class GameManager : NetworkBehaviour
         }
         CheckForOutbreak();
     }
-
 
     /// <summary>
     /// Infection method for directly infecting a specific city
