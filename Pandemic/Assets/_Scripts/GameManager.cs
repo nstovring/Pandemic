@@ -177,7 +177,7 @@ public class GameManager : NetworkBehaviour
         return false;
     }
 
-    Player[] players;
+    public static Player[] players; //Changed it to public static to use in player script
     private NetworkIdentity netIdentity;
     [SyncVar] public bool initialize;
     private void Start()

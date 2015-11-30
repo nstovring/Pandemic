@@ -41,9 +41,11 @@ public class Player : NetworkBehaviour
 
     }
 
-    public void exchangeCards() {
-
-            
+    public void exchangeCards(Player [] allPlayers , int playerNo,  int cardIndex) {
+        Card tmp = null;
+        tmp = this.hand.hand[cardIndex];
+        this.hand.hand[cardIndex] = allPlayers[playerNo].hand.hand[cardIndex];
+        allPlayers[playerNo].hand.hand[cardIndex] = tmp;
     }
 
 
