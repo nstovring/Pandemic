@@ -6,18 +6,8 @@ using System;
 
 public class Stack : MonoBehaviour {
 
-<<<<<<< HEAD
-	public enum cardType {PLAYER_STACK, INFECTION, ROLE};
-=======
-	public _eventCard [] eventCards = new _eventCard [5];
-	public _cityCard [] cityCards = new _cityCard [48];
-	public _infectionCard [] infectionCards = new _infectionCard [48];
-	public _epidemicCard [] epidemicCards = new _epidemicCard [5];
-	public _roleCard [] roleCards = new _roleCard [7];	
-	public enum cardType {CITY, INFECTION, EVENT, EPIDEMIC, ROLE};
 
->>>>>>> origin/master
-
+	public enum cardType {PLAYER_STACK, INFECTION, ROLE, DISCARD};
     public Card [] cards;
 
     // Nikolaj - Purely changes for unity
@@ -35,8 +25,10 @@ public class Stack : MonoBehaviour {
 		        break;
 		case cardType.ROLE:	createRoleCards();
 		        break;
-		default:
-			break;
+        case cardType.DISCARD: createDiscardStack();
+                break;
+        default:
+	    break;
 		}
 	}
 
@@ -107,6 +99,10 @@ public class Stack : MonoBehaviour {
 		return target;
 	}
 
+    public void createDiscardStack() {
+        cards = new Card[0];
+    }
+
 	public void createInfectionCards (){
 
         cards = new Card[48];
@@ -141,15 +137,6 @@ public class Stack : MonoBehaviour {
             roleCards[i] = new GameObject().AddComponent<_roleCard>();
         }
 
-<<<<<<< HEAD
-        roleCards[0].name = ("MEDIC");
-        roleCards[1].name = ("DISPATCHER");
-        roleCards[2].name = ("QURANTINE SPECIALIST");
-        roleCards[3].name = ("CONTINGENCY");
-        roleCards[4].name = ("RESEARCHER");
-        roleCards[5].name = "SCIENTIST";
-        roleCards[6].name = "OPERATIONS EXPERT";
-=======
         roleCards [0].name  = ("MEDIC");
 		roleCards [1].name  = ("DISPATCHER");
 		roleCards [2].name  = ("QURANTINE SPECIALIST");
@@ -171,26 +158,9 @@ public class Stack : MonoBehaviour {
 			cards[i] = roleCards [i];
 		}
 		
-		for (int i = 0; i < roleCards.Length; i++){
-			//System.out.println(roleCards [i].name);
-			//System.out.println("");
-		}
+
 		
 	}
->>>>>>> origin/master
-
-        for (int i = 0; i < roleCards.Length; i++)
-        {
-            cards[i] = roleCards[i];
-        }
-
-        for (int i = 0; i < roleCards.Length; i++)
-        {
-            //System.out.println(roleCards [i].name);
-            //System.out.println("");
-        }
-
-    }
 
     public void createPlayerStack()
     {

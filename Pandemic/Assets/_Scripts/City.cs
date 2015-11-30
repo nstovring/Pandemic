@@ -86,7 +86,7 @@ public class City : NetworkBehaviour
         }
     }
 
-    public void ReduceDiseaseSpread(string color, _roleCard role)
+    public void ReduceDiseaseSpread(string color, Card role)
     {
         //Add a check which Player role is removing diseases
         //if(role.name == "MEDIC")

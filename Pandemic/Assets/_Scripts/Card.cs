@@ -5,8 +5,9 @@ public abstract class Card : MonoBehaviour {
 
 	string name = null;
     public int cityID;
+    public int infectionID;
 
-	void Start () {
+    void Start () {
 	}
 	
 	void Update () {	

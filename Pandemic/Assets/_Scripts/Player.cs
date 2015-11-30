@@ -10,7 +10,7 @@ public class Player : NetworkBehaviour
     Hand hand;
     public City CurrentCity;
     [SyncVar] public int cityID;
-    public _roleCard role;
+    public Card role;
     GameManager gameManager;
     int actionsLeft;
     int[][] actionsTaken;
@@ -26,7 +26,7 @@ public class Player : NetworkBehaviour
         hand = new GameObject("Hand").AddComponent<Hand>();
         hand.transform.parent = this.transform;
         cityID = 4;
-        this.role = GameManager.roleCardStack.roleCards[role]; //GameManager.roleCardStack.roleCards.Contains(role);
+        this.role = GameManager.roleCardStack.cards[role]; //GameManager.roleCardStack.roleCards.Contains(role);
 
         gameManager = GameManager.instance;
         MoveToCity(cityID);

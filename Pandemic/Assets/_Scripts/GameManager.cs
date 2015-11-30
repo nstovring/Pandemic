@@ -172,11 +172,9 @@ public class GameManager : NetworkBehaviour
         return false;
     }
 
-<<<<<<< HEAD
-    public static Player[] players; //Changed it to public static to use in player script
-=======
+
     public static List<Player> players = new List<Player>();
->>>>>>> origin/master
+
     private NetworkIdentity netIdentity;
     [SyncVar] public bool initialize = true;
 
@@ -262,55 +260,59 @@ public class GameManager : NetworkBehaviour
     private void CreateStacks()
     {
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
-        infectCardStack.Initialize(48, Stack.cardType.INFECTION);
-        infectCardStack.ShuffleInfectCards();
+        infectCardStack.Initialize(Stack.cardType.INFECTION);
+        infectCardStack.shuffleStack();
+
         int[] i = new int[48];
         for (int j = 0; j < i.Length; j++)
         {
-            i[j] = infectCardStack.infectionCards[j].infectionID-1;
+            i[j] = infectCardStack.cards[j].infectionID-1;
         }
 
-        //infectCardStack = infectCardStack.shuffleStack(ref infectCardStack);
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
-        playerCardStack.Initialize(48, Stack.cardType.CITY);
-        playerCardStack = playerCardStack.shuffleStack(ref playerCardStack);
-
-        infectDiscardStack = new GameObject("infectCardStack").AddComponent<Stack>();
-        infectDiscardStack.Initialize(48, Stack.cardType.INFECTION);
-
-        playerDiscardStack = new GameObject("playerDiscardStack").AddComponent<Stack>();
-        playerDiscardStack.Initialize(48, Stack.cardType.CITY);
+        playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
+        playerCardStack.shuffleStack();
 
         roleCardStack = new GameObject("roleCardStack").AddComponent<Stack>();
-        roleCardStack.Initialize(7, Stack.cardType.ROLE);
+        roleCardStack.Initialize(Stack.cardType.ROLE);
+
+        //Discard stacks
+        infectDiscardStack = new GameObject("infectCardStack").AddComponent<Stack>();
+        infectDiscardStack.Initialize(Stack.cardType.DISCARD);
+
+        playerDiscardStack = new GameObject("playerDiscardStack").AddComponent<Stack>();
+        playerDiscardStack.Initialize(Stack.cardType.DISCARD);
+
         if (isServer)
         {
             Rpc_CreateStacks(i);
             Rpc_InitialInfection();
         }
+
     }
+
     [ClientRpc]
     private void Rpc_CreateStacks(int[] i)
     {
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
-        infectCardStack.Initialize(48, Stack.cardType.INFECTION);
-        _infectionCard[] tempCards = new _infectionCard[i.Length];
+        infectCardStack.Initialize(Stack.cardType.INFECTION);
+        Card [] tempCards = new Card [i.Length];
+
         for (int m = 0; m < i.Length; m++)
         {
-            tempCards[i[m]] = infectCardStack.infectionCards[m];
-            infectCardStack.infectionCards[m] = infectCardStack.infectionCards[i[m]];
-            infectCardStack.infectionCards[i[m]] = tempCards[i[m]];
+            tempCards[i[m]] = infectCardStack.cards[m];
+            infectCardStack.cards[m] = infectCardStack.cards[i[m]];
+            infectCardStack.cards[i[m]] = tempCards[i[m]];
         }
 
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
-        playerCardStack.Initialize(48, Stack.cardType.CITY);
-        //playerCardStack = playerCardStack.shuffleStack(ref playerCardStack);
+        playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
         
         infectDiscardStack = new GameObject("infectCardStack").AddComponent<Stack>();
-        infectDiscardStack.Initialize(48, Stack.cardType.INFECTION);
+        infectDiscardStack.Initialize(Stack.cardType.DISCARD);
 
         playerDiscardStack = new GameObject("playerDiscardStack").AddComponent<Stack>();
-        playerDiscardStack.Initialize(48, Stack.cardType.CITY);
+        playerDiscardStack.Initialize(Stack.cardType.DISCARD);
 
     }
 
@@ -339,7 +341,8 @@ public class GameManager : NetworkBehaviour
     /// </summary>
     public void Epidemic()
     {
-        _infectionCard bottomCard = infectCardStack.infectionCards[0]; // Pick the bottom card of the stack
+        //YUSUF CHANGE HERE!!!
+        Card bottomCard = infectCardStack.cards[0]; // Pick the bottom card of the stack
         InfectCity(bottomCard, 3); // Infect the city coressponding to that card
         //Add bottom card to discards
         // infectCardStack.RemoveCard(bottomCard);
@@ -361,10 +364,10 @@ public class GameManager : NetworkBehaviour
     {
         int increment = 0;
         //Loop counts from the top nine cards down
-        for (int i = infectCardStack.infectionCards.Length - 1, infectRate = 3; i > infectCardStack.infectionCards.Length - 10; i--, increment++)
+        for (int i = infectCardStack.cards.Length - 1, infectRate = 3; i > infectCardStack.cards.Length - 10; i--, increment++)
         {
             increment = increment % 4 == 0 ? increment = 1 : increment % 4; //Infection progresses as such: 3 first cities get 3 diseaseMarker, 3 next get 2, 3 last gets 1
-            _infectionCard infectionCard = infectCardStack.infectionCards[i]; ;
+            Card infectionCard = infectCardStack.cards[i]; ;
             InfectCity(infectionCard, infectRate);
             infectRate = increment >= 3 ? infectRate - 1 : infectRate;
         }
@@ -378,7 +381,7 @@ public class GameManager : NetworkBehaviour
     {
         for (int i = 1; i < infectionRate; i++)
         {
-            _infectionCard infectionCard = infectCardStack.infectionCards[infectCardStack.infectionCards.Length - i];
+            Card infectionCard = infectCardStack.cards[infectCardStack.cards.Length - i];
             InfectCity(infectionCard, 1);
         }
         CheckForOutbreak();
@@ -389,7 +392,7 @@ public class GameManager : NetworkBehaviour
     /// </summary>
     /// <param name="infectionCard"></param>
     /// <param name="infectRate"></param>
-    private void InfectCity(_infectionCard infectionCard, int infectRate)
+    private void InfectCity(Card infectionCard, int infectRate)
     {
         City infectedCity = GetCityFromID(infectionCard.infectionID);
         infectedCity.IncrementDiseaseSpread(infectedCity.color, infectRate);
@@ -476,7 +479,7 @@ public class GameManager : NetworkBehaviour
         {
             WinGame();
         }
-        if (outbreakCounter >= 8 || playerCardStack.cityCards.Length < 2 || currentDiseaseSpread() >= maxSingleDisease)
+        if (outbreakCounter >= 8 || playerCardStack.cards.Length < 2 || currentDiseaseSpread() >= maxSingleDisease)
         {
             LoseGame();
         }
