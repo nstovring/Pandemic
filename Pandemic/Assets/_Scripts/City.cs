@@ -39,7 +39,7 @@ public class City : NetworkBehaviour
         }
     }
 
-    
+    //[ClientRpc]
     public void UpdatePawns()
     {
         for (int i = 0; i < pawnSpriteRenderers.Length; i++)
@@ -48,13 +48,14 @@ public class City : NetworkBehaviour
             {
                 if (players[j])
                 {
-                    if (players[j].role.transform.name == pawnSpriteRenderers[j].name)
+                    if (players[j].role.transform.name == pawnSpriteRenderers[i].transform.name)
                     {
-                        pawnSpriteRenderers[j].enabled = true;
+                        pawnSpriteRenderers[i].enabled = true;
+                        break;
                     }
                     else
                     {
-                        pawnSpriteRenderers[j].enabled = false;
+                        pawnSpriteRenderers[i].enabled = false;
                     }
                 }
                 else

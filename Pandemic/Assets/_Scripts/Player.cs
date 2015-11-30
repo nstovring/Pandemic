@@ -7,38 +7,30 @@ using Random = UnityEngine.Random;
 
 public class Player : NetworkBehaviour
 {
-
     Hand hand;
     public City CurrentCity;
-    public int cityID;
+    [SyncVar] public int cityID;
     public _roleCard role;
     GameManager gameManager;
     int actionsLeft;
     int[][] actionsTaken;
     int count;
 
-    [ClientRpc]
-    public void Rpc_Initialize()
+    //[ClientRpc]
+    public void Initialize(int role)
     {
         count = 0;
         actionsTaken = new int[4][];
         actionsLeft = 4;
 
-        hand = new Hand();
+        hand = new GameObject("Hand").AddComponent<Hand>();
+        hand.transform.parent = this.transform;
         cityID = 4;
-        this.role = GameManager.roleCardStack.roleCards[Random.Range(0, 7)]; //GameManager.roleCardStack.roleCards.Contains(role);
-        //this.role = new _roleCard();
-        //role.name = "SCIENTIST";
-        /*role = new GameObject().AddComponent<_roleCard>();
-        role.name = "Scientist";*/
+        this.role = GameManager.roleCardStack.roleCards[role]; //GameManager.roleCardStack.roleCards.Contains(role);
+
         gameManager = GameManager.instance;
         MoveToCity(cityID);
         GameManager.GetCityFromID(cityID).UpdatePawns();
-        GameManager.GetCityFromID(cityID+1).UpdatePawns();
-        GameManager.GetCityFromID(cityID - 1).UpdatePawns();
-
-        //MoveToConnectedCity(cityID);
-
     }
 
     public void exchangeCards(Player [] allPlayers , int playerNo,  int cardIndex) {
@@ -47,10 +39,6 @@ public class Player : NetworkBehaviour
         this.hand.hand[cardIndex] = allPlayers[playerNo].hand.hand[cardIndex];
         allPlayers[playerNo].hand.hand[cardIndex] = tmp;
     }
-
-
-
-
 
     public void deactivateCities()
     {
@@ -127,11 +115,12 @@ public class Player : NetworkBehaviour
         actionsTaken[count] = new int[] { 2, cityID };
         count++;
         actionsLeft--;
-       
+
         MoveToCity(ID);
         hand.discard(cityCard);
     }
 
+    //[ClientRpc]
     private void MoveToCity(int ID)
     {
         //GameManager.GetCityFromID(ID).removePlayer(this);

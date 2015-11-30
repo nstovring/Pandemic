@@ -6,7 +6,17 @@ using System;
 
 public class Stack : MonoBehaviour {
 
+<<<<<<< HEAD
 	public enum cardType {PLAYER_STACK, INFECTION, ROLE};
+=======
+	public _eventCard [] eventCards = new _eventCard [5];
+	public _cityCard [] cityCards = new _cityCard [48];
+	public _infectionCard [] infectionCards = new _infectionCard [48];
+	public _epidemicCard [] epidemicCards = new _epidemicCard [5];
+	public _roleCard [] roleCards = new _roleCard [7];	
+	public enum cardType {CITY, INFECTION, EVENT, EPIDEMIC, ROLE};
+
+>>>>>>> origin/master
 
     public Card [] cards;
 
@@ -131,6 +141,7 @@ public class Stack : MonoBehaviour {
             roleCards[i] = new GameObject().AddComponent<_roleCard>();
         }
 
+<<<<<<< HEAD
         roleCards[0].name = ("MEDIC");
         roleCards[1].name = ("DISPATCHER");
         roleCards[2].name = ("QURANTINE SPECIALIST");
@@ -138,6 +149,35 @@ public class Stack : MonoBehaviour {
         roleCards[4].name = ("RESEARCHER");
         roleCards[5].name = "SCIENTIST";
         roleCards[6].name = "OPERATIONS EXPERT";
+=======
+        roleCards [0].name  = ("MEDIC");
+		roleCards [1].name  = ("DISPATCHER");
+		roleCards [2].name  = ("QURANTINE SPECIALIST");
+		roleCards [3].name  = ("CONTINGENCY");
+		roleCards [4].name  = ("RESEARCHER");
+		roleCards [5].name  = "SCIENTIST";
+		roleCards [6].name  = "OPERATIONS EXPERT";
+
+        roleCards[0].role = _roleCard.roleType.MEDIC;
+        roleCards[1].role = _roleCard.roleType.DISPATCHER;
+        roleCards[2].role = _roleCard.roleType.QURANTINE_SPECIALIST;
+        roleCards[3].role = _roleCard.roleType.CONTINGENCY;
+        roleCards[4].role = _roleCard.roleType.RESEARCHER;
+        roleCards[5].role = _roleCard.roleType.SCIENTIST;
+        roleCards[6].role = _roleCard.roleType.OPERATIONS_EXPERT;
+
+
+        for (int i = 0; i < roleCards.Length; i++){
+			cards[i] = roleCards [i];
+		}
+		
+		for (int i = 0; i < roleCards.Length; i++){
+			//System.out.println(roleCards [i].name);
+			//System.out.println("");
+		}
+		
+	}
+>>>>>>> origin/master
 
         for (int i = 0; i < roleCards.Length; i++)
         {
