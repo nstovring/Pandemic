@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
-	
 
 public class Stack : MonoBehaviour {
 
@@ -73,7 +72,31 @@ public class Stack : MonoBehaviour {
         }
     }
 
-    public Stack shuffleStack (ref Stack input){
+    public void ShuffleCityCards()
+    {
+        // Knuth shuffle algorithm
+        for (int i = 0; i < cityCards.Length; i++)
+        {
+            _cityCard tmp = cityCards[i];
+            int r = UnityEngine.Random.Range(i, cityCards.Length);
+            cityCards[i] = cityCards[r];
+            cityCards[r] = tmp;
+        }
+    }
+
+    public void ShuffleCards()
+    {
+        // Knuth shuffle algorithm
+        for (int i = 0; i < cards.Length; i++)
+        {
+            Card tmp = cards[i];
+            int r = UnityEngine.Random.Range(i, cards.Length);
+            cards[i] = cards[r];
+            cards[r] = tmp;
+        }
+    }
+
+    public static Stack shuffleStack (ref Stack input){
 
 		// Knuth shuffle algorithm
 		for (int i = 0; i < input.cards.Length; i++ )
@@ -86,7 +109,7 @@ public class Stack : MonoBehaviour {
 		return input;
 	}
 
-	public Stack removeCard (Stack input, String cardName){
+	public static Stack removeCard (Stack input, String cardName){
 
 		Stack output = new Stack ();
 		output.cards = new Card[input.cards.Length - 1];
@@ -109,8 +132,60 @@ public class Stack : MonoBehaviour {
 		}
 		return output;
 	}
+    public void AddCard(int newCard, int type)
+    {
+        for (int i = 0; i < cards.Length; i++)
+        {
+            if (cards[i] == null)
+            {
+                if (type == 0)
+                {
+                    foreach (var card in cityCards)
+                    {
+                        if (card.Id == newCard)
+                        {
+                            cards[i] = card;
+                            return;
+                        }
+                    }
+                    
+                }
+                if (type == 1)
+                {
+                    foreach (var card in infectionCards)
+                    {
+                        if (card.Id == newCard)
+                        {
+                            cards[i] = card;
+                            return;
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+    public void RemoveCard(int newCard)
+    {
+        for (int i = 0; i < cards.Length; i++)
+        {
+            if (cards[i].Id == newCard)
+            {
+                cards[i] = null;
+                break;
+            }
+        }
+    }
 
-	public Stack addCard (Stack source, Stack target, String cardName){
+    public void EmptyCards()
+    {
+        for (int i = 0; i < cards.Length; i++)
+        {
+            cards[i] = null;
+        }
+    }
+
+    public static Stack addCard (Stack source, Stack target, String cardName){
 
 		int index = 0;
 
@@ -133,16 +208,17 @@ public class Stack : MonoBehaviour {
 		for (int i = 0; i < cityCards.Length; i++){
 			//cityCards [i] = new _cityCard();
             cityCards[i] = new GameObject().AddComponent<_cityCard>();
+            cityCards[i].transform.parent = transform;
 
         }
         for (int i = 0; i < cityCards.Length; i++){
 			cityCards [i].name = GameManager.cityNames [i];
-			cityCards [i].cityID = i + 1;
+			cityCards [i].Id = i + 1;
 			//System.out.println(cityCards [i].cityID);
 			//System.out.println(cityCards [i].name);
 			//System.out.println("");
 		}
-		for (int i = 0; i < cityCards.Length; i++){
+		for (int i = 0; i < cards.Length; i++){
 			cards[i] = cityCards [i];
 		}
 	}
@@ -151,24 +227,31 @@ public class Stack : MonoBehaviour {
         //Nikolaj - another unity change
 		for (int i = 0; i < infectionCards.Length; i++){
             infectionCards[i] = new GameObject().AddComponent<_infectionCard>();
-            //infectionCards [i] = new _infectionCard();
-        }
+		    infectionCards[i].transform.parent = transform;
+		    //infectionCards [i] = new _infectionCard();
+		}
 		for (int i = 0; i < infectionCards.Length; i++){
 			infectionCards [i].name = GameManager.cityNames [i];
-			infectionCards [i].infectionID = i + 1;
+			infectionCards [i].Id = i + 1;
 			//System.out.println(infectionCards [i].infectionID);
 			//System.out.println(infectionCards [i].name);
 			//System.out.println("");
 		}
-		for (int i = 0; i < infectionCards.Length; i++){
-			cards[i] = infectionCards [i];
-		}
-	}
+
+	    //cards = infectionCards;
+
+        for (int i = 0; i < cards.Length; i++){
+            cards[i] = infectionCards [i];
+
+        }
+    }
 
 	public void createRoleCards () {
 		for (int i = 0; i < roleCards.Length; i++){
 			//roleCards [i] = new _roleCard();
             roleCards[i] = new GameObject().AddComponent<_roleCard>();
+            roleCards[i].transform.parent = transform;
+
         }
 
         roleCards [0].name  = ("MEDIC");
@@ -188,7 +271,7 @@ public class Stack : MonoBehaviour {
         roleCards[6].role = _roleCard.roleType.OPERATIONS_EXPERT;
 
 
-        for (int i = 0; i < roleCards.Length; i++){
+        for (int i = 0; i < cards.Length; i++){
 			cards[i] = roleCards [i];
 		}
 		
@@ -201,16 +284,17 @@ public class Stack : MonoBehaviour {
 
 	public void createEventCards (){
 		for (int i = 0; i < eventCards.Length; i++){
-			eventCards [i] = new _eventCard();
-		}
-		
-		eventCards [0].name  = "RESILIENT POPULATION";
+			eventCards [i] = new GameObject("EventCard").AddComponent<_eventCard>();
+            roleCards[i].transform.parent = transform;
+        }
+
+        eventCards [0].name  = "RESILIENT POPULATION";
 		eventCards [1].name  = "ONE QUIET NIGHT";
 		eventCards [2].name  = "FORECAST";
 		eventCards [3].name  = "AIRLIFT";
 		eventCards [4].name  = "GOVERNMENT GRANT";
 		
-		for (int i = 0; i < eventCards.Length; i++){
+		for (int i = 0; i < cards.Length; i++){
 			cards[i] = eventCards [i];
 		}
 
@@ -229,7 +313,7 @@ public class Stack : MonoBehaviour {
 			//System.out.println(epidemicCards [i].name);
 			//System.out.println("");
 		}
-		for (int i = 0; i < epidemicCards.Length; i++){
+		for (int i = 0; i < cards.Length; i++){
 			cards[i] = epidemicCards [i];
 		}
 	}

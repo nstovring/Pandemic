@@ -1,42 +1,88 @@
 using System;
 using UnityEngine;
 using System.Collections;
-using System.Linq;
 using UnityEngine.Networking;
-using Random = UnityEngine.Random;
+using UnityEngine.UI;
 
 public class Player : NetworkBehaviour
 {
+    [SyncVar]
+    public int cityID;
+
+
     Hand hand;
     public City CurrentCity;
-    [SyncVar] public int cityID;
+    
+
     public _roleCard role;
+
     GameManager gameManager;
-    int actionsLeft;
-    int[][] actionsTaken;
+    public int actionsLeft;
+    public int[][] actionsTaken;
     int count;
 
+
+
     //[ClientRpc]
-    public void Initialize(int role)
+    public void Initialize(int role, Card[] startingHand)
     {
+        gameManager = GameManager.instance;
+
         count = 0;
         actionsTaken = new int[4][];
         actionsLeft = 4;
 
         hand = new GameObject("Hand").AddComponent<Hand>();
-        hand.transform.parent = this.transform;
-        cityID = 4;
-        this.role = GameManager.roleCardStack.roleCards[role]; //GameManager.roleCardStack.roleCards.Contains(role);
+        hand.transform.parent = transform;
+        hand.Initialize(startingHand, this);
 
-        gameManager = GameManager.instance;
+        cityID = 4;
+        CurrentCity = GameManager.GetCityFromID(4);
+        this.role = GameManager.roleCardStack.roleCards[role];
+
         MoveToCity(cityID);
-        GameManager.GetCityFromID(cityID).UpdatePawns();
+        CurrentCity.UpdatePawns();
     }
 
     public void exchangeCards() {
 
             
     }
+
+    //[ClientCallback]
+    void Update()
+    {
+        if (isLocalPlayer)
+        {
+            InputMoveToCity();
+        }
+        else if (CurrentCity!= null && CurrentCity.cityId != cityID)
+        {
+            MoveToCity(cityID);
+        }
+    }
+
+    void InputMoveToCity()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 100);
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (hit.collider != null)
+            {
+                if (hit.transform.tag == "City")
+                {
+                    MoveToCity(hit.transform.GetComponent<City>().cityId);
+                }
+                if (hit.transform.tag == "DiseaseCube")
+                {
+                    Cmd_RemoveDiseaseCubes(City.GetStringFromColor(hit.transform.GetComponent<SpriteRenderer>().color));
+                }
+            }
+        }
+
+       
+    }
+
 
     public void deactivateCities()
     {
@@ -63,11 +109,11 @@ public class Player : NetworkBehaviour
             {
                 GameManager.GetCityFromID(cityIDs[i]).active = true;
             }
-            for (int i = 0; i < hand.hand.GetLength(0); i++)
+            for (int i = 0; i < hand.cards.GetLength(0); i++)
             {
-                if(hand.hand[i] is _cityCard)
+                if(hand.cards[i] is _cityCard)
                 {
-                    GameManager.GetCityFromID(hand.hand[i].cityID).active = true;
+                    GameManager.GetCityFromID(hand.cards[i].Id).active = true;
                 }
             }
             for (int i = 0; i < GameManager.researchCenterCities.GetLength(0); i++)
@@ -78,9 +124,9 @@ public class Player : NetworkBehaviour
     }
     public bool cardEqualToCity()
     {
-        for(int i = 0; i < hand.hand.GetLength(0); i++)
+        for(int i = 0; i < hand.cards.GetLength(0); i++)
         {
-            if (hand.hand[i] is _cityCard && hand.hand[i].cityID == cityID)
+            if (hand.cards[i] is _cityCard && hand.cards[i].Id == cityID)
             {
                 return true;
             }
@@ -107,58 +153,80 @@ public class Player : NetworkBehaviour
         }
     }
 
-    private void MoveToCityCard(_cityCard cityCard)
+    public void MoveToCityCard(Card cityCard)
     {
-        int ID = cityCard.cityID;
+        int ID = cityCard.Id;
         actionsTaken[count] = new int[] { 2, cityID };
         count++;
         actionsLeft--;
 
         MoveToCity(ID);
         hand.discard(cityCard);
+        GameManager.instance.Cmd_AddToCityDiscardList(ID);
     }
 
-    //[ClientRpc]
-    private void MoveToCity(int ID)
+
+    [Command]
+    void Cmd_ChangeCityID(int newID)
     {
-        //GameManager.GetCityFromID(ID).removePlayer(this);
-        GameManager.GetCityFromID(ID).addPlayer(this);
-        GameManager.GetCityFromID(ID).UpdatePawns();
-        CurrentCity = GameManager.GetCityFromID(ID);
+        cityID = newID;
+    }
+    [Client]
+    public void MoveToCity(int ID)
+    {
+
+        CurrentCity.removePlayer(this);
+        CurrentCity.UpdatePawns();
+
+        City newCity = GameManager.GetCityFromID(ID);
+        newCity.addPlayer(this);
+        newCity.UpdatePawns();
+        CurrentCity = newCity;
+        //Move
         cityID = ID;
+        //Synchronize the cityID
+        Cmd_ChangeCityID(cityID);
     }
 
-    private void RemoveDiseaseCubes(string colour)
+    [Command]
+    private void Cmd_RemoveDiseaseCubes(string colour)
     {
-        switch (colour) {
+        Rpc_RemoveDiseaseCubes(colour);
+    }
+
+    [ClientRpc]
+    void Rpc_RemoveDiseaseCubes(string colour)
+    {
+        switch (colour)
+        {
             case "Blue":
-                actionsTaken[count] = new int[] { 3,1, cityID};
+                actionsTaken[count] = new int[] { 3, 1, cityID };
                 count++;
                 actionsLeft--;
                 break;
             case "Yellow":
-                actionsTaken[count] = new int[] { 3, 2, cityID};
+                actionsTaken[count] = new int[] { 3, 2, cityID };
                 count++;
                 actionsLeft--;
                 break;
             case "Black":
-                actionsTaken[count] = new int[] { 3, 3, cityID};
+                actionsTaken[count] = new int[] { 3, 3, cityID };
                 count++;
                 actionsLeft--;
                 break;
             case "Red":
-                actionsTaken[count] = new int[] { 3, 4, cityID};
+                actionsTaken[count] = new int[] { 3, 4, cityID };
                 count++;
                 actionsLeft--;
                 break;
         }
         GameManager.GetCityFromID(cityID).ReduceDiseaseSpread(colour, role);
-
     }
+
     private void buildResearchCenter(int cityID, _cityCard city)
     {
         //gameManager.GetCityFromID(cityID).hasResearchCenter = true;
-        if (cityID == city.cityID)
+        if (cityID == city.Id)
         {
             GameManager.GetCityFromID(cityID).hasResearchCenter = true;
             hand.discard(city);
@@ -177,21 +245,21 @@ public class Player : NetworkBehaviour
             switch (checker[1])
             {
                 case 0:
-                    GameManager.blueCure = true;
+                    GameManager.instance.blueCure = true;
                     break;
                 case 1:
-                    GameManager.yellowCure = true;
+                    GameManager.instance.yellowCure = true;
                     break;
                 case 2:
-                    GameManager.blackCure = true;
+                    GameManager.instance.blackCure = true;
                     break;
 
                 case 3:
-                    GameManager.redCure = true;
+                    GameManager.instance.redCure = true;
                     break;
             }
             //hand.        
-            actionsTaken[count] = new int[] { 5, checker[1], cards[0].cityID, cards[1].cityID, cards[2].cityID, cards[3].cityID, cards[4].cityID };
+            actionsTaken[count] = new int[] { 5, checker[1], cards[0].Id, cards[1].Id, cards[2].Id, cards[3].Id, cards[4].Id };
             count++;
             actionsLeft--;
         }
@@ -205,8 +273,8 @@ public class Player : NetworkBehaviour
         {
             if (hand[i] != null && hand[i] is _cityCard)
             {
-                String colour = GameManager.GetCityFromID(hand[i].cityID).color;
-                switch (GameManager.GetCityFromID(hand[i].cityID).color)
+                String colour = GameManager.GetCityFromID(hand[i].Id).color;
+                switch (GameManager.GetCityFromID(hand[i].Id).color)
                 {
                     case "Blue":
                         counters[0]++;

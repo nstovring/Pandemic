@@ -3,7 +3,7 @@ using System.Collections;
 
 public class _infectionCard : Card{
 
-	public int infectionID;
+	//public int infectionID;
 	
 	void Start () {
 	}

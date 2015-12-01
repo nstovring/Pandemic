@@ -3,7 +3,7 @@ using System.Collections;
 
 public class _cityCard: Card {
 
-	public int cityID;
+	//public new int cityID;
 
 	void Start () {
 	

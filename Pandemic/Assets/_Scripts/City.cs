@@ -20,6 +20,7 @@ public class City : NetworkBehaviour
     public SpriteRenderer researchCenter;
 
     public bool locked;
+    public bool update = false;
 
     private int diseaseSpread;
 
@@ -28,7 +29,6 @@ public class City : NetworkBehaviour
         get { return diseaseSpread; }
         set { diseaseSpread = value; }
     }
-
 
     public void ResetValues()
     {
@@ -86,25 +86,26 @@ public class City : NetworkBehaviour
         }
     }
 
-    public void ReduceDiseaseSpread(string color, _roleCard role)
+    //[Client]
+    public void ReduceDiseaseSpread(string color, _roleCard roleCard)
     {
-        //Add a check which Player role is removing diseases
-        //if(role.name == "MEDIC")
-        // add [command]
-        if (GameManager.GetCureFromString(color))
+        
+        if (GameManager.instance.GetCureFromString(color) || roleCard.role == _roleCard.roleType.MEDIC)
         {
             foreach (SpriteRenderer t in diseaseCubes.Where(t => t.color == GetColorFromString(color)))
             {
                 t.enabled = false;
                 diseaseSpread--;
+                GameManager.instance.SetDiseaseSpread(color,-1);
             }
         }
         else
         {
-            foreach (SpriteRenderer t in diseaseCubes.Where(t => t.color == GetColorFromString(color)))
+            foreach (SpriteRenderer t in diseaseCubes.Where(t => t.color ==  GetColorFromString(color) && t.enabled))
             {
                 t.enabled = false;
                 diseaseSpread--;
+                GameManager.instance.SetDiseaseSpread(color, -1);
                 return;
             }
         }
@@ -122,7 +123,7 @@ public class City : NetworkBehaviour
         GetComponent<Renderer>().material.color = GetColorFromString(color);
     }
 
-    private Color GetColorFromString(string color)
+    public static Color GetColorFromString(string color)
     {
         switch(color)
         {
@@ -137,8 +138,34 @@ public class City : NetworkBehaviour
         }
         return Color.white;
     }
+    public static string GetStringFromColor(Color color)
+    {
+        try
+        {
+            if (color == Color.blue)
+            {
+                return "Blue";
+            }
+            if (color == Color.red)
+            {
+                return "Red";
+            }
+            if (color == Color.black)
+            {
+                return "Black";
+            }
+            if (color == Color.yellow)
+            {
+                return "Yellow";
+            }
+        }
+        catch (NullReferenceException ex)
+        {
+            Debug.Log("Colour does not exist returning white");
+        }
+        return "White";
+    }
 
-    
 
     private void Update()
     {
@@ -146,6 +173,11 @@ public class City : NetworkBehaviour
         if (hasResearchCenter)
         {
             //GameManager.researchCenterCities[cityId] = this;
+        }
+        if (update)
+        {
+            UpdatePawns();
+            update = false;
         }
     }
 
