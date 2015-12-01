@@ -195,7 +195,7 @@ public class GameManager : NetworkBehaviour
         netIdentity = GetComponent<NetworkIdentity>();
     }
 
-    public int testingPlayers = 1;
+    public int testingPlayers = 0;
     private float timer = 5f;
     private void Update()
     {
@@ -276,17 +276,24 @@ public class GameManager : NetworkBehaviour
     /// Instantiates four different stacks and initializes them
     /// </summary>
     //[Command]
+    public static Stack AllCardsStack;
+    
     private void CreateStacks()
     {
+        AllCardsStack = new GameObject("AllCards").AddComponent<Stack>();
+        AllCardsStack.Initialize(Stack.cardType.PLAYER_STACK);
+        AllCardsStack.addEpidemicCards();
+
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectCardStack.Initialize(Stack.cardType.INFECTION);
-        //infectCardStack.ShuffleCards();
-        int[] shuffledInfectInts = new int[48];
+        infectCardStack.shuffleStack();
+        int[] shuffledInfectInts = new int[infectCardStack.cards.Length];
         for (int j = 0; j < infectCardStack.cards.Length; j++)
         {
             shuffledInfectInts[j] = infectCardStack.cards[j].Id-1;
             if (isServer)
             {
+                Debug.Log("Add");
                 SyncListinfectionSort.Add(shuffledInfectInts[j]); //new stuff
             }
         }
@@ -294,13 +301,14 @@ public class GameManager : NetworkBehaviour
 
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
-        //playerCardStack.ShuffleCards();
-        int[] shuffledCityInts = new int[48];
+        playerCardStack.shuffleStack();
+        int[] shuffledCityInts = new int[playerCardStack.cards.Length];
         for (int j = 0; j < shuffledCityInts.Length; j++)
         {
             shuffledCityInts[j] = playerCardStack.cards[j].Id - 1;
             if (isServer)
             {
+                Debug.Log("Add");
                 SyncListPlayerCardSort.Add(shuffledCityInts[j]); //new stuff
             }
         }
@@ -327,6 +335,8 @@ public class GameManager : NetworkBehaviour
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectCardStack.Initialize(Stack.cardType.INFECTION);
         Card[] tempInfectionCards = new _infectionCard[shuffledInfectInts.Length];
+       
+
         for (int m = 0; m < shuffledInfectInts.Length; m++)
         {
             tempInfectionCards[shuffledInfectInts[m]] = infectCardStack.cards[m];
@@ -337,13 +347,20 @@ public class GameManager : NetworkBehaviour
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
         Card[] tempCityCards = new _cityCard[shuffledCityInts.Length];
+
+       /* Debug.Log(playerCardStack.cards.Length);
+        Debug.Log(shuffledCityInts.Length);
         for (int m = 0; m < shuffledCityInts.Length; m++)
         {
+            Debug.Log(m);
+            Debug.Log(tempCityCards[shuffledCityInts[m]].Id);
+            Debug.Log(playerCardStack.cards[m].Id);
+
             tempCityCards[shuffledCityInts[m]] = playerCardStack.cards[m];
             playerCardStack.cards[m] = playerCardStack.cards[shuffledCityInts[m]];
             playerCardStack.cards[shuffledCityInts[m]] = tempCityCards[shuffledCityInts[m]];
         }
-
+        */
         infectDiscardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectDiscardStack.Initialize(Stack.cardType.INFECTION);
         infectDiscardStack.EmptyCards();
