@@ -1,13 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Xml.Serialization;
 
-public class PlayerController : MonoBehaviour {
+public class ManageCards : MonoBehaviour {
 
-    
+
+
+
+    void OnMouseOver()
+    {
+        Debug.Log("works");
+    }
+
 
 	// Use this for initialization
 	void Start () {
-	
+	Debug.Log("starts");
 	}
 	
 	// Update is called once per frame
