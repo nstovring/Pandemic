@@ -20,6 +20,7 @@ public class Player : NetworkBehaviour
     public int actionsLeft;
     public int[][] actionsTaken;
     int count;
+    private int currentCard;
 
 
 
@@ -44,7 +45,7 @@ public class Player : NetworkBehaviour
         CurrentCity.UpdatePawns();
     }
 
-    public void exchangeCards(Player [] allPlayers , int playerNo,  int cardIndex) {
+    public void shareKnowledge(Player [] allPlayers , int playerNo,  int cardIndex) {
         Card tmp = null;
         tmp = this.hand.cards[cardIndex];
         this.hand.cards[cardIndex] = allPlayers[playerNo].hand.cards[cardIndex];
