@@ -33,16 +33,16 @@ public class _eventCard : Card
         Card[] cards = new Card[6];
         int a = 0;
 
-        for (int i = GameManager.infectCardStack.infectionCards.GetLength(0) - 1; i > 0; i--)
+        for (int i = GameManager.infectCardStack.cards.GetLength(0) - 1; i > 0; i--)
         {
 
-            if (GameManager.infectCardStack.infectionCards[i] != null)
+            if (GameManager.infectCardStack.cards[i] != null)
             {
                 if (a < 6)
                 {
-                    cards[a] = GameManager.infectCardStack.infectionCards[i];
+                    cards[a] = GameManager.infectCardStack.cards[i];
                     a++;
-                    GameManager.infectCardStack.infectionCards[i] = null;
+                    GameManager.infectCardStack.cards[i] = null;
                 }
             }
 
@@ -70,7 +70,7 @@ public class _eventCard : Card
     public void ResilientPopulation(int index)
     {
        
-        GameManager.infectDiscardStack.infectionCards[index] = null;
+        GameManager.infectDiscardStack.cards[index] = null;
 
 
     }
