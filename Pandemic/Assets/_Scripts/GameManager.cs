@@ -201,7 +201,7 @@ public class GameManager : NetworkBehaviour
     {
         if (isServer)
         {
-            if (netIdentity.observers.Count > testingPlayers && initialize && timer<= 5f)
+            if (netIdentity.observers.Count > testingPlayers && initialize)
             {
                 timer -= Time.deltaTime;
                 if (timer <= 5f)
@@ -213,7 +213,6 @@ public class GameManager : NetworkBehaviour
                         UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7),
                         UnityEngine.Random.Range(0, 7)
                     };
-
                     Rpc_InitializePlayers(roles);
                     initialize = false;
                 }
@@ -235,9 +234,8 @@ public class GameManager : NetworkBehaviour
             for (int j = 0; j < startingHand.Length; j++)
             {
                 startingHand[j] = playerCardStack.cards[startingHands[count]];
-                count ++;
+                count++;
             }
-
             playersGameObjects[i].GetComponent<Player>().Initialize(roles[i], startingHand);
             players.Add(playersGameObjects[i].GetComponent<Player>());
         }
@@ -287,10 +285,8 @@ public class GameManager : NetworkBehaviour
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectCardStack.Initialize(Stack.cardType.INFECTION);
         infectCardStack.shuffleStack();
-        int[] shuffledInfectInts = new int[infectCardStack.cards.Length];
         for (int j = 0; j < infectCardStack.cards.Length; j++)
         {
-            shuffledInfectInts[j] = infectCardStack.cards[j].Id-1;
             if (isServer)
             {
                 Debug.Log("Add");
@@ -302,10 +298,8 @@ public class GameManager : NetworkBehaviour
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
         playerCardStack.shuffleStack();
-        int[] shuffledCityInts = new int[playerCardStack.cards.Length];
         for (int j = 0; j < playerCardStack.cards.Length; j++)
         {
-            shuffledCityInts[j] = playerCardStack.cards[j].Id - 1;
             if (isServer)
             {
                 Debug.Log("Add");
@@ -335,7 +329,6 @@ public class GameManager : NetworkBehaviour
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectCardStack.Initialize(Stack.cardType.INFECTION);
         infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
-
        
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
@@ -349,7 +342,6 @@ public class GameManager : NetworkBehaviour
         playerDiscardStack = new GameObject("playerDiscardStack").AddComponent<Stack>();
         playerDiscardStack.Initialize(Stack.cardType.PLAYER_STACK);
         playerDiscardStack.EmptyCards();
-
     }
 
     /// <summary>
@@ -378,12 +370,12 @@ public class GameManager : NetworkBehaviour
     public void Epidemic()
     {
         Card bottomCard = infectCardStack.cards[0]; // Pick the bottom card of the stack
-        InfectCity((_infectionCard) bottomCard, 3); // Infect the city coressponding to that card
+        InfectCity(bottomCard, 3); // Infect the city coressponding to that card
         //Add bottom card to discards
         //infectCardStack = Stack.removeCard(infectCardStack, bottomCard.name);//infectCardStack
         //infectDiscardStack = Stack.addCard(infectCardStack,infectDiscardStack, bottomCard.name);//infectCardStack
         //Shuffle discards here
-        //infectDiscardStack.Shuffle();
+        infectDiscardStack.shuffleStack();
         //And then combine stacks
         //infectCardStack = CombineStacks(infectCardStack, infectDiscardStack);
         //Set infectionRate & increment epidemicCount
@@ -396,9 +388,6 @@ public class GameManager : NetworkBehaviour
 
     public Card[] SortCardsToList(Card[] cards, SyncListInt sortListInt)
     {
-        Debug.Log(AllCardsStack.cards.Length);
-        Debug.Log(cards.Length);
-
         for (int i = 0; i < cards.Length; i++)
         {
             cards[i] = AllCardsStack.cards[(sortListInt[i])];
@@ -409,7 +398,6 @@ public class GameManager : NetworkBehaviour
     private void Rpc_InitialInfection()
     {
         int increment = 0;
-        //infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
         //Loop counts from the top nine cards down
         for (int i = infectCardStack.cards.Length - 1, infectRate = 3; i > infectCardStack.cards.Length - 10; i--, increment++)
         {
@@ -428,7 +416,7 @@ public class GameManager : NetworkBehaviour
     {
         for (int i = 1; i < infectionRate; i++)
         {
-            _infectionCard infectionCard = (_infectionCard)infectCardStack.cards[infectCardStack.cards.Length - i];
+            Card infectionCard = infectCardStack.cards[infectCardStack.cards.Length - i];
             InfectCity(infectionCard, 1);
         }
         CheckForOutbreak();
@@ -443,12 +431,9 @@ public class GameManager : NetworkBehaviour
     {
         City infectedCity = GetCityFromID(infectionCard.Id);
         infectedCity.IncrementDiseaseSpread(infectedCity.color, infectRate);
-        //infectDiscardStack.AddCard(infectionCard.Id, 1);
-        //infectCardStack.RemoveCard(infectionCard.Id);
         Cmd_ReduceInfectionSyncListInt(infectedCity.cityId);
         SetDiseaseSpread(infectedCity.color, infectRate);
     }
-
     
     [Command]
     void Cmd_ReduceInfectionSyncListInt(int removal)
@@ -458,16 +443,26 @@ public class GameManager : NetworkBehaviour
     }
 
     [Command]
-    void Cmd_ReduceCitySyncListInt(int removal)
+    void Cmd_ReduceCitySyncListInt(int[] removal)
     {
-        SyncListPlayerDiscardSort.Add(removal);
+        for (int i = 0; i < removal.Length; i++)
+        {
+            SyncListPlayerDiscardSort.Add(removal[i]);
+            SyncListPlayerCardSort.Remove(removal[i]);
+        }
+        
+    }
+
+    [Command]
+    public void Cmd_RemoveFromCityList(int removal)
+    {
         SyncListPlayerCardSort.Remove(removal);
     }
+
     [Command]
     public void Cmd_AddToCityDiscardList(int removal)
     {
         SyncListPlayerDiscardSort.Add(removal);
-        Rpc_UpdateCityStacks();
     }
 
     //[ClientRpc]
