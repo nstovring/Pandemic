@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
@@ -9,8 +10,12 @@ public class Hand : MonoBehaviour
     public GameObject[] CardButtons = new GameObject[7];
     public GameObject cardPrefab;
     GameManager gm;
+    public int input = -1;
+    public int currentCardValue = -1;
 
     public Player player;
+
+
     public void Initialize(Card[] cards, Player owner)
     {
         gm = GameManager.instance;
@@ -32,6 +37,7 @@ public class Hand : MonoBehaviour
                     {
                         int i1 = i;
                         CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(i1); });
+
                     }
                 }
                 else
@@ -48,10 +54,8 @@ public class Hand : MonoBehaviour
 
     void DelegateMove(int inputCard)
     {
-        if (player.isLocalPlayer)
-        {
-            player.MoveToCityCard(cards[inputCard]);
-        }
+      //  if (player.isLocalPlayer  )  player.MoveToCityCard(cards[inputCard]);
+        if (player.isLocalPlayer) currentCardValue = cards[inputCard].Id;
     }
 
     public void addToHand(Card inputCard)
@@ -86,6 +90,26 @@ public class Hand : MonoBehaviour
                 break;
             }
         }
+    }
+
+
+    void Update()
+    {
+        
+        if (Input.GetMouseButton(0))
+        {
+            input = 0;
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            input = 1;
+        }
+        
+      
+        
+
+
+
     }
 }
 
