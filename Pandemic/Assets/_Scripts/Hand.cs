@@ -3,9 +3,9 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-internal class Hand : MonoBehaviour
+public class Hand : MonoBehaviour
 {
-    public Card[] cards = new Card[7];
+    public Card[] cards = new Card[2];
     public GameObject[] CardButtons = new GameObject[7];
     public GameObject cardPrefab;
     GameManager gm;
@@ -60,7 +60,7 @@ internal class Hand : MonoBehaviour
             if (cards[i] == null)
             {
                 cards[i] = inputCard;
-                GameManager.playerCardStack.RemoveCard(inputCard.Id);
+                GameManager.playerCardStack.removeCard(inputCard.Id);
                 CardButtons[i].SetActive(true);
                 CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
                 break;

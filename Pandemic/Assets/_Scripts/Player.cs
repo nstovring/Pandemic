@@ -10,7 +10,7 @@ public class Player : NetworkBehaviour
     public int cityID;
 
 
-    Hand hand;
+    public Hand hand;
     public City CurrentCity;    
 
     //public _roleCard role;

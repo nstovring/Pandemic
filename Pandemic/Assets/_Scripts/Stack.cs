@@ -6,7 +6,6 @@ using System;
 public class Stack : MonoBehaviour
 {
 
-
     public enum cardType
     {
         PLAYER_STACK,
@@ -17,12 +16,11 @@ public class Stack : MonoBehaviour
 
     public Card[] cards;
 
-    // Nikolaj - Purely changes for unity
+    //On creation, create stack of type...
     public void Initialize(cardType type)
     {
         produceCards(type);
     }
-
 
     public void produceCards(cardType type)
     {
@@ -45,6 +43,15 @@ public class Stack : MonoBehaviour
         }
     }
 
+    //Functions you can call
+    public void EmptyCards()
+    {
+        for (int i = 0; i < cards.Length; i++)
+        {
+            cards[i] = null;
+        }
+    }
+
     public void shuffleStack()
     {
         // Knuth shuffle algorithm
@@ -57,7 +64,82 @@ public class Stack : MonoBehaviour
         }
     }
 
-    public Stack combineStacks(Stack one, Stack two)
+    public void addEpidemicCards()
+    {
+        _epidemicCard[] epidemicCards = new _epidemicCard[5];
+
+        for (int i = 0; i < epidemicCards.Length; i++)
+        {
+            epidemicCards[i] = new GameObject().AddComponent<_epidemicCard>();
+        }
+        for (int i = 0; i < epidemicCards.Length; i++)
+        {
+            epidemicCards[i].name = "Epidemic";
+            epidemicCards[i].Id = 54 + i;
+            //System.out.println(epidemicCards [i].name);
+            //System.out.println("");
+        }
+
+        int tmpSize = cards.Length;
+        Array.Resize(ref cards, cards.Length + 5);
+
+        for (int i = 0; i < epidemicCards.Length; i++)
+        {
+            cards[i + tmpSize] = epidemicCards[i];
+        }
+
+    }
+
+    public void addCard(int cardID)
+    {
+
+        Card tmpCard = null;
+        for (int i = 0; i < GameManager.AllCardsStack.cards.Length; i++)
+        {
+            if (GameManager.AllCardsStack.cards[i].Id == cardID)
+            {
+                tmpCard = GameManager.AllCardsStack.cards[i];
+                break;
+            }
+        }
+
+        int newSize = cards.Length + 1;
+        Array.Resize(ref cards, newSize);
+        cards[cards.Length] = tmpCard;
+
+    }
+
+    public void removeCard(int cardID)
+    {
+        Card [] cardstmp = new Card[cards.Length - 1];
+
+        int index = 0;
+
+        for (int i = 0; i < cards.Length; i++)
+        {
+            if (cards[i].Id == cardID)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index > 0)
+        {
+            Array.Copy(cards, 0, cardstmp, 0, index);
+        }
+        if (index < cards.Length - 1)
+        {
+            Array.Copy(cards, index + 1, cardstmp, index, cards.Length - index - 1);
+        }
+        Array.Resize(ref cards, cardstmp.Length);
+
+        for (int i = 0; i < cardstmp.Length; i++) {
+            cards[i] = cardstmp[i];
+        }
+    }
+
+    public static Stack combineStacks(Stack one, Stack two)
     {
 
         Stack newStack = new Stack();
@@ -70,128 +152,7 @@ public class Stack : MonoBehaviour
         return newStack;
     }
 
-/*<<<<<<< HEAD
-    public void ShuffleInfectCards()
-    {
-        // Knuth shuffle algorithm
-        for (int i = 0; i < infectionCards.Length; i++)
-        {
-            _infectionCard tmp = infectionCards[i];
-            int r = UnityEngine.Random.Range(i, infectionCards.Length);
-            infectionCards[i] = infectionCards[r];
-            infectionCards[r] = tmp;
-        }
-    }
-
-    public void ShuffleCityCards()
-    {
-        // Knuth shuffle algorithm
-        for (int i = 0; i < cityCards.Length; i++)
-        {
-            _cityCard tmp = cityCards[i];
-            int r = UnityEngine.Random.Range(i, cityCards.Length);
-            cityCards[i] = cityCards[r];
-            cityCards[r] = tmp;
-        }
-    }
-
-    public void ShuffleCards()
-    {
-        // Knuth shuffle algorithm
-        for (int i = 0; i < cards.Length; i++)
-        {
-            Card tmp = cards[i];
-            int r = UnityEngine.Random.Range(i, cards.Length);
-            cards[i] = cards[r];
-            cards[r] = tmp;
-        }
-    }*/
-
-    public static Stack shuffleStack(ref Stack input)
-    {
-
-        // Knuth shuffle algorithm
-        for (int i = 0; i < input.cards.Length; i++)
-        {
-            Card tmp = input.cards[i];
-            int r = UnityEngine.Random.Range(i, input.cards.Length);
-            input.cards[i] = input.cards[r];
-            input.cards[r] = tmp;
-        }
-        return input;
-    }
-
-    public static Stack removeCard(Stack input, String cardName)
-    {
-        Stack output = new Stack();
-        output.cards = new Card[input.cards.Length - 1];
-
-        int index = 0;
-
-        for (int i = 0; i < input.cards.Length; i++)
-        {
-            if (input.cards[i].name == cardName)
-            {
-                index = i;
-                break;
-            }
-        }
-
-        if (index > 0)
-        {
-            Array.Copy(input.cards, 0, output.cards, 0, index);
-        }
-        if (index < input.cards.Length - 1)
-        {
-            Array.Copy(input.cards, index + 1, output.cards, index, input.cards.Length - index - 1);
-
-        }
-        return output;
-    }
-
-    public void RemoveCard(int newCard)
-    {
-        for (int i = 0; i < cards.Length; i++)
-        {
-            if (cards[i].Id == newCard)
-            {
-                cards[i] = null;
-                break;
-            }
-        }
-    }
-
-    public void EmptyCards()
-    {
-        for (int i = 0; i < cards.Length; i++)
-        {
-            cards[i] = null;
-        }
-    }
-
-    public static Stack addCard(Stack source, Stack target, String cardName)
-    {
-
-        int index = 0;
-
-        for (int i = 0; i < source.cards.Length; i++)
-        {
-            if (source.cards[i].name == cardName)
-            {
-                index = i;
-                break;
-            }
-        }
-
-        int newSize = target.cards.Length + 1;
-
-        Array.Resize(ref target.cards, newSize);
-        target.cards[target.cards.Length] = source.cards[index];
-
-        return target;
-    }
-
-
+    //Creates cards, remember to call addEpidemicCards function later on the playerStack.
     public void createDiscardStack()
     {
         cards = new Card[0];
@@ -201,7 +162,6 @@ public class Stack : MonoBehaviour
     {
 
         cards = new Card[48];
-
         _infectionCard[] infectionCards = new _infectionCard[48];
 
         //Nikolaj - another unity change
@@ -292,7 +252,7 @@ public class Stack : MonoBehaviour
         //Create the event cards
         for (int i = 0; i < eventCards.Length; i++)
         {
-            eventCards[i] = new _eventCard();
+            eventCards[i] = new GameObject().AddComponent<_eventCard>();
         }
         eventCards[0].name = "RESILIENT POPULATION";
         eventCards[1].name = "ONE QUIET NIGHT";
@@ -300,35 +260,18 @@ public class Stack : MonoBehaviour
         eventCards[3].name = "AIRLIFT";
         eventCards[4].name = "GOVERNMENT GRANT";
 
+        eventCards[0].Id = cards.Length + 2;
+        eventCards[1].Id = cards.Length + 3;
+        eventCards[2].Id = cards.Length + 4;
+        eventCards[3].Id = cards.Length + 5;
+        eventCards[4].Id = cards.Length + 6;
+
         for (int i = 0; i < eventCards.Length; i++)
         {
             cards[cityCards.Length + i] = eventCards[i];
         }
     }
 
-    public void addEpidemicCards()
-    {
-        _epidemicCard[] epidemicCards = new _epidemicCard[5];
 
-        for (int i = 0; i < epidemicCards.Length; i++)
-        {
-            epidemicCards[i] = new _epidemicCard();
-        }
-        for (int i = 0; i < epidemicCards.Length; i++)
-        {
-            epidemicCards[i].name = "Epidemic";
-            //System.out.println(epidemicCards [i].name);
-            //System.out.println("");
-        }
-
-        int tmpSize = cards.Length;
-        Array.Resize(ref cards, cards.Length + 5);
-
-        for (int i = 0; i < epidemicCards.Length; i++)
-        {
-            cards[i + tmpSize] = epidemicCards[i];
-        }
-
-    }
 }
 
