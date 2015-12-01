@@ -6,6 +6,7 @@ using System;
 public class Stack : MonoBehaviour
 {
 
+
     public enum cardType
     {
         PLAYER_STACK,
@@ -19,6 +20,7 @@ public class Stack : MonoBehaviour
     //On creation, create stack of type...
     public void Initialize(cardType type)
     {
+        Sprite sprite = Instantiate(Resources.Load("Citycard_blue", typeof(Sprite))) as Sprite;
         produceCards(type);
     }
 
@@ -111,7 +113,7 @@ public class Stack : MonoBehaviour
 
     public void removeCard(int cardID)
     {
-        Card [] cardstmp = new Card[cards.Length - 1];
+        Card[] cardstmp = new Card[cards.Length - 1];
 
         int index = 0;
 
@@ -134,7 +136,8 @@ public class Stack : MonoBehaviour
         }
         Array.Resize(ref cards, cardstmp.Length);
 
-        for (int i = 0; i < cardstmp.Length; i++) {
+        for (int i = 0; i < cardstmp.Length; i++)
+        {
             cards[i] = cardstmp[i];
         }
     }
@@ -234,10 +237,37 @@ public class Stack : MonoBehaviour
         _eventCard[] eventCards = new _eventCard[5];
         cards = new Card[53];
 
+
+
         //Create the city cards
         for (int i = 0; i < cityCards.Length; i++)
         {
             cityCards[i] = new GameObject().AddComponent<_cityCard>();
+
+
+
+            Debug.Log(Resources.Load("Citycard_blue"));
+
+            if (i < 12)
+            {
+                cityCards[i].image = Resources.Load<Sprite>("Citycard_blue");
+                Debug.Log("does it run?");
+            }
+            else if (i >= 12 && i < 24)
+            {
+                cityCards[i].image = Resources.Load<Sprite>("Citycard_yellow");
+            }
+            else if (i >= 24 && i < 36)
+            {
+                cityCards[i].image = Resources.Load<Sprite>("Citycard_black");
+            }
+            else if (i >= 36 && i < 48)
+            {
+                cityCards[i].image = Resources.Load<Sprite>("Citycard_red");
+            }
+
+
+
             cityCards[i].transform.parent = transform;
         }
         for (int i = 0; i < cityCards.Length; i++)

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Hand : MonoBehaviour
 {
-    public Card[] cards = new Card[2];
+    public Card[] cards = new Card[3];
     public GameObject[] CardButtons = new GameObject[7];
     public GameObject cardPrefab;
     GameManager gm;
@@ -19,7 +19,7 @@ public class Hand : MonoBehaviour
     public void Initialize(Card[] cards, Player owner)
     {
         gm = GameManager.instance;
-    //    GameObject CardsOnHand = GameObject.Find("CardsOnHand");
+        //    GameObject CardsOnHand = GameObject.Find("CardsOnHand");
         GameObject CardsOnHand = GameObject.Find("HandArea");
         player = owner;
 
@@ -29,11 +29,14 @@ public class Hand : MonoBehaviour
             {
                 CardButtons[i] = CardsOnHand.transform.GetChild(i).gameObject;
 
+
                 if (i < cards.Length)
                 {
                     CardButtons[i].GetComponentInChildren<Text>().text = cards[i].name;
+                    CardButtons[i].GetComponent<Image>().sprite = cards[i].image;
+
                     addToHand(cards[i]);
-                    if (cards[i].GetType() == typeof (_cityCard))
+                    if (cards[i].GetType() == typeof(_cityCard))
                     {
                         int i1 = i;
                         CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(i1); });
@@ -54,7 +57,7 @@ public class Hand : MonoBehaviour
 
     void DelegateMove(int inputCard)
     {
-      //  if (player.isLocalPlayer  )  player.MoveToCityCard(cards[inputCard]);
+        //  if (player.isLocalPlayer  )  player.MoveToCityCard(cards[inputCard]);
         if (player.isLocalPlayer) currentCardValue = cards[inputCard].Id;
     }
 
@@ -95,7 +98,7 @@ public class Hand : MonoBehaviour
 
     void Update()
     {
-        
+
         if (Input.GetMouseButton(0))
         {
             input = 0;
@@ -104,9 +107,9 @@ public class Hand : MonoBehaviour
         {
             input = 1;
         }
-        
-      
-        
+
+
+
 
 
 
