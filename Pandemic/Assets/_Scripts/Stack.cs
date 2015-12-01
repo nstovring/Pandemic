@@ -238,6 +238,7 @@ public class Stack : MonoBehaviour
         for (int i = 0; i < cityCards.Length; i++)
         {
             cityCards[i] = new GameObject().AddComponent<_cityCard>();
+            cityCards[i].transform.parent = transform;
         }
         for (int i = 0; i < cityCards.Length; i++)
         {
@@ -253,6 +254,7 @@ public class Stack : MonoBehaviour
         for (int i = 0; i < eventCards.Length; i++)
         {
             eventCards[i] = new GameObject().AddComponent<_eventCard>();
+            eventCards[i].transform.parent = transform;
         }
         eventCards[0].name = "RESILIENT POPULATION";
         eventCards[1].name = "ONE QUIET NIGHT";
@@ -260,11 +262,11 @@ public class Stack : MonoBehaviour
         eventCards[3].name = "AIRLIFT";
         eventCards[4].name = "GOVERNMENT GRANT";
 
-        eventCards[0].Id = cards.Length + 2;
-        eventCards[1].Id = cards.Length + 3;
-        eventCards[2].Id = cards.Length + 4;
-        eventCards[3].Id = cards.Length + 5;
-        eventCards[4].Id = cards.Length + 6;
+        eventCards[0].Id = 49;
+        eventCards[1].Id = 50;
+        eventCards[2].Id = 51;
+        eventCards[3].Id = 52;
+        eventCards[4].Id = 53;
 
         for (int i = 0; i < eventCards.Length; i++)
         {
