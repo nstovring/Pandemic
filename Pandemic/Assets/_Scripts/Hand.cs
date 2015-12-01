@@ -14,7 +14,8 @@ public class Hand : MonoBehaviour
     public void Initialize(Card[] cards, Player owner)
     {
         gm = GameManager.instance;
-        GameObject CardsOnHand = GameObject.Find("CardsOnHand");
+    //    GameObject CardsOnHand = GameObject.Find("CardsOnHand");
+        GameObject CardsOnHand = GameObject.Find("HandArea");
         player = owner;
 
         if (player.isLocalPlayer)
