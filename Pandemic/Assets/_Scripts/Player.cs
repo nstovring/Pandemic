@@ -15,6 +15,7 @@ public class Player : NetworkBehaviour
     int actionsLeft;
     int[][] actionsTaken;
     int count;
+    private int currentCard;
 
     //[ClientRpc]
     public void Initialize(int role)
@@ -33,7 +34,7 @@ public class Player : NetworkBehaviour
         GameManager.GetCityFromID(cityID).UpdatePawns();
     }
 
-    public void exchangeCards(Player [] allPlayers , int playerNo,  int cardIndex) {
+    public void shareKnowledge(Player [] allPlayers , int playerNo,  int cardIndex) {
         Card tmp = null;
         tmp = this.hand.hand[cardIndex];
         this.hand.hand[cardIndex] = allPlayers[playerNo].hand.hand[cardIndex];
