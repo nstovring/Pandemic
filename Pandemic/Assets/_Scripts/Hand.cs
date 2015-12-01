@@ -79,7 +79,7 @@ internal class Hand : MonoBehaviour
         {
             if (card == cards[i])
             {
-                GameManager.playerDiscardStack.AddCard(card.Id, 0);
+                //GameManager.playerDiscardStack.AddCard(card.Id, 0);
                 CardButtons[i].SetActive(false);
                 cards[i] = null;
                 break;

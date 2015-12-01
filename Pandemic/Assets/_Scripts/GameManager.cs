@@ -279,8 +279,8 @@ public class GameManager : NetworkBehaviour
     private void CreateStacks()
     {
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
-        infectCardStack.Initialize(48, Stack.cardType.INFECTION);
-        infectCardStack.ShuffleCards();
+        infectCardStack.Initialize(Stack.cardType.INFECTION);
+        //infectCardStack.ShuffleCards();
         int[] shuffledInfectInts = new int[48];
         for (int j = 0; j < infectCardStack.cards.Length; j++)
         {
@@ -293,8 +293,8 @@ public class GameManager : NetworkBehaviour
         Destroy(infectCardStack.gameObject);
 
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
-        playerCardStack.Initialize(48, Stack.cardType.CITY);
-        playerCardStack.ShuffleCards();
+        playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
+        //playerCardStack.ShuffleCards();
         int[] shuffledCityInts = new int[48];
         for (int j = 0; j < shuffledCityInts.Length; j++)
         {
@@ -307,7 +307,7 @@ public class GameManager : NetworkBehaviour
         Destroy(playerCardStack.gameObject);
 
         roleCardStack = new GameObject("roleCardStack").AddComponent<Stack>();
-        roleCardStack.Initialize(7, Stack.cardType.ROLE);
+        roleCardStack.Initialize(Stack.cardType.ROLE);
 
         if (isServer)
         {
@@ -325,7 +325,7 @@ public class GameManager : NetworkBehaviour
     private void Rpc_CreateStacks( int[] shuffledInfectInts, int[] shuffledCityInts)
     {
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
-        infectCardStack.Initialize(48, Stack.cardType.INFECTION);
+        infectCardStack.Initialize(Stack.cardType.INFECTION);
         Card[] tempInfectionCards = new _infectionCard[shuffledInfectInts.Length];
         for (int m = 0; m < shuffledInfectInts.Length; m++)
         {
@@ -335,7 +335,7 @@ public class GameManager : NetworkBehaviour
         }
 
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
-        playerCardStack.Initialize(48, Stack.cardType.CITY);
+        playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
         Card[] tempCityCards = new _cityCard[shuffledCityInts.Length];
         for (int m = 0; m < shuffledCityInts.Length; m++)
         {
@@ -345,11 +345,11 @@ public class GameManager : NetworkBehaviour
         }
 
         infectDiscardStack = new GameObject("infectCardStack").AddComponent<Stack>();
-        infectDiscardStack.Initialize(48, Stack.cardType.INFECTION);
+        infectDiscardStack.Initialize(Stack.cardType.INFECTION);
         infectDiscardStack.EmptyCards();
 
         playerDiscardStack = new GameObject("playerDiscardStack").AddComponent<Stack>();
-        playerDiscardStack.Initialize(48, Stack.cardType.CITY);
+        playerDiscardStack.Initialize(Stack.cardType.PLAYER_STACK);
         playerDiscardStack.EmptyCards();
 
     }
@@ -396,7 +396,7 @@ public class GameManager : NetworkBehaviour
     }
     //The cities are infected from the top of the stack up during initialization
 
-    public Card[] SortCardsToList(Card[] cards, SyncListInt sortListInt)
+    /*public Card[] SortCardsToList(Card[] cards, SyncListInt sortListInt)
     {
         Debug.Log(cards.Length);
         Debug.Log(sortListInt.Count);
@@ -405,12 +405,12 @@ public class GameManager : NetworkBehaviour
             cards[i] = infectCardStack.infectionCards[sortListInt[i]];
         }
         return cards;
-    }
+    }*/
     [ClientRpc]
     private void Rpc_InitialInfection()
     {
         int increment = 0;
-        infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
+        //infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
         //Loop counts from the top nine cards down
         for (int i = infectCardStack.cards.Length - 1, infectRate = 3; i > infectCardStack.cards.Length - 10; i--, increment++)
         {
@@ -474,15 +474,15 @@ public class GameManager : NetworkBehaviour
     //[ClientRpc]
     void UpdateInfectionStacks()
     {
-        infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
-        infectDiscardStack.cards = SortCardsToList(infectDiscardStack.cards, SyncListinfectionDiscardSort);
+       // infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
+       // infectDiscardStack.cards = SortCardsToList(infectDiscardStack.cards, SyncListinfectionDiscardSort);
     }
 
     [ClientRpc]
     void Rpc_UpdateCityStacks()
     {
-        playerCardStack.cards = SortCardsToList(playerCardStack.cards, SyncListPlayerCardSort);
-        playerDiscardStack.cards = SortCardsToList(playerDiscardStack.cards, SyncListPlayerDiscardSort);
+        //playerCardStack.cards = SortCardsToList(playerCardStack.cards, SyncListPlayerCardSort);
+       // playerDiscardStack.cards = SortCardsToList(playerDiscardStack.cards, SyncListPlayerDiscardSort);
     }
 
     /// <summary>

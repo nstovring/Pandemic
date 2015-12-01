@@ -11,11 +11,11 @@ public class Player : NetworkBehaviour
 
 
     Hand hand;
-    public City CurrentCity;
-    
+    public City CurrentCity;    
+
+    //public _roleCard role;
 
     public _roleCard role;
-
     GameManager gameManager;
     public int actionsLeft;
     public int[][] actionsTaken;
@@ -38,15 +38,17 @@ public class Player : NetworkBehaviour
 
         cityID = 4;
         CurrentCity = GameManager.GetCityFromID(4);
-        this.role = GameManager.roleCardStack.roleCards[role];
-
+        
+        this.role = (_roleCard) GameManager.roleCardStack.cards[role]; //GameManager.roleCardStack.roleCards.Contains(role);
         MoveToCity(cityID);
         CurrentCity.UpdatePawns();
     }
 
-    public void exchangeCards() {
-
-            
+    public void exchangeCards(Player [] allPlayers , int playerNo,  int cardIndex) {
+        Card tmp = null;
+        tmp = this.hand.cards[cardIndex];
+        this.hand.cards[cardIndex] = allPlayers[playerNo].hand.cards[cardIndex];
+        allPlayers[playerNo].hand.cards[cardIndex] = tmp;
     }
 
     //[ClientCallback]
