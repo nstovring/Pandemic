@@ -30,7 +30,7 @@ public class Player : NetworkBehaviour
         gameManager = GameManager.instance;
 
         count = 0;
-        actionsTaken = new int[4][];
+        actionsTaken = new int[1000][];
         actionsLeft = 4;
 
         hand = new GameObject("Hand").AddComponent<Hand>();
@@ -72,16 +72,21 @@ public class Player : NetworkBehaviour
         {
             if (hit.collider != null)
             {
-                if (hit.transform.tag == "City")
+                if (hit.transform.tag == "City" && actionsLeft > 0 && CityIsConnected(hit.transform.GetComponent<City>().cityId))
                 {
-                    MoveToCity(hit.transform.GetComponent<City>().cityId);
+                    MoveToConnectedCity(hit.transform.GetComponent<City>().cityId);
                 }
-                if (hit.transform.tag == "DiseaseCube")
+                if (hit.transform.tag == "DiseaseCube" && actionsLeft > 0)
                 {
                     Cmd_RemoveDiseaseCubes(City.GetStringFromColor(hit.transform.GetComponent<SpriteRenderer>().color));
                 }
+                if (hit.transform.tag == "Card" && actionsLeft > 0)
+                {
+                    
+                }
             }
         }
+        if()
 
        
     }
@@ -315,6 +320,18 @@ public class Player : NetworkBehaviour
             }
         }
         yield return 0;
+    }
+    private bool CityIsConnected(int ID)
+    {
+        
+        for(int i = 0; i < CurrentCity.connectedCityIDs.Length; i++)
+        {
+            if(CurrentCity.connectedCityIDs[i] == ID)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
