@@ -86,9 +86,17 @@ public class Player : NetworkBehaviour
                 }
             }
         }
-        if()
+        if (Input.GetMouseButtonUp(1))
+        {
+            if (hit.collider != null)
+            {
+                if (hit.transform.tag == "Card" && actionsLeft > 0)
+                {
 
-       
+                }
+            }
+
+        }
     }
 
 
