@@ -39,8 +39,15 @@ public class Player : NetworkBehaviour
 
         cityID = 4;
         CurrentCity = GameManager.GetCityFromID(4);
-        
-        this.role = (_roleCard) GameManager.roleCardStack.cards[role]; //GameManager.roleCardStack.roleCards.Contains(role);
+
+        Debug.Log(role);
+        Debug.Log(GameManager.roleCardStack.cards.Count);
+
+        Card tempRole = GameManager.roleCardStack.cards[role];
+
+        this.role = tempRole as _roleCard; 
+
+        //this.role = (_roleCard) GameManager.roleCardStack.cards[role]; //GameManager.roleCardStack.roleCards.Contains(role); //Error?
         MoveToCity(cityID);
         CurrentCity.UpdatePawns();
     }

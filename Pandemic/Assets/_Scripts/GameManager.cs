@@ -312,7 +312,7 @@ public class GameManager : NetworkBehaviour
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectCardStack.Initialize(Stack.cardType.INFECTION);
         infectCardStack.shuffleStack();
-        for (int j = 0; j < infectCardStack.cards.Length; j++)
+        for (int j = 0; j < infectCardStack.cards.Count; j++)
         {
             if (isServer)
             {
@@ -325,7 +325,7 @@ public class GameManager : NetworkBehaviour
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
         playerCardStack.shuffleStack();
-        for (int j = 0; j < playerCardStack.cards.Length; j++)
+        for (int j = 0; j < playerCardStack.cards.Count; j++)
         {
             if (isServer)
             {
@@ -431,7 +431,7 @@ public class GameManager : NetworkBehaviour
     {
         int increment = 0;
         //Loop counts from the top nine cards down
-        for (int i = infectCardStack.cards.Length - 1, infectRate = 3; i > infectCardStack.cards.Length - 10; i--, increment++)
+        for (int i = infectCardStack.cards.Count - 1, infectRate = 3; i > infectCardStack.cards.Count - 10; i--, increment++)
         {
             increment = increment % 4 == 0 ? increment = 1 : increment % 4; //Infection progresses as such: 3 first cities get 3 diseaseMarker, 3 next get 2, 3 last gets 1
             Card infectionCard =  infectCardStack.cards[i];
@@ -448,7 +448,7 @@ public class GameManager : NetworkBehaviour
     {
         for (int i = 1; i < infectionRate; i++)
         {
-            Card infectionCard = infectCardStack.cards[infectCardStack.cards.Length - i];
+            Card infectionCard = infectCardStack.cards[infectCardStack.cards.Count - i];
             InfectCity(infectionCard, 1);
         }
         CheckForOutbreak();
@@ -582,7 +582,7 @@ public class GameManager : NetworkBehaviour
         {
             WinGame();
         }
-        if (outbreakCounter >= 8 || playerCardStack.cards.Length < 2 || currentDiseaseSpread() >= maxSingleDisease)
+        if (outbreakCounter >= 8 || playerCardStack.cards.Count < 2 || currentDiseaseSpread() >= maxSingleDisease)
         {
             LoseGame();
         }
