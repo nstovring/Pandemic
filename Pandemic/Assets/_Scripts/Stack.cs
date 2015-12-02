@@ -16,7 +16,7 @@ public class Stack : MonoBehaviour
         DISCARD
     };
 
-    public Card[] cards;
+    public List<Card> cards;
 
     //On creation, create stack of type...
     public void Initialize(cardType type)
@@ -49,19 +49,20 @@ public class Stack : MonoBehaviour
     //Functions you can call
     public void EmptyCards()
     {
-        for (int i = 0; i < cards.Length; i++)
+        for (int i = 0; i < cards.Count; i++)
         {
-            cards[i] = null;
+            cards.RemoveAt(i);
+            //cards[i] = null;
         }
     }
 
     public void shuffleStack()
     {
         // Knuth shuffle algorithm
-        for (int i = 0; i < cards.Length; i++)
+        for (int i = 0; i < cards.Count; i++)
         {
             Card tmp = cards[i];
-            int r = UnityEngine.Random.Range(i, cards.Length);
+            int r = UnityEngine.Random.Range(i, cards.Count);
             cards[i] = cards[r];
             cards[r] = tmp;
         }
@@ -79,93 +80,41 @@ public class Stack : MonoBehaviour
         {
             epidemicCards[i].name = "Epidemic";
             epidemicCards[i].Id = 54 + i;
-            //System.out.println(epidemicCards [i].name);
-            //System.out.println("");
         }
-
-        int tmpSize = cards.Length;
-        Array.Resize(ref cards, cards.Length + 5);
 
         for (int i = 0; i < epidemicCards.Length; i++)
         {
-            cards[i + tmpSize] = epidemicCards[i];
+            cards.Add(epidemicCards[i]);
         }
 
     }
 
-    public void addCard(int cardID)
-    {
-
-        Card tmpCard = null;
-        for (int i = 0; i < GameManager.AllCardsStack.cards.Length; i++)
-        {
-            if (GameManager.AllCardsStack.cards[i].Id == cardID)
-            {
-                tmpCard = GameManager.AllCardsStack.cards[i];
-                break;
-            }
-        }
-
-        int newSize = cards.Length + 1;
-        Array.Resize(ref cards, newSize);
-        cards[cards.Length] = tmpCard;
-
-    }
-
-    public void removeCard(int cardID)
-    {
-        Card[] cardstmp = new Card[cards.Length - 1];
-
-        int index = 0;
-
-        for (int i = 0; i < cards.Length; i++)
-        {
-            if (cards[i].Id == cardID)
-            {
-                index = i;
-                break;
-            }
-        }
-
-        if (index > 0)
-        {
-            Array.Copy(cards, 0, cardstmp, 0, index);
-        }
-        if (index < cards.Length - 1)
-        {
-            Array.Copy(cards, index + 1, cardstmp, index, cards.Length - index - 1);
-        }
-        Array.Resize(ref cards, cardstmp.Length);
-        Debug.Log(index);
-        for (int i = 0; i < cardstmp.Length; i++)
-        {
-            cards[i] = cardstmp[i];
-        }
-    }
 
     public static Stack combineStacks(Stack one, Stack two)
     {
 
         Stack newStack = new Stack();
-        int newStackLength = one.cards.Length + two.cards.Length;
-        newStack.cards = new Card[newStackLength];
-
-        Array.Copy(one.cards, 0, newStack.cards, 0, one.cards.Length);
-        Array.Copy(two.cards, 0, newStack.cards, one.cards.Length + 1, two.cards.Length);
-
+        for (int i = 0; i < one.cards.Count; i++)
+        {
+            newStack.cards.Add(one.cards[i]);
+        }
+        for (int i = 0; i < one.cards.Count; i++)
+        {
+            newStack.cards.Add(two.cards[i]);
+        }
         return newStack;
     }
 
     //Creates cards, remember to call addEpidemicCards function later on the playerStack.
     public void createDiscardStack()
     {
-        cards = new Card[0];
+        cards = new List<Card>();
     }
 
     public void createInfectionCards()
     {
 
-        cards = new Card[48];
+        cards = new List<Card>();
         _infectionCard[] infectionCards = new _infectionCard[48];
 
         //Nikolaj - another unity change
@@ -186,9 +135,9 @@ public class Stack : MonoBehaviour
 
         //cards = infectionCards;
 
-        for (int i = 0; i < cards.Length; i++)
+        for (int i = 0; i < infectionCards.Length; i++)
         {
-            cards[i] = infectionCards[i];
+            cards.Add(infectionCards[i]);
 
         }
     }
@@ -196,16 +145,16 @@ public class Stack : MonoBehaviour
     public void createRoleCards()
     {
         _roleCard[] roleCards = new _roleCard[7];
-        cards = new Card[7];
+        cards = new List<Card>();
 
         for (int i = 0; i < roleCards.Length; i++)
         {
-            //roleCards [i] = new _roleCard();
             roleCards[i] = new GameObject().AddComponent<_roleCard>();
             roleCards[i].transform.parent = transform;
 
         }
 
+        Debug.Log("Creating Role Cards");
         roleCards[0].name = ("MEDIC");
         roleCards[1].name = ("DISPATCHER");
         roleCards[2].name = ("QURANTINE SPECIALIST");
@@ -223,9 +172,10 @@ public class Stack : MonoBehaviour
         roleCards[6].role = _roleCard.roleType.OPERATIONS_EXPERT;
 
 
-        for (int i = 0; i < cards.Length; i++)
+        for (int i = 0; i < roleCards.Length; i++)
         {
-            cards[i] = roleCards[i];
+            cards.Add(roleCards[i]);
+            //cards[i] = roleCards[i];
         }
 
 
@@ -234,18 +184,15 @@ public class Stack : MonoBehaviour
 
     public void createPlayerStack()
     {
+
         _cityCard[] cityCards = new _cityCard[48];
         _eventCard[] eventCards = new _eventCard[5];
-        cards = new Card[53];
-
-
+        cards = new List<Card>();
 
         //Create the city cards
         for (int i = 0; i < cityCards.Length; i++)
         {
             cityCards[i] = new GameObject().AddComponent<_cityCard>();
-
-
 
             //Debug.Log(Resources.Load("Citycard_blue"));
 
@@ -266,11 +213,10 @@ public class Stack : MonoBehaviour
             {
                 cityCards[i].image = Resources.Load<Sprite>("Citycard_red");
             }
-
-
-
             cityCards[i].transform.parent = transform;
         }
+
+
         for (int i = 0; i < cityCards.Length; i++)
         {
             cityCards[i].name = GameManager.cityNames[i];
@@ -278,7 +224,9 @@ public class Stack : MonoBehaviour
         }
         for (int i = 0; i < cityCards.Length; i++)
         {
-            cards[i] = cityCards[i];
+            //cards[i] = cityCards[i];
+            cards.Add(cityCards[i]);
+
         }
 
         //Create the event cards
@@ -301,7 +249,8 @@ public class Stack : MonoBehaviour
 
         for (int i = 0; i < eventCards.Length; i++)
         {
-            cards[cityCards.Length + i] = eventCards[i];
+            cards.Add(eventCards[i]);
+            //cards[cityCards.Length + i] = eventCards[i];
         }
     }
 
@@ -312,10 +261,11 @@ public class Stack : MonoBehaviour
             cards[i] = GameManager.AllCardsStack.cards[(sortListInt[i])];
         }
 
-        for (int i = sortListInt.Count; i < cards.Length; i++)
+        for (int i = sortListInt.Count; i < cards.Count; i++)
         {
+            cards.Remove(cards[i]);
             Debug.Log("Deleting Cards");
-            cards[i] = null;
+            //cards[i] = null;
         }
     }
 }
