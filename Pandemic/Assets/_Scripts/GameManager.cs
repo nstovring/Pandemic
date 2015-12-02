@@ -16,8 +16,6 @@ public class GameManager : NetworkBehaviour
     public static Stack roleCardStack;
 
 
-    public static List<NetworkConnection> Connections;
-
     //City Variables
     public GameObject cityPrefab;
 

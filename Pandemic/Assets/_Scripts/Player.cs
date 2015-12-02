@@ -58,6 +58,10 @@ public class Player : NetworkBehaviour
         if (isLocalPlayer)
         {
             InputMoveToCity();
+            /*if (Input.GetKeyUp(KeyCode.A))
+            {
+                UpdateSyncListCards();
+            }*/
         }
         else if (CurrentCity!= null && CurrentCity.cityId != cityID)
         {
@@ -65,11 +69,28 @@ public class Player : NetworkBehaviour
         }
     }
 
+    public void UpdateSyncListCards()
+    {
+        for (int i = 0; i < hand.cards.Length; i++)
+        {
+            for (int j = 0; j < GameManager.instance.SyncListPlayerCardSort.Count; j++)
+            {
+                if (hand.cards[i].Id == GameManager.instance.SyncListPlayerCardSort[j])
+                {
+                    GameManager.instance.Cmd_RemoveFromCityList(hand.cards[i].Id);
+                }
+            }
+
+        }
+    }
+
+
     void InputMoveToCity()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 100);
         if (Input.GetMouseButtonUp(0))
         {
+            UpdateSyncListCards();
             if (hit.collider != null)
             {
                 if (hit.transform.tag == "City" && actionsLeft > 0 && CityIsConnected(hit.transform.GetComponent<City>().cityId))
