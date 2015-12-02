@@ -21,7 +21,7 @@ public class tmpGiveCards : MonoBehaviour {
         player1.GetComponent<tmpPlayer>().role = (_roleCard) roleCards.cards[0];
         player1.GetComponent<tmpPlayer>().Start();
 
-        player1.GetComponent<tmpPlayer>().hand
+      //  player1.GetComponent<tmpPlayer>().hand
         
             
         print("FINAL");

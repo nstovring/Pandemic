@@ -190,15 +190,17 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void MoveToCityCard(Card cityCard)
+    public void MoveToCityCard(int cityCardID)
     {
-        int ID = cityCard.Id;
+        Debug.Log("move to city: " + cityCardID);
+       // int ID = cityCard.Id;
+        int ID = cityCardID;
         actionsTaken[count] = new int[] { 2, cityID };
         count++;
         actionsLeft--;
 
         MoveToCity(ID);
-        hand.discard(cityCard);
+        hand.discard(ID);
         GameManager.instance.Cmd_AddToCityDiscardList(ID);
     }
 
