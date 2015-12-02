@@ -19,6 +19,19 @@ public class Hand : MonoBehaviour
     public void Initialize(Card[] cards, Player owner)
     {
         gm = GameManager.instance;
+
+
+
+        GameObject actionButtons = GameObject.Find("ActionButtons");
+        GameObject[] actionButtonChildren = new GameObject[3];
+        for (int i = 0; i < 3; i++)
+        {
+            actionButtonChildren[i] = actionButtons.transform.GetChild(i).gameObject;
+        }
+
+        actionButtonChildren[0].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(currentCardValue); });
+
+
         //    GameObject CardsOnHand = GameObject.Find("CardsOnHand");
         GameObject CardsOnHand = GameObject.Find("HandArea");
 
@@ -120,19 +133,7 @@ public class Hand : MonoBehaviour
         }
     }
 
-    void start()
-    {
-
-        GameObject actionButtons = GameObject.Find("ActionButtons");
-        GameObject[] actionButtonChildren = new GameObject[3];
-        for (int i = 0; i < 3; i++)
-        {
-            actionButtonChildren[i] = actionButtons.transform.GetChild(i).gameObject;
-        }
-        
-        actionButtonChildren[0].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(currentCardValue); });
-
-    }
+    
 
 }
 
