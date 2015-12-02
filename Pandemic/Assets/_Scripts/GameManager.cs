@@ -251,15 +251,15 @@ public class GameManager : NetworkBehaviour
         int[] startingHands = { 47, 46, 45, 44, 43, 42 };
 
         GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
-        int count = 0;
+        int count = 47;
 
         for (int i = 0; i < playersGameObjects.Length; i++)
         {
-            Card[] startingHand = new Card[3];
+            Card[] startingHand = new Card[5];
             for (int j = 0; j < startingHand.Length; j++)
             {
-                startingHand[j] = playerCardStack.cards[startingHands[count]];
-                count++;
+                startingHand[j] = playerCardStack.cards[count--];
+                
             }
             playersGameObjects[i].GetComponent<Player>().Initialize(roles[i], startingHand);
             players.Add(playersGameObjects[i].GetComponent<Player>());
@@ -324,7 +324,7 @@ public class GameManager : NetworkBehaviour
 
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
-        playerCardStack.shuffleStack();
+      //  playerCardStack.shuffleStack();
         for (int j = 0; j < playerCardStack.cards.Length; j++)
         {
             if (isServer)

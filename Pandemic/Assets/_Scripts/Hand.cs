@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class Hand : MonoBehaviour
 {
-    public Card[] cards = new Card[3];
+    //public Card[] cards = new Card[3];
+    public Card[] cards = new Card[5];
     public GameObject[] CardButtons = new GameObject[7];
     public GameObject cardPrefab;
     GameManager gm;
@@ -28,8 +29,10 @@ public class Hand : MonoBehaviour
         {
             actionButtonChildren[i] = actionButtons.transform.GetChild(i).gameObject;
         }
-
+        //move button
         actionButtonChildren[0].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(currentCardValue); });
+        //cure button
+        actionButtonChildren[2].GetComponent<Button>().onClick.AddListener(delegateCure);
 
 
         //    GameObject CardsOnHand = GameObject.Find("CardsOnHand");
@@ -39,6 +42,7 @@ public class Hand : MonoBehaviour
 
         if (player.isLocalPlayer)
         {
+            this.cards = cards;
             for (int i = 0; i < CardButtons.Length; i++)
             {
                 CardButtons[i] = CardsOnHand.transform.GetChild(i).gameObject;
@@ -68,6 +72,21 @@ public class Hand : MonoBehaviour
         {
             this.cards = cards;
         }
+    }
+
+    private void delegateCure()
+    {
+        if (player.isLocalPlayer)
+        {
+          int []  currentCardValues = new int[cards.Length];
+            for (int i = 0; i < cards.Length; i++)
+            {
+                currentCardValues[i] = cards[i].Id;
+            }
+            player.cureDisease( currentCardValues);
+            Debug.Log("calls delegate method");
+        }
+        
     }
 
     void DelegateMove(int inputCard)

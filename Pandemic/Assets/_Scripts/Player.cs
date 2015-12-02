@@ -256,16 +256,22 @@ public class Player : NetworkBehaviour
         }
 
     }
-    private void cureDisease()
+
+    public void cureDisease(int [] cardIDs)
     {
-        _cityCard[] cards = new _cityCard[5];
-        int[] checker = checkForCure(5, cards);
+       
+     Debug.Log(cardIDs[1]);
+        
+        int[] checker = checkForCure(5, cardIDs);
+        Debug.Log(checker[0]);
         if (GameManager.GetCityFromID(cityID).researchCenter && checker[0] == 1)
         {
+          
             switch (checker[1])
             {
                 case 0:
                     GameManager.instance.blueCure = true;
+
                     break;
                 case 1:
                     GameManager.instance.yellowCure = true;
@@ -276,6 +282,43 @@ public class Player : NetworkBehaviour
 
                 case 3:
                     GameManager.instance.redCure = true;
+                    Debug.Log("Red cure true ");
+                    break;
+            }
+                   
+         //   actionsTaken[count] = new int[] { 5, checker[1], cards[0].Id, cards[1].Id, cards[2].Id, cards[3].Id, cards[4].Id };
+            count++;
+            actionsLeft--;
+        }
+        
+    }
+
+    public void cureDisease()
+    {
+        Card[] cards = hand.cards;
+        Debug.Log(cards[0]);
+        /*
+        int[] checker = checkForCure(5, cards);
+        Debug.Log(checker[0]);
+        if (GameManager.GetCityFromID(cityID).researchCenter && checker[0] == 1)
+        {
+          
+            switch (checker[1])
+            {
+                case 0:
+                    GameManager.instance.blueCure = true;
+
+                    break;
+                case 1:
+                    GameManager.instance.yellowCure = true;
+                    break;
+                case 2:
+                    GameManager.instance.blackCure = true;
+                    break;
+
+                case 3:
+                    GameManager.instance.redCure = true;
+                    Debug.Log("Red cure true ");
                     break;
             }
             //hand.        
@@ -283,17 +326,59 @@ public class Player : NetworkBehaviour
             count++;
             actionsLeft--;
         }
-
+        */
     }
-    private int[] checkForCure(int counter, _cityCard[] hand)
+    private int[] checkForCure(int counter, int [] hand)
     {
 
         int[] counters = new int[4];
         for (int i = 0; i < hand.GetLength(0); i++)
         {
-            if (hand[i] != null && hand[i] is _cityCard)
+            Debug.Log(hand[i]);
+            if (hand[i] != null)
+            {
+                String colour = GameManager.GetCityFromID(hand[i]).color;
+                Debug.Log(colour);
+                switch (GameManager.GetCityFromID(hand[i]).color)
+                {
+                    case "Blue":
+                        counters[0]++;
+                        break;
+                    case "Yellow":
+                        counters[1]++;
+                        break;
+                    case "Black":
+                        counters[2]++;
+                        break;
+                    case "Red":
+                        counters[3]++;
+                        break;
+                }
+            }
+
+        }
+        for (int i = 0; i < counters.GetLength(0); i++)
+        {
+            Debug.Log(counters[i]);
+            if (counters[i] >= counter)
+            {
+                return new int[] { 1, i };
+            }
+        }
+        return new int[] { 0, 0 };
+    }
+
+    private int[] checkForCure(int counter, Card[] hand)
+    {
+
+        int[] counters = new int[4];
+        for (int i = 0; i < hand.GetLength(0); i++)
+        {
+            Debug.Log(hand[i]);
+            if (hand[i] != null)
             {
                 String colour = GameManager.GetCityFromID(hand[i].Id).color;
+                Debug.Log(colour);
                 switch (GameManager.GetCityFromID(hand[i].Id).color)
                 {
                     case "Blue":
@@ -314,6 +399,7 @@ public class Player : NetworkBehaviour
         }
         for (int i = 0; i < counters.GetLength(0); i++)
         {
+            Debug.Log(counters[i]);
             if (counters[i] >= counter)
             {
                 return new int[] { 1, i };
