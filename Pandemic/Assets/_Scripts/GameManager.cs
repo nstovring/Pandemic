@@ -491,6 +491,14 @@ public class GameManager : NetworkBehaviour
     [Command]
     public void Cmd_AddToCityDiscardList(int removal)
     {
+        for (int i = 0; i < SyncListPlayerDiscardSort.Count; i++)
+        {
+            if (removal == SyncListPlayerDiscardSort[i])
+            {
+                return;
+            }
+        }
+
         SyncListPlayerDiscardSort.Add(removal);
         Debug.Log("PlayerListDiscard new length:" + SyncListPlayerDiscardSort.Count);
 
@@ -499,8 +507,6 @@ public class GameManager : NetworkBehaviour
     public void Rpc_AddToCityDiscardList(int removal)
     {
         Cmd_AddToCityDiscardList(removal);
-        //SyncListPlayerDiscardSort.Add(removal);
-        //Debug.Log("PlayerListDiscard new length:" + SyncListPlayerDiscardSort.Count);
     }
 
     /// <summary>

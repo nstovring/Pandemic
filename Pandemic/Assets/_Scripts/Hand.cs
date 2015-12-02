@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class Hand : MonoBehaviour
+public class Hand : NetworkBehaviour
 {
     //public Card[] cards = new Card[3];
     public Card[] cards = new Card[5];
@@ -132,22 +132,46 @@ public class Hand : MonoBehaviour
 
     //overloaded method for actionButtons
     //[ClientRpc]
+    //[Command]
     public void discard(int cardID)
     {
         for (int i = 0; i < cards.Length; i++)
         {
-
-            if (cardID == cards[i].Id)
+            if (cards[i] is Card)
             {
-                if (CardButtons[i] != null)
+                if (cardID == cards[i].Id)
                 {
-                    CardButtons[i].SetActive(false);
+                    if (CardButtons[i] != null)
+                    {
+                        CardButtons[i].SetActive(false);
+                    }
+                    cards[i] = null;
+                    break;
                 }
-                cards[i] = null;
-                break;
             }
         }
     }
+
+    [Command]
+    public void Cmd_discard(int cardID)
+    {
+        for (int i = 0; i < cards.Length; i++)
+        {
+            if (cards[i] is Card)
+            {
+                if (cardID == cards[i].Id)
+                {
+                    if (CardButtons[i] != null)
+                    {
+                        CardButtons[i].SetActive(false);
+                    }
+                    cards[i] = null;
+                    break;
+                }
+            }
+        }
+    }
+
 
     public void discardArray(int[] discards)
     {
