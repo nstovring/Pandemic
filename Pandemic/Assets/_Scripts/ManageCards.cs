@@ -11,31 +11,44 @@ public class ManageCards : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private Button button;
     private Vector3 lerpDown;
     private Vector3 lerpUp;
+    
 
     public bool selected = false;
 
-
+    public void ChooseCard()
+    {
+        selected = !selected;
+       
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
 
-        StartCoroutine("lerpCard");
+        if (!selected)
+        {
+            StartCoroutine("lerpCard");
+        }
+        
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-      
-        StartCoroutine("lerpCardDown");
+
+        if (!selected)
+        {
+            StartCoroutine("lerpCardDown");
+        }
+       
     }
 
+   
 
 
     private IEnumerator lerpCard()
     {
         while (transform.position.y <= lerpUp.y)
         {
-            transform.position = Vector3.Lerp(transform.position,
-                new Vector3(transform.position.x, transform.position.y + 25, transform.position.z), 0.1f);
+            transform.position = Vector3.Lerp(transform.position, lerpUp, 0.1f);
 
 
             yield return new WaitForEndOfFrame();
@@ -63,10 +76,13 @@ public class ManageCards : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     void Start()
     {
         button = GetComponentInParent<Button>();
+       
         lerpDown = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        lerpUp = new Vector3(transform.position.x, transform.position.y + 25, transform.position.z);
         
-      
+        lerpUp = new Vector3(transform.position.x, (transform.position.y + 25f), transform.position.z);
+
+
+        GetComponent<Button>().onClick.AddListener(ChooseCard);
 
     }
 

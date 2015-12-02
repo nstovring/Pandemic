@@ -7,9 +7,4 @@ public abstract class Card : MonoBehaviour {
     public int Id;
     public Sprite image;
 
-    void Start () {
-	}
-	
-	void Update () {	
-	}
 }
