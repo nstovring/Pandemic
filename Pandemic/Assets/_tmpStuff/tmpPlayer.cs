@@ -11,11 +11,14 @@ public class tmpPlayer : MonoBehaviour {
     
 
 
-    void Start () {
-	
-	}
-	
-	void Update () {
+    public void Start () {
+        //role = new GameObject("role").AddComponent<_roleCard>();
+        print("Start of Player");
+ 
+        hand = new GameObject("hand").AddComponent<Hand>();
+    }
+
+    void Update () {
 	    
 	}
 }
