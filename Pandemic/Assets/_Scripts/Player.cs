@@ -9,9 +9,12 @@ public class Player : NetworkBehaviour
     [SyncVar]
     public int cityID;
 
+    //used in the cure 
+    public int [] discardArray;
+
 
     public Hand hand;
-    public City CurrentCity;    
+    public City CurrentCity;
 
     //public _roleCard role;
 
@@ -45,14 +48,15 @@ public class Player : NetworkBehaviour
 
         Card tempRole = GameManager.roleCardStack.cards[role];
 
-        this.role = tempRole as _roleCard; 
+        this.role = tempRole as _roleCard;
 
         //this.role = (_roleCard) GameManager.roleCardStack.cards[role]; //GameManager.roleCardStack.roleCards.Contains(role); //Error?
         MoveToCity(cityID);
         CurrentCity.UpdatePawns();
     }
 
-    public void shareKnowledge(Player [] allPlayers , int playerNo,  int cardIndex) {
+    public void shareKnowledge(Player[] allPlayers, int playerNo, int cardIndex)
+    {
         Card tmp = null;
         tmp = this.hand.cards[cardIndex];
         this.hand.cards[cardIndex] = allPlayers[playerNo].hand.cards[cardIndex];
@@ -66,7 +70,7 @@ public class Player : NetworkBehaviour
         {
             InputMoveToCity();
         }
-        else if (CurrentCity!= null && CurrentCity.cityId != cityID)
+        else if (CurrentCity != null && CurrentCity.cityId != cityID)
         {
             MoveToCity(cityID);
         }
@@ -121,7 +125,7 @@ public class Player : NetworkBehaviour
     {
         if (cardEqualToCity())
         {
-            for(int i = 0; i < GameManager.cities.GetLength(0); i++)
+            for (int i = 0; i < GameManager.cities.GetLength(0); i++)
             {
                 GameManager.GetCityFromID(i).active = true;
             }
@@ -129,14 +133,14 @@ public class Player : NetworkBehaviour
         else
         {
             int[] cityIDs = GameManager.GetCityFromID(cityID).connectedCityIDs;
-            
+
             for (int i = 0; i < cityIDs.GetLength(0); i++)
             {
                 GameManager.GetCityFromID(cityIDs[i]).active = true;
             }
             for (int i = 0; i < hand.cards.GetLength(0); i++)
             {
-                if(hand.cards[i] is _cityCard)
+                if (hand.cards[i] is _cityCard)
                 {
                     GameManager.GetCityFromID(hand.cards[i].Id).active = true;
                 }
@@ -149,7 +153,7 @@ public class Player : NetworkBehaviour
     }
     public bool cardEqualToCity()
     {
-        for(int i = 0; i < hand.cards.GetLength(0); i++)
+        for (int i = 0; i < hand.cards.GetLength(0); i++)
         {
             if (hand.cards[i] is _cityCard && hand.cards[i].Id == cityID)
             {
@@ -161,7 +165,7 @@ public class Player : NetworkBehaviour
 
     public void MoveToConnectedCity(int newID)
     {
-        actionsTaken[count] = new int[] {0,cityID};
+        actionsTaken[count] = new int[] { 0, cityID };
         count++;
         actionsLeft--;
         MoveToCity(gameManager.connectedCities[cityID][newID]);
@@ -181,7 +185,7 @@ public class Player : NetworkBehaviour
     public void MoveToCityCard(int cityCardID)
     {
         Debug.Log("move to city: " + cityCardID);
-       // int ID = cityCard.Id;
+        // int ID = cityCard.Id;
         int ID = cityCardID;
         actionsTaken[count] = new int[] { 2, cityID };
         count++;
@@ -257,23 +261,28 @@ public class Player : NetworkBehaviour
         {
             GameManager.GetCityFromID(cityID).hasResearchCenter = true;
             hand.discard(city);
-            actionsTaken[count] = new int[] { 4, cityID};
+            actionsTaken[count] = new int[] { 4, cityID };
             count++;
             actionsLeft--;
         }
 
     }
 
-    public void cureDisease(int [] cardIDs)
+    public void cureDisease(int[] cardIDs)
     {
+
        
-     Debug.Log(cardIDs[1]);
-        
+
         int[] checker = checkForCure(5, cardIDs);
-        Debug.Log(checker[0]);
+
+        
+
+      
         if (GameManager.GetCityFromID(cityID).researchCenter && checker[0] == 1)
         {
-          
+           
+           hand.discardArray(discardArray);
+               
             switch (checker[1])
             {
                 case 0:
@@ -289,21 +298,22 @@ public class Player : NetworkBehaviour
 
                 case 3:
                     GameManager.instance.redCure = true;
-                    Debug.Log("Red cure true ");
+                    
+
                     break;
             }
-                   
-         //   actionsTaken[count] = new int[] { 5, checker[1], cards[0].Id, cards[1].Id, cards[2].Id, cards[3].Id, cards[4].Id };
+
+            //   actionsTaken[count] = new int[] { 5, checker[1], cards[0].Id, cards[1].Id, cards[2].Id, cards[3].Id, cards[4].Id };
             count++;
             actionsLeft--;
         }
-        
+
     }
 
     public void cureDisease()
     {
         Card[] cards = hand.cards;
-        Debug.Log(cards[0]);
+       
         /*
         int[] checker = checkForCure(5, cards);
         Debug.Log(checker[0]);
@@ -335,30 +345,39 @@ public class Player : NetworkBehaviour
         }
         */
     }
-    private int[] checkForCure(int counter, int [] hand)
+    private int[] checkForCure(int counter, int[] hand)
     {
 
         int[] counters = new int[4];
+        int[] discardBlue = new int[counter];
+        int[] discardYellow = new int[counter];
+        int[] discardBlack = new int[counter];
+        int[] discardRed = new int[counter];
         for (int i = 0; i < hand.GetLength(0); i++)
         {
-            Debug.Log(hand[i]);
+          
             if (hand[i] != null)
             {
                 String colour = GameManager.GetCityFromID(hand[i]).color;
-                Debug.Log(colour);
+             
                 switch (GameManager.GetCityFromID(hand[i]).color)
                 {
                     case "Blue":
                         counters[0]++;
+                        discardBlue[i] = hand[i];
                         break;
                     case "Yellow":
                         counters[1]++;
+                        discardYellow[i] = hand[i];
                         break;
                     case "Black":
                         counters[2]++;
+                        discardBlack[i] = hand[i];
                         break;
                     case "Red":
                         counters[3]++;
+                        discardRed[i] = hand[i];
+                       
                         break;
                 }
             }
@@ -369,6 +388,22 @@ public class Player : NetworkBehaviour
             Debug.Log(counters[i]);
             if (counters[i] >= counter)
             {
+                switch (i)
+                {
+                    case 0:
+                        discardArray = discardBlue;
+                        break;
+                    case 1:
+                        discardArray = discardYellow;
+                        break;
+                    case 2:
+                        discardArray = discardBlack;
+                        break;
+                    case 3:
+                        discardArray = discardRed;
+                        Debug.Log("discard array 3 "+discardArray[2]);
+                        break;
+                }
                 return new int[] { 1, i };
             }
         }
@@ -428,10 +463,10 @@ public class Player : NetworkBehaviour
     }
     private bool CityIsConnected(int ID)
     {
-        
-        for(int i = 0; i < CurrentCity.connectedCityIDs.Length; i++)
+
+        for (int i = 0; i < CurrentCity.connectedCityIDs.Length; i++)
         {
-            if(CurrentCity.connectedCityIDs[i] == ID)
+            if (CurrentCity.connectedCityIDs[i] == ID)
             {
                 return true;
             }

@@ -325,7 +325,7 @@ public class GameManager : NetworkBehaviour
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
 
-        playerCardStack.shuffleStack();
+   //     playerCardStack.shuffleStack();
         for (int j = 0; j < playerCardStack.cards.Count; j++)
 
         {

@@ -42,7 +42,7 @@ public class Hand : MonoBehaviour
 
         if (player.isLocalPlayer)
         {
-            this.cards = cards;
+            //  this.cards = cards;
             for (int i = 0; i < CardButtons.Length; i++)
             {
                 CardButtons[i] = CardsOnHand.transform.GetChild(i).gameObject;
@@ -78,15 +78,15 @@ public class Hand : MonoBehaviour
     {
         if (player.isLocalPlayer)
         {
-          int []  currentCardValues = new int[cards.Length];
+            int[] currentCardValues = new int[cards.Length];
             for (int i = 0; i < cards.Length; i++)
             {
                 currentCardValues[i] = cards[i].Id;
             }
-            player.cureDisease( currentCardValues);
+            player.cureDisease(currentCardValues);
             Debug.Log("calls delegate method");
         }
-        
+
     }
 
     void DelegateMove(int inputCard)
@@ -94,7 +94,7 @@ public class Hand : MonoBehaviour
         if (player.isLocalPlayer)
         {
             player.MoveToCityCard(currentCardValue);
-            Debug.Log("currentCardValue "+ currentCardValue);
+            Debug.Log("currentCardValue " + currentCardValue);
         }
     }
 
@@ -111,6 +111,7 @@ public class Hand : MonoBehaviour
             if (cards[i] == null)
             {
                 cards[i] = inputCard;
+                Debug.Log("cards added to hand " + cards[i].Id);
                 CardButtons[i].SetActive(true);
                 CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
                 break;
@@ -119,20 +120,44 @@ public class Hand : MonoBehaviour
 
     }
 
-    internal void discard(_cityCard city)
-    {
-        throw new NotImplementedException();
-    }
+
     //overloaded method for actionButtons
     public void discard(int cardID)
     {
         for (int i = 0; i < cards.Length; i++)
         {
+
             if (cardID == cards[i].Id)
             {
                 CardButtons[i].SetActive(false);
                 cards[i] = null;
                 break;
+            }
+        }
+    }
+
+    public void discardArray(int[] discards)
+    {
+        //Debug.Log("start discard");
+        for (int i = 0; i < discards.Length; i++)
+        {
+          //Debug.Log("checking " + i + " of discards");
+           
+            for (int j = 0; j < cards.Length; j++)
+            {
+               /* Debug.Log("checking " + j + " of cards");
+                Debug.Log(cards[j].Id);
+                Debug.Log(discards[i]);*/
+                if (cards[j].Id != null)
+                {
+                    Debug.Log("YAY");
+                    if (cards[j].Id == discards[i])
+                    {
+                        Debug.Log("WHY WON'T YOU WORK");
+                        CardButtons[i].SetActive(false);
+                        cards[j] = null;
+                    }
+                }
             }
         }
     }
@@ -152,7 +177,7 @@ public class Hand : MonoBehaviour
         }
     }
 
-    
+
 
 }
 
