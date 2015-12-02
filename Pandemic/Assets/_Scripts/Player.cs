@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
+
 public class Player : NetworkBehaviour
 {
     [SyncVar]
@@ -438,5 +439,100 @@ public class Player : NetworkBehaviour
         }
         return false;
     }
+
+
+
+
+
+
+    /// <summary>
+    /// From this point, all the code is related to trading of cards
+    /// </summary>
+
+    GameObject playerSelection;
+    GameObject otherPlayerArea;
+    GameObject[] playerCardButtons = new GameObject[7];
+    GameObject[] playerSelectionButtons = new GameObject[3];
+
+    //When called, checks cityID with cards of the players. If true, it assigns the players to the playerSelection buttons of the trade screen
+    public void startTrade() {
+        playerSelection = GameObject.Find("PlayerSelection");
+        bool trade = false;
+
+        //Runs through all the players, inluding yourself. lel
+        for (int i = 0; i < GameManager.players.Count; i++) {
+            for (int j = 0; j < GameManager.players[i].hand.cards.Length; j++) {
+                if (GameManager.players[i].cityID == GameManager.players[i].hand.cards[j].Id) {
+                    trade = true;
+                    break;
+                }
+            }
+            if (trade == true) { break; }
+        }
+
+        //if the above is true, initiate protocol 12345679, where is 8!!!????
+        if (trade == true) {
+            playerSelection.SetActive(true);
+            for (int i = 0; i < GameManager.players.Count; i++)
+            {
+                if (GameManager.players[i] != isLocalPlayer)
+                {
+                   playerSelectionButtons[i] = playerSelection.transform.GetChild(i).gameObject;
+                   playerSelectionButtons[i].GetComponentInChildren<Text>().text = GameManager.players[i].name;
+                   playerSelectionButtons[i].GetComponent<Button>().onClick.AddListener(delegate { tradePlayerSelection(GameManager.players[i]); });
+
+                }
+            }
+        }
+    }
+
+
+    //When called, dispalys the selected player's cards
+    public void tradePlayerSelection(Player player)
+    {
+        otherPlayerArea = GameObject.Find("OtherPlayerArea");
+        otherPlayerArea.SetActive(true);
+
+        for (int i = 0; i < playerCardButtons.Length; i++) {
+            playerCardButtons[i] = otherPlayerArea.transform.GetChild(i).gameObject;
+
+            if (i < player.hand.cards.Length)
+            {
+                int cardID = i;
+                playerCardButtons[i].GetComponentInChildren<Text>().text = player.hand.cards[i].name;
+                playerCardButtons[i].GetComponent<Image>().sprite = player.hand.cards[i].image;
+
+                if (player.hand.cards[i].GetType() == typeof(_cityCard)) {
+                    playerCardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { takeCard(player.hand.cards[i].Id); });
+                }
+            }
+            else {
+               // playerCardButtons[i].SetActive(false);
+            }
+        }
+    }
+
+
+    //Takes a card from the other player
+    private void takeCard (int cardID) {
+        for (int i = 0; i < this.hand.cards.Length; i++) {
+            if (this.hand.cards[i] = null) {
+                this.hand.cards[i] = GameManager.AllCardsStack.cards[cardID];
+                exitTrade();
+                break;
+            }
+        }
+    }
+
+
+    //Exits the entire trading debacle
+    public void exitTrade() {
+        otherPlayerArea.SetActive(false);
+        playerSelection.SetActive(false);
+    }
+    
+
+    
+
 }
 

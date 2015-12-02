@@ -89,7 +89,6 @@ public class Stack : MonoBehaviour
 
     }
 
-
     public static Stack combineStacks(Stack one, Stack two)
     {
 
@@ -268,5 +267,7 @@ public class Stack : MonoBehaviour
             //cards[i] = null;
         }
     }
+
+
 }
 
