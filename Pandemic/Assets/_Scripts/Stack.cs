@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine.Networking;
 
 public class Stack : MonoBehaviour
 {
@@ -135,7 +136,7 @@ public class Stack : MonoBehaviour
             Array.Copy(cards, index + 1, cardstmp, index, cards.Length - index - 1);
         }
         Array.Resize(ref cards, cardstmp.Length);
-
+        Debug.Log(index);
         for (int i = 0; i < cardstmp.Length; i++)
         {
             cards[i] = cardstmp[i];
@@ -246,12 +247,12 @@ public class Stack : MonoBehaviour
 
 
 
-            Debug.Log(Resources.Load("Citycard_blue"));
+            //Debug.Log(Resources.Load("Citycard_blue"));
 
             if (i < 12)
             {
                 cityCards[i].image = Resources.Load<Sprite>("Citycard_blue");
-                Debug.Log("does it run?");
+                //Debug.Log("does it run?");
             }
             else if (i >= 12 && i < 24)
             {
@@ -304,6 +305,18 @@ public class Stack : MonoBehaviour
         }
     }
 
+    public void SortCardsToList(SyncListInt sortListInt)
+    {
+        for (int i = 0; i < sortListInt.Count; i++)
+        {
+            cards[i] = GameManager.AllCardsStack.cards[(sortListInt[i])];
+        }
 
+        for (int i = sortListInt.Count; i < cards.Length; i++)
+        {
+            Debug.Log("Deleting Cards");
+            cards[i] = null;
+        }
+    }
 }
 

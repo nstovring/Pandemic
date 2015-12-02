@@ -79,7 +79,6 @@ public class Hand : MonoBehaviour
             if (cards[i] == null)
             {
                 cards[i] = inputCard;
-                GameManager.playerCardStack.removeCard(inputCard.Id);
                 CardButtons[i].SetActive(true);
                 CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
                 break;
@@ -112,7 +111,8 @@ public class Hand : MonoBehaviour
         {
             if (card == cards[i])
             {
-                //GameManager.playerDiscardStack.AddCard(card.Id, 0);
+                GameManager.instance.Cmd_AddToCityDiscardList(card.Id);
+                GameManager.infectDiscardStack.SortCardsToList(GameManager.instance.SyncListinfectionDiscardSort);
                 CardButtons[i].SetActive(false);
                 cards[i] = null;
                 break;
@@ -122,6 +122,7 @@ public class Hand : MonoBehaviour
 
     void start()
     {
+<<<<<<< HEAD
         GameObject actionButtons = GameObject.Find("ActionButtons");
         GameObject[] actionButtonChildren = new GameObject[3];
         for (int i = 0; i < 3; i++)
@@ -130,6 +131,16 @@ public class Hand : MonoBehaviour
         }
         
         actionButtonChildren[0].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(currentCardValue); });
+=======
+        /*if (Input.GetMouseButton(0))
+        {
+            input = 0;
+        }
+        else if (Input.GetMouseButton(1))
+        {
+            input = 1;
+        }*/
+>>>>>>> origin/master
     }
 
 }

@@ -58,10 +58,6 @@ public class Player : NetworkBehaviour
         if (isLocalPlayer)
         {
             InputMoveToCity();
-            /*if (Input.GetKeyUp(KeyCode.A))
-            {
-                UpdateSyncListCards();
-            }*/
         }
         else if (CurrentCity!= null && CurrentCity.cityId != cityID)
         {
@@ -90,33 +86,18 @@ public class Player : NetworkBehaviour
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero, 100);
         if (Input.GetMouseButtonUp(0))
         {
-            UpdateSyncListCards();
             if (hit.collider != null)
             {
                 if (hit.transform.tag == "City" && actionsLeft > 0 && CityIsConnected(hit.transform.GetComponent<City>().cityId))
                 {
-                    MoveToConnectedCity(hit.transform.GetComponent<City>().cityId);
+                    MoveToCity(hit.transform.GetComponent<City>().cityId);
+                    UpdateSyncListCards();
                 }
                 if (hit.transform.tag == "DiseaseCube" && actionsLeft > 0)
                 {
                     Cmd_RemoveDiseaseCubes(City.GetStringFromColor(hit.transform.GetComponent<SpriteRenderer>().color));
                 }
-                if (hit.transform.tag == "Card" && actionsLeft > 0)
-                {
-                    
-                }
             }
-        }
-        if (Input.GetMouseButtonUp(1))
-        {
-            if (hit.collider != null)
-            {
-                if (hit.transform.tag == "Card" && actionsLeft > 0)
-                {
-
-                }
-            }
-
         }
     }
 

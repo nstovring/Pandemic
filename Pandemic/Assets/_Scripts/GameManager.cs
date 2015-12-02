@@ -195,8 +195,33 @@ public class GameManager : NetworkBehaviour
 
     public int testingPlayers = 0;
     private float timer = 5f;
+
+    [ClientRpc]
+    public void Rpc_TryUpdateStacks()
+    {
+
+        infectCardStack.SortCardsToList(SyncListinfectionSort);
+        infectDiscardStack.SortCardsToList(SyncListinfectionDiscardSort);
+        //infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
+        //infectDiscardStack.cards = SortCardsToList(infectDiscardStack.cards, SyncListinfectionDiscardSort);
+    }
+
+    [Command]
+    public void Cmd_TryUpdateStacks()
+    {
+        Rpc_TryUpdateStacks();
+    }
+
     private void Update()
     {
+
+        if (Input.GetKeyUp(KeyCode.KeypadEnter) && isClient)
+        {
+            //infectCardStack.SortCardsToList(SyncListinfectionSort);
+            //infectDiscardStack.SortCardsToList(SyncListinfectionDiscardSort);
+            Cmd_TryUpdateStacks();
+        }
+
         if (isServer)
         {
             if (netIdentity.observers.Count > testingPlayers && initialize)
@@ -221,6 +246,8 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void Rpc_InitializePlayers(int[] roles)
     {
+        
+
         int[] startingHands = { 47, 46, 45, 44, 43, 42 };
 
         GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
@@ -237,6 +264,8 @@ public class GameManager : NetworkBehaviour
             playersGameObjects[i].GetComponent<Player>().Initialize(roles[i], startingHand);
             players.Add(playersGameObjects[i].GetComponent<Player>());
         }
+
+        
     }
 
     [Command]
@@ -324,16 +353,21 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void Rpc_CreateStacks()
     {
+        AllCardsStack = new GameObject("AllCards").AddComponent<Stack>();
+        AllCardsStack.Initialize(Stack.cardType.PLAYER_STACK);
+        AllCardsStack.addEpidemicCards();
+
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectCardStack.Initialize(Stack.cardType.INFECTION);
-        infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
-       
+        //infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
+        infectCardStack.SortCardsToList(SyncListinfectionSort);
+
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
-        playerCardStack.cards = SortCardsToList(playerCardStack.cards, SyncListPlayerCardSort);
-
+        //playerCardStack.cards = SortCardsToList(playerCardStack.cards, SyncListPlayerCardSort);
+        playerCardStack.SortCardsToList(SyncListPlayerCardSort);
        
-        infectDiscardStack = new GameObject("infectCardStack").AddComponent<Stack>();
+        infectDiscardStack = new GameObject("infectDiscardStack").AddComponent<Stack>();
         infectDiscardStack.Initialize(Stack.cardType.INFECTION);
         infectDiscardStack.EmptyCards();
 
@@ -404,7 +438,7 @@ public class GameManager : NetworkBehaviour
             InfectCity(infectionCard, infectRate);
             infectRate = increment >= 3 ? infectRate - 1 : infectRate;
         }
-        UpdateInfectionStacks();
+        
     }
 
     /// <summary>
@@ -438,29 +472,22 @@ public class GameManager : NetworkBehaviour
     {
         SyncListinfectionDiscardSort.Add(removal);
         SyncListinfectionSort.Remove(removal);
-    }
-
-    [Command]
-    void Cmd_ReduceCitySyncListInt(int[] removal)
-    {
-        for (int i = 0; i < removal.Length; i++)
-        {
-            SyncListPlayerDiscardSort.Add(removal[i]);
-            SyncListPlayerCardSort.Remove(removal[i]);
-        }
-        
+        Debug.Log("Infectionlist new length:" + SyncListinfectionSort.Count);
     }
 
     [Command]
     public void Cmd_RemoveFromCityList(int removal)
     {
         SyncListPlayerCardSort.Remove(removal);
+        Debug.Log("PlayerList new length:" + SyncListPlayerCardSort.Count);
     }
 
     [Command]
     public void Cmd_AddToCityDiscardList(int removal)
     {
         SyncListPlayerDiscardSort.Add(removal);
+        Debug.Log("PlayerListDiscard new length:" + SyncListPlayerDiscardSort.Count);
+
     }
 
     //[ClientRpc]
