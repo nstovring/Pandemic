@@ -15,7 +15,7 @@ public class ManageCards : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public bool selected = false;
 
-    public void ChooseCard()
+    public void LockCard()
     {
         selected = !selected;
        
@@ -26,7 +26,7 @@ public class ManageCards : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
         if (!selected)
         {
-            StartCoroutine("lerpCard");
+        //    StartCoroutine("lerpCard");
         }
         
     }
@@ -36,7 +36,7 @@ public class ManageCards : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
         if (!selected)
         {
-            StartCoroutine("lerpCardDown");
+         //   StartCoroutine("lerpCardDown");
         }
        
     }
@@ -82,7 +82,7 @@ public class ManageCards : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         lerpUp = new Vector3(transform.position.x, (transform.position.y + 25f), transform.position.z);
 
 
-        GetComponent<Button>().onClick.AddListener(ChooseCard);
+        GetComponent<Button>().onClick.AddListener(LockCard);
 
     }
 

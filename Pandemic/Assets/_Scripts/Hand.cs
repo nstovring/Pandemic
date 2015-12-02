@@ -10,7 +10,7 @@ public class Hand : MonoBehaviour
     public GameObject[] CardButtons = new GameObject[7];
     public GameObject cardPrefab;
     GameManager gm;
-    public int input = -1;
+
     public int currentCardValue = -1;
 
     public Player player;
@@ -19,8 +19,22 @@ public class Hand : MonoBehaviour
     public void Initialize(Card[] cards, Player owner)
     {
         gm = GameManager.instance;
+
+
+
+        GameObject actionButtons = GameObject.Find("ActionButtons");
+        GameObject[] actionButtonChildren = new GameObject[3];
+        for (int i = 0; i < 3; i++)
+        {
+            actionButtonChildren[i] = actionButtons.transform.GetChild(i).gameObject;
+        }
+
+        actionButtonChildren[0].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(currentCardValue); });
+
+
         //    GameObject CardsOnHand = GameObject.Find("CardsOnHand");
         GameObject CardsOnHand = GameObject.Find("HandArea");
+
         player = owner;
 
         if (player.isLocalPlayer)
@@ -39,7 +53,8 @@ public class Hand : MonoBehaviour
                     if (cards[i].GetType() == typeof(_cityCard))
                     {
                         int i1 = i;
-                        CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(i1); });
+                        CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCard(i1); });
+
 
                     }
                 }
@@ -57,7 +72,16 @@ public class Hand : MonoBehaviour
 
     void DelegateMove(int inputCard)
     {
-        //  if (player.isLocalPlayer  )  player.MoveToCityCard(cards[inputCard]);
+        if (player.isLocalPlayer)
+        {
+            player.MoveToCityCard(currentCardValue);
+            Debug.Log("currentCardValue "+ currentCardValue);
+        }
+    }
+
+    void ChooseCard(int inputCard)
+    {
+
         if (player.isLocalPlayer) currentCardValue = cards[inputCard].Id;
     }
 
@@ -80,6 +104,20 @@ public class Hand : MonoBehaviour
     {
         throw new NotImplementedException();
     }
+    //overloaded method for actionButtons
+    public void discard(int cardID)
+    {
+        for (int i = 0; i < cards.Length; i++)
+        {
+            if (cardID == cards[i].Id)
+            {
+                CardButtons[i].SetActive(false);
+                cards[i] = null;
+                break;
+            }
+        }
+    }
+
     public void discard(Card card)
     {
         for (int i = 0; i < cards.Length; i++)
@@ -95,18 +133,8 @@ public class Hand : MonoBehaviour
         }
     }
 
+    
 
-    void Update()
-    {
-        /*if (Input.GetMouseButton(0))
-        {
-            input = 0;
-        }
-        else if (Input.GetMouseButton(1))
-        {
-            input = 1;
-        }*/
-    }
 }
 
 
