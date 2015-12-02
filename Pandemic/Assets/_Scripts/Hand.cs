@@ -148,7 +148,7 @@ public class Hand : MonoBehaviour
                /* Debug.Log("checking " + j + " of cards");
                 Debug.Log(cards[j].Id);
                 Debug.Log(discards[i]);*/
-                if (cards[j].Id != null)
+                if (cards[j] is Card)
                 {
                     Debug.Log("YAY");
                     if (cards[j].Id == discards[i])
