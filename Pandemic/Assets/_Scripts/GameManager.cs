@@ -193,17 +193,13 @@ public class GameManager : NetworkBehaviour
         netIdentity = GetComponent<NetworkIdentity>();
     }
 
-    public int testingPlayers = 0;
+    public int testingPlayers = 2;
     private float timer = 5f;
 
     [ClientRpc]
     public void Rpc_TryUpdateStacks()
     {
-        for (int i = 0; i < SyncListinfectionDiscardSort.Count; i++)
-        {
-            Debug.Log(SyncListinfectionDiscardSort[i]);
-        }
-
+        
         infectCardStack.SortCardsToList(SyncListinfectionSort);
         infectDiscardStack.SortCardsToList(SyncListinfectionDiscardSort);
 
@@ -217,23 +213,30 @@ public class GameManager : NetworkBehaviour
         Rpc_TryUpdateStacks();
     }
 
+    //[ServerCallback]
     private void Update()
     {
 
+        if (Input.GetKeyUp(KeyCode.S))
+        {
+            Rpc_InitializeBoard();
+
+            int[] roles = new[]
+            {
+                        UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7),
+                        UnityEngine.Random.Range(0, 7)
+                    };
+            Rpc_InitializePlayers(roles);
+        }
         if (Input.GetKeyUp(KeyCode.KeypadEnter) && isClient)
         {
-            //infectCardStack.SortCardsToList(SyncListinfectionSort);
-            //infectDiscardStack.SortCardsToList(SyncListinfectionDiscardSort);
             Cmd_TryUpdateStacks();
         }
-
+        initialize = false;
         if (isServer)
         {
-            if (netIdentity.observers.Count > testingPlayers && initialize)
+            if (netIdentity.observers.Count >= testingPlayers && initialize)
             {
-                timer -= Time.deltaTime;
-                if (timer <= 5f)
-                {
                     Rpc_InitializeBoard();
 
                     int[] roles = new[]
@@ -243,7 +246,6 @@ public class GameManager : NetworkBehaviour
                     };
                     Rpc_InitializePlayers(roles);
                     initialize = false;
-                }
             }
         }
     }
@@ -318,7 +320,7 @@ public class GameManager : NetworkBehaviour
             if (isServer)
             {
                 Debug.Log("Add");
-                SyncListinfectionSort.Add(infectCardStack.cards[j].Id - 1); //new stuff
+                SyncListinfectionSort.Add(infectCardStack.cards[j].Id); //new stuff
             }
         }
         Destroy(infectCardStack.gameObject);
@@ -326,14 +328,13 @@ public class GameManager : NetworkBehaviour
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
 
-   //     playerCardStack.shuffleStack();
         for (int j = 0; j < playerCardStack.cards.Count; j++)
 
         {
             if (isServer)
             {
                 Debug.Log("Add");
-                SyncListPlayerCardSort.Add(playerCardStack.cards[j].Id - 1); //new stuff
+                SyncListPlayerCardSort.Add(playerCardStack.cards[j].Id); //new stuff
             }
         }
         Destroy(playerCardStack.gameObject);
@@ -494,19 +495,12 @@ public class GameManager : NetworkBehaviour
         Debug.Log("PlayerListDiscard new length:" + SyncListPlayerDiscardSort.Count);
 
     }
-
-    //[ClientRpc]
-    void UpdateInfectionStacks()
-    {
-       // infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
-       // infectDiscardStack.cards = SortCardsToList(infectDiscardStack.cards, SyncListinfectionDiscardSort);
-    }
-
     [ClientRpc]
-    void Rpc_UpdateCityStacks()
+    public void Rpc_AddToCityDiscardList(int removal)
     {
-        //playerCardStack.cards = SortCardsToList(playerCardStack.cards, SyncListPlayerCardSort);
-       // playerDiscardStack.cards = SortCardsToList(playerDiscardStack.cards, SyncListPlayerDiscardSort);
+        Cmd_AddToCityDiscardList(removal);
+        //SyncListPlayerDiscardSort.Add(removal);
+        //Debug.Log("PlayerListDiscard new length:" + SyncListPlayerDiscardSort.Count);
     }
 
     /// <summary>

@@ -76,7 +76,8 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void UpdateSyncListCards()
+    [Command]
+    public void Cmd_UpdateSyncListCards()
     {
         for (int i = 0; i < hand.cards.Length; i++)
         {
@@ -102,7 +103,7 @@ public class Player : NetworkBehaviour
                 if (hit.transform.tag == "City" && actionsLeft > 0 && CityIsConnected(hit.transform.GetComponent<City>().cityId))
                 {
                     MoveToCity(hit.transform.GetComponent<City>().cityId);
-                    UpdateSyncListCards();
+                    Cmd_UpdateSyncListCards();
                 }
                 if (hit.transform.tag == "DiseaseCube" && actionsLeft > 0)
                 {
@@ -182,7 +183,8 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void MoveToCityCard(int cityCardID)
+    [ClientRpc]
+    public void Rpc_MoveToCityCard(int cityCardID)
     {
         Debug.Log("move to city: " + cityCardID);
         // int ID = cityCard.Id;
@@ -194,6 +196,11 @@ public class Player : NetworkBehaviour
         MoveToCity(ID);
         hand.discard(ID);
         GameManager.instance.Cmd_AddToCityDiscardList(ID);
+    }
+    [Command]
+    public void Cmd_MoveToCityCard(int cityCardID)
+    {
+        Rpc_MoveToCityCard(cityCardID);
     }
 
 

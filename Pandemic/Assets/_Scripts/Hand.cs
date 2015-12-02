@@ -93,8 +93,17 @@ public class Hand : MonoBehaviour
     {
         if (player.isLocalPlayer)
         {
-            player.MoveToCityCard(currentCardValue);
-            Debug.Log("currentCardValue " + currentCardValue);
+            if (player.isServer)
+            {
+                player.Rpc_MoveToCityCard(currentCardValue);
+                Debug.Log("currentCardValue " + currentCardValue);
+            }
+            else
+            {
+                player.Cmd_MoveToCityCard(currentCardValue);
+                Debug.Log("currentCardValue " + currentCardValue);
+            }
+
         }
     }
 
@@ -122,6 +131,7 @@ public class Hand : MonoBehaviour
 
 
     //overloaded method for actionButtons
+    //[ClientRpc]
     public void discard(int cardID)
     {
         for (int i = 0; i < cards.Length; i++)
@@ -129,7 +139,10 @@ public class Hand : MonoBehaviour
 
             if (cardID == cards[i].Id)
             {
-                CardButtons[i].SetActive(false);
+                if (CardButtons[i] != null)
+                {
+                    CardButtons[i].SetActive(false);
+                }
                 cards[i] = null;
                 break;
             }

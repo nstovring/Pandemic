@@ -242,15 +242,12 @@ public class Stack : MonoBehaviour
 
     public void SortCardsToList(SyncListInt sortListInt)
     {
-
         List<Card> tempCityList = new List<Card>();
-
-        for (int i = 1; i < sortListInt.Count; i++)
+        for (int i = 0; i < sortListInt.Count; i++)
         {
-            tempCityList.Add(GameManager.AllCardsStack.cards[(sortListInt[i])]);
+            tempCityList.Add(GameManager.AllCardsStack.cards[sortListInt[(i)]-1]);
         }
         cards = tempCityList;
-
     }
 }
 
