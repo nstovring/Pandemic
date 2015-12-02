@@ -49,11 +49,7 @@ public class Stack : MonoBehaviour
     //Functions you can call
     public void EmptyCards()
     {
-        for (int i = 0; i < cards.Count; i++)
-        {
-            cards.RemoveAt(i);
-            //cards[i] = null;
-        }
+       cards = new List<Card>();
     }
 
     public void shuffleStack()
@@ -75,6 +71,7 @@ public class Stack : MonoBehaviour
         for (int i = 0; i < epidemicCards.Length; i++)
         {
             epidemicCards[i] = new GameObject().AddComponent<_epidemicCard>();
+            epidemicCards[i].transform.parent = transform;
         }
         for (int i = 0; i < epidemicCards.Length; i++)
         {
@@ -122,18 +119,13 @@ public class Stack : MonoBehaviour
         {
             infectionCards[i] = new GameObject().AddComponent<_infectionCard>();
             infectionCards[i].transform.parent = transform;
-            //infectionCards [i] = new _infectionCard();
         }
         for (int i = 0; i < infectionCards.Length; i++)
         {
             infectionCards[i].name = GameManager.cityNames[i];
             infectionCards[i].Id = i + 1;
-            //System.out.println(infectionCards [i].infectionID);
-            //System.out.println(infectionCards [i].name);
-            //System.out.println("");
         }
 
-        //cards = infectionCards;
 
         for (int i = 0; i < infectionCards.Length; i++)
         {
@@ -175,11 +167,7 @@ public class Stack : MonoBehaviour
         for (int i = 0; i < roleCards.Length; i++)
         {
             cards.Add(roleCards[i]);
-            //cards[i] = roleCards[i];
         }
-
-
-
     }
 
     public void createPlayerStack()
@@ -193,7 +181,6 @@ public class Stack : MonoBehaviour
         for (int i = 0; i < cityCards.Length; i++)
         {
             cityCards[i] = new GameObject().AddComponent<_cityCard>();
-
             //Debug.Log(Resources.Load("Citycard_blue"));
 
             if (i < 12)
@@ -250,23 +237,20 @@ public class Stack : MonoBehaviour
         for (int i = 0; i < eventCards.Length; i++)
         {
             cards.Add(eventCards[i]);
-            //cards[cityCards.Length + i] = eventCards[i];
         }
     }
 
     public void SortCardsToList(SyncListInt sortListInt)
     {
-        for (int i = 0; i < sortListInt.Count; i++)
-        {
-            cards[i] = GameManager.AllCardsStack.cards[(sortListInt[i])];
-        }
 
-        for (int i = sortListInt.Count; i < cards.Count; i++)
+        List<Card> tempCityList = new List<Card>();
+
+        for (int i = 1; i < sortListInt.Count; i++)
         {
-            cards.Remove(cards[i]);
-            Debug.Log("Deleting Cards");
-            //cards[i] = null;
+            tempCityList.Add(GameManager.AllCardsStack.cards[(sortListInt[i])]);
         }
+        cards = tempCityList;
+
     }
 }
 

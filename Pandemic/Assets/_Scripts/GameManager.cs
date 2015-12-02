@@ -199,11 +199,16 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     public void Rpc_TryUpdateStacks()
     {
+        for (int i = 0; i < SyncListinfectionDiscardSort.Count; i++)
+        {
+            Debug.Log(SyncListinfectionDiscardSort[i]);
+        }
 
         infectCardStack.SortCardsToList(SyncListinfectionSort);
         infectDiscardStack.SortCardsToList(SyncListinfectionDiscardSort);
-        //infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
-        //infectDiscardStack.cards = SortCardsToList(infectDiscardStack.cards, SyncListinfectionDiscardSort);
+
+        playerCardStack.SortCardsToList(SyncListPlayerCardSort);
+        playerDiscardStack.SortCardsToList(SyncListPlayerDiscardSort);
     }
 
     [Command]
@@ -246,8 +251,6 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void Rpc_InitializePlayers(int[] roles)
     {
-        
-
         int[] startingHands = { 47, 46, 45, 44, 43, 42 };
 
         GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
@@ -258,14 +261,12 @@ public class GameManager : NetworkBehaviour
             Card[] startingHand = new Card[5];
             for (int j = 0; j < startingHand.Length; j++)
             {
-                startingHand[j] = playerCardStack.cards[count--];
-                
+                startingHand[j] = playerCardStack.cards[count];
+                count--;
             }
             playersGameObjects[i].GetComponent<Player>().Initialize(roles[i], startingHand);
             players.Add(playersGameObjects[i].GetComponent<Player>());
         }
-
-        
     }
 
     [Command]
@@ -362,12 +363,12 @@ public class GameManager : NetworkBehaviour
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectCardStack.Initialize(Stack.cardType.INFECTION);
         //infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
-        infectCardStack.SortCardsToList(SyncListinfectionSort);
+        //infectCardStack.SortCardsToList(SyncListinfectionSort);
 
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
         //playerCardStack.cards = SortCardsToList(playerCardStack.cards, SyncListPlayerCardSort);
-        playerCardStack.SortCardsToList(SyncListPlayerCardSort);
+        //playerCardStack.SortCardsToList(SyncListPlayerCardSort);
        
         infectDiscardStack = new GameObject("infectDiscardStack").AddComponent<Stack>();
         infectDiscardStack.Initialize(Stack.cardType.INFECTION);
@@ -376,6 +377,8 @@ public class GameManager : NetworkBehaviour
         playerDiscardStack = new GameObject("playerDiscardStack").AddComponent<Stack>();
         playerDiscardStack.Initialize(Stack.cardType.PLAYER_STACK);
         playerDiscardStack.EmptyCards();
+
+        Cmd_TryUpdateStacks();
     }
 
     /// <summary>
