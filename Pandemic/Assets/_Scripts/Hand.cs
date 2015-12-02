@@ -122,7 +122,7 @@ public class Hand : MonoBehaviour
 
     void start()
     {
-<<<<<<< HEAD
+
         GameObject actionButtons = GameObject.Find("ActionButtons");
         GameObject[] actionButtonChildren = new GameObject[3];
         for (int i = 0; i < 3; i++)
@@ -131,16 +131,7 @@ public class Hand : MonoBehaviour
         }
         
         actionButtonChildren[0].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(currentCardValue); });
-=======
-        /*if (Input.GetMouseButton(0))
-        {
-            input = 0;
-        }
-        else if (Input.GetMouseButton(1))
-        {
-            input = 1;
-        }*/
->>>>>>> origin/master
+
     }
 
 }
