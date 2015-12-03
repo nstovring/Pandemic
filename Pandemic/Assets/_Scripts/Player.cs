@@ -632,13 +632,7 @@ public class Player : NetworkBehaviour
     public void exitTrade() {
         playerSelection.SetActive(false);
     }
-<<<<<<< HEAD
 
-
-
-
-=======
->>>>>>> origin/master
 
     
 

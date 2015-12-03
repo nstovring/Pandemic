@@ -34,13 +34,13 @@ public class Hand : NetworkBehaviour
         actionButtonChildren[0].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(currentCardValue); });
         //cure button
         actionButtonChildren[2].GetComponent<Button>().onClick.AddListener(delegateCure);
-<<<<<<< HEAD
+
         //trade button
         actionButtonChildren[1].GetComponent<Button>().onClick.AddListener(delegate { owner.startTrade(); });
-=======
+
         actionButtonChildren[3].GetComponent<Button>().onClick.AddListener(delegateEndTurn);
 
->>>>>>> origin/master
+
 
         //    GameObject CardsOnHand = GameObject.Find("CardsOnHand");
        CardsOnHand = GameObject.Find("HandArea"); //moved the actual declartion up to the... beginning part of code?
