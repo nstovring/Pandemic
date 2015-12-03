@@ -18,11 +18,18 @@ public class Hand : NetworkBehaviour
 
     public Player player;
 
-    public SyncListInt SyncListHandSort;
+    public SyncListInt SyncListHandSort = new SyncListInt();
+
+    void Awake()
+    {
+        return;
+    }
 
     public void Initialize(Player owner)
     {
         gm = GameManager.instance;
+
+
 
         GameObject actionButtons = GameObject.Find("ActionButtons");
         GameObject[] actionButtonChildren = new GameObject[4];
@@ -122,32 +129,41 @@ public class Hand : NetworkBehaviour
                 {
                 if (inputCard is _epidemicCard)
                 {
-                    Debug.Log("OH NO! EPIDEMIC! EVERYONE DIES");
                     GameManager.instance.Cmd_Epidemic();
                     GameManager.instance.Cmd_AddToCityDiscardList(inputCard.Id);
                     cards[i] = null;
-                    //discard(i);
                     return;
-                    }
-                    cards[i] = GameManager.AllCardsStack.cards[inputCard.Id-1];
-                    SyncListHandSort.Add(cards[i].Id);
-
-                    if (CardButtons[i] != null)
-                    {
-                        CardButtons[i].SetActive(true);
-                        CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
-                        CardButtons[i].GetComponentInChildren<Image>().sprite = inputCard.image;
-                        if (this.cards[i].GetType() == typeof (_cityCard))
-                        {
-                            int i1 = i;
-                            CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCard(i1); });
-                        }
-                    }
-                    break;
                 }
+                cards[i] = GameManager.AllCardsStack.cards[inputCard.Id-1];
+                Cmd_IncrementSyncList(cards[i].Id);
+                if (CardButtons[i] != null)
+                {
+                    CardButtons[i].SetActive(true);
+                    CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
+                    CardButtons[i].GetComponentInChildren<Image>().sprite = inputCard.image;
+                    if (this.cards[i].GetType() == typeof (_cityCard))
+                    {
+                        int i1 = i;
+                        CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCard(i1); });
+                    }
+                 }
+                    break;
+                 }
             }
     }
 
+    [Command]
+    void Cmd_IncrementSyncList(int card)
+    {
+                SyncListHandSort.Add(card);
+
+    }
+    [Command]
+    void Cmd_ReduceSyncList(int card)
+    {
+        SyncListHandSort.Add(card);
+
+    }
     //overloaded method for actionButtons
     //[ClientRpc]
     //[Command]
@@ -163,6 +179,7 @@ public class Hand : NetworkBehaviour
                     {
                         CardButtons[i].SetActive(false);
                     }
+                    Cmd_ReduceSyncList(cardID);
                     cards[i] = null;
                     break;
                 }

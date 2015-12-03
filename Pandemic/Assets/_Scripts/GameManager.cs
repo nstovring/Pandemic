@@ -219,24 +219,22 @@ public class GameManager : NetworkBehaviour
 
     void Awake()
     {
-        //NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, netIdentity.observers[1]);
+            
     }
 
     //[ServerCallback]
     private void Update()
     {
-        if (isServer)
+        if (Input.GetKeyUp(KeyCode.S) && initialize && isServer)
         {
             foreach (var i in netIdentity.observers)
             {
                 NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, i);
             }
-        }
-        if (Input.GetKeyUp(KeyCode.S) && initialize && isServer)
-        {
             Rpc_InitializeBoard();
+            initialize = false;
         }
-        if (Input.GetKeyUp(KeyCode.D) && initialize && isServer)
+        if (Input.GetKeyUp(KeyCode.D) && isServer)
         {
             int[] roles = new[]
             {
@@ -248,7 +246,6 @@ public class GameManager : NetworkBehaviour
         if (Input.GetKeyUp(KeyCode.E) && isServer)
         {
             Rpc_InitializeStacks();
-            initialize = false;
         }
     }
 
@@ -303,7 +300,10 @@ public class GameManager : NetworkBehaviour
         GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
         playersGameObjects[0].GetComponent<Player>().Initialize(roles[0]);
         yield return new WaitForSeconds(1);
-        playersGameObjects[1].GetComponent<Player>().Initialize(roles[1]);
+        /*if (playersGameObjects[1] != null)
+        {
+            //playersGameObjects[1].GetComponent<Player>().Initialize(roles[1]);
+        }*/
     }
 
     [Command]
