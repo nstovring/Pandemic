@@ -111,8 +111,11 @@ public class GameManager : NetworkBehaviour
             };
 
     //General Game Variables
+    [SyncVar]
     int infectionRate = 2;
+    [SyncVar]
     int epidemicCount = 0;
+    [SyncVar]
     int outbreakCounter = 0;
     int maxSingleDisease = 24;
 
@@ -194,7 +197,6 @@ public class GameManager : NetworkBehaviour
     }
 
     public int testingPlayers = 2;
-    private float timer = 5f;
 
     [ClientRpc]
     public void Rpc_TryUpdateStacks()
@@ -219,7 +221,6 @@ public class GameManager : NetworkBehaviour
         if (Input.GetKeyUp(KeyCode.S) && initialize)
         {
             Rpc_InitializeBoard();
-            //Rpc_Testing();
             int[] roles = new[]
             {
                         UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7),
@@ -227,11 +228,12 @@ public class GameManager : NetworkBehaviour
                     };
             Rpc_InitializePlayers(roles);
             initialize = false;
+
         }
-
-        
-
-        //netIdentity.observers[1].playerControllers[0].gameObject;
+        if (Input.GetKeyUp(KeyCode.E) && isServer)
+        {
+            Cmd_Epidemic();
+        }
     }
 
     [ClientRpc]
@@ -259,12 +261,18 @@ public class GameManager : NetworkBehaviour
             playersGameObjects[i].GetComponent<Player>().Initialize(roles[i], startingHand);
             players.Add(playersGameObjects[i].GetComponent<Player>());
         }
+        players[0].active = true;
     }
 
     [Command]
     public void CmdSwitchTurn()
     {
+        int lastTurn = turnOrder;
         turnOrder = turnOrder == netIdentity.observers.Count+1 ? 1: turnOrder++;
+        players[lastTurn].active = false;
+        players[turnOrder].active = true;
+        players[turnOrder].startTurn();
+
     }
 
     [ClientRpc]
@@ -389,43 +397,28 @@ public class GameManager : NetworkBehaviour
     }
 
     [Command]
-    void Cmd_Epidemic()
-    {
-        Epidemic();
-        //Rpc_Epidemic();
-    }
-
-    [ClientRpc]
-    private void Rpc_Epidemic()
-    {
-        throw new NotImplementedException();
-    }
-
-
-    /// <summary>
-    /// Epidemic Method
-    /// </summary>
-    public void Epidemic()
+    public void Cmd_Epidemic()
     {
         Card bottomCard = infectCardStack.cards[0]; // Pick the bottom card of the stack
         InfectCity(bottomCard, 3); // Infect the city coressponding to that card
-        //Add bottom card to discards
-        SyncListinfectionDiscardSort.Add(bottomCard.Id);
-        infectDiscardStack.cards.Add(bottomCard);
+    
         //Shuffle discards here
         infectDiscardStack.shuffleStack();
         //And then combine stacks
-        //infectCardStack = Stack.combineStacks(infectCardStack, infectDiscardStack);
-        
-        for (int i = 0; i < SyncListPlayerDiscardSort.Count; i++)
+        for (int i = 0; i < SyncListinfectionDiscardSort.Count; i++)
         {
-            SyncListinfectionSort.Add(SyncListPlayerDiscardSort[i]);
+            SyncListinfectionSort.Add(SyncListinfectionDiscardSort[i]);
         }
         SyncListinfectionDiscardSort = new SyncListInt();
+
+        infectCardStack.SortCardsToList(SyncListinfectionSort);
+        infectDiscardStack.SortCardsToList(SyncListinfectionDiscardSort);
         //Set infectionRate & increment epidemicCount
         epidemicCount++;
         infectionRate = epidemicCount > 3 ? 3 : epidemicCount > 5 ? 4 : infectionRate;
+        Rpc_TryUpdateStacks();
     }
+
     //The cities are infected from the top of the stack up during initialization
 
     public Card[] SortCardsToList(Card[] cards, SyncListInt sortListInt)
@@ -448,7 +441,6 @@ public class GameManager : NetworkBehaviour
             InfectCity(infectionCard, infectRate);
             infectRate = increment >= 3 ? infectRate - 1 : infectRate;
         }
-        
     }
 
     /// <summary>
@@ -458,7 +450,7 @@ public class GameManager : NetworkBehaviour
     {
         for (int i = 1; i < infectionRate; i++)
         {
-            Card infectionCard = infectCardStack.cards[infectCardStack.cards.Count - i];
+            Card infectionCard = infectCardStack.cards[SyncListinfectionSort.Count - i];
             InfectCity(infectionCard, 1);
         }
         CheckForOutbreak();
@@ -474,21 +466,23 @@ public class GameManager : NetworkBehaviour
         City infectedCity = GetCityFromID(infectionCard.Id);
         infectedCity.IncrementDiseaseSpread(infectedCity.color, infectRate);
         Cmd_ReduceInfectionSyncListInt(infectedCity.cityId);
+        Cmd_TryUpdateStacks();
         SetDiseaseSpread(infectedCity.color, infectRate);
-    }
-    
-    [Command]
-    void Cmd_ReduceInfectionSyncListInt(int removal)
-    {
-        SyncListinfectionDiscardSort.Add(removal);
-        SyncListinfectionSort.Remove(removal);
-        Debug.Log("Infectionlist new length:" + SyncListinfectionSort.Count);
     }
 
     [Command]
-    public void Cmd_RemoveFromCityList(int removal)
+    void Cmd_ReduceInfectionSyncListInt(int card)
     {
-        SyncListPlayerCardSort.Remove(removal);
+        SyncListinfectionDiscardSort.Add(card);
+        SyncListinfectionSort.Remove(card);
+        Debug.Log("Infectionlist new length:" + SyncListinfectionSort.Count);
+    }
+    
+
+    [Command]
+    public void Cmd_RemoveFromCityList(int card)
+    {
+        SyncListPlayerCardSort.Remove(card);
         Debug.Log("PlayerList new length:" + SyncListPlayerCardSort.Count);
     }
 

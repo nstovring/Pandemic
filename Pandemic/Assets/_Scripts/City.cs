@@ -48,7 +48,7 @@ public class City : NetworkBehaviour
             {
                 if (players[j])
                 {
-                    if (players[j].role.transform.name == pawnSpriteRenderers[i].transform.name)
+                    if (players[j].roleCard.transform.name == pawnSpriteRenderers[i].transform.name)
                     {
                         pawnSpriteRenderers[i].enabled = true;
                         break;
@@ -70,7 +70,31 @@ public class City : NetworkBehaviour
 
     public void IncrementDiseaseSpread(string color, int infectRate)
     {
-       
+       //check if medic prevents disease spread in his city
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i] != null)
+            {
+                if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.blueCure)
+                {
+                    return;
+                }
+                if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.yellowCure)
+                {
+                    return;
+                }
+                if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.blackCure)
+                {
+                    return;
+                }
+                if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.redCure)
+                {
+                    return;
+                }
+            }
+        }
+
+
        for (int i = 0; i < infectRate; i++)
         {
             foreach (SpriteRenderer t in diseaseCubes)

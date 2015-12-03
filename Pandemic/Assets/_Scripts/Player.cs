@@ -9,6 +9,8 @@ public class Player : NetworkBehaviour
 {
     [SyncVar]
     public int cityID;
+    [SyncVar]
+    public bool active;
 
     //used in the cure 
     public int [] discardArray;
@@ -17,20 +19,23 @@ public class Player : NetworkBehaviour
     public Hand hand;
     public City CurrentCity;
 
-    //public _roleCard role;
+    //public _roleCard roleCard;
 
-    public _roleCard role;
+    public _roleCard roleCard;
     GameManager gameManager;
     public int actionsLeft;
     public int[][] actionsTaken;
     int count;
     private int currentCard;
+    
 
 
 
     //[ClientRpc]
     public void Initialize(int role, Card[] startingHand)
     {
+        //active = false;
+        
         gameManager = GameManager.instance;
 
         count = 0;
@@ -49,11 +54,19 @@ public class Player : NetworkBehaviour
 
         Card tempRole = GameManager.roleCardStack.cards[role];
 
-        this.role = tempRole as _roleCard;
+        this.roleCard = tempRole as _roleCard;
 
-        //this.role = (_roleCard) GameManager.roleCardStack.cards[role]; //GameManager.roleCardStack.roleCards.Contains(role); //Error?
+        //this.roleCard = (_roleCard) GameManager.roleCardStack.cards[roleCard]; //GameManager.roleCardStack.roleCards.Contains(roleCard); //Error?
         MoveToCity(cityID);
         CurrentCity.UpdatePawns();
+    }
+    public void startTurn()
+    {
+        active = true;
+        count = 0;
+        actionsTaken = new int[1000][];
+        actionsLeft = 4;
+
     }
 
     public void shareKnowledge(Player[] allPlayers, int playerNo, int cardIndex)
@@ -93,9 +106,13 @@ public class Player : NetworkBehaviour
         }
     }
 
-    void EndTurn()
+    public void EndTurn()
     {
+        actionsLeft = 0;
+        hand.drawPlayerCards();
         GameManager.instance.InfectCities();
+        //active = false;
+        GameManager.instance.CmdSwitchTurn();
     }
 
     void InputMoveToCity()
@@ -218,6 +235,24 @@ public class Player : NetworkBehaviour
     public void MoveToCity(int ID)
     {
 
+        //If medic roleCard and cure, remove disease cubes
+        if (roleCard.role == _roleCard.roleType.MEDIC && gameManager.blueCure)
+        {
+            CurrentCity.ReduceDiseaseSpread("Blue", roleCard);
+        }
+        if (roleCard.role == _roleCard.roleType.MEDIC && gameManager.yellowCure)
+        {
+            CurrentCity.ReduceDiseaseSpread("Yellow", roleCard);
+        }
+        if (roleCard.role == _roleCard.roleType.MEDIC && gameManager.blackCure)
+        {
+            CurrentCity.ReduceDiseaseSpread("Black", roleCard);
+        }
+        if (roleCard.role == _roleCard.roleType.MEDIC && gameManager.redCure)
+        {
+            CurrentCity.ReduceDiseaseSpread("Red", roleCard);
+        }
+
         CurrentCity.removePlayer(this);
         CurrentCity.UpdatePawns();
 
@@ -263,7 +298,7 @@ public class Player : NetworkBehaviour
                 actionsLeft--;
                 break;
         }
-        GameManager.GetCityFromID(cityID).ReduceDiseaseSpread(colour, role);
+        GameManager.GetCityFromID(cityID).ReduceDiseaseSpread(colour, roleCard);
     }
 
     private void buildResearchCenter(int cityID, _cityCard city)
@@ -597,10 +632,13 @@ public class Player : NetworkBehaviour
     public void exitTrade() {
         playerSelection.SetActive(false);
     }
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> origin/master
 
     
 
