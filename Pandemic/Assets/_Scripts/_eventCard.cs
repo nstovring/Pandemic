@@ -1,4 +1,4 @@
-﻿ using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 
@@ -9,7 +9,8 @@ public class _eventCard : Card
     Player player;
 
 
-    //Non implemented function
+
+
     public void Airlift(int city_id, int player_id)
     {
         //MoveToCity is private has to be changed to public
@@ -20,7 +21,6 @@ public class _eventCard : Card
 
     }
 
-    //Non implemented function
     public void OneQuietNight()
     {
 
@@ -28,7 +28,6 @@ public class _eventCard : Card
 
     }
 
-    //Obselete incomplete function that was to be used with other functions. Ignore this badboy
     public void Forecast()
     {
         Card[] cards = new Card[6];
@@ -50,31 +49,32 @@ public class _eventCard : Card
         }
     }
 
-    //Obsolete early function of swapping cards
     public Card[] swap(Card[] cards, int index1, int index2)
     {
         Card temp = cards[index1];
         cards[index1] = cards[index2];
         cards[index2] = temp;
         return cards;
+
+
     }
 
-    //When called, a reaseach center can be build on any city.
+
+
     public void GovermentGrant(int CityId)
     {
         GameManager.GetCityFromID(CityId).hasResearchCenter = true;
 
     }
 
-    //Delete an infection card from the discard pile
     public void ResilientPopulation(int index)
     {
- 
+       
         GameManager.infectDiscardStack.cards[index] = null;
 
 
     }
 }
- 
+
 
 

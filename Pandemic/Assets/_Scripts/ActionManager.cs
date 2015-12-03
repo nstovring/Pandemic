@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class _epidemicCard : Card {
+public class ActionManager : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
