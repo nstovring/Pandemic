@@ -1,1 +1,4 @@
-does this appear on the git page?
+In order to play the game, simply download the build 'Pandemic.exe'. 
+ 
+After double clicking the executable, one player than chooses to host the game.
+Subsequently, the other players choose join, to join the hosts' game.
