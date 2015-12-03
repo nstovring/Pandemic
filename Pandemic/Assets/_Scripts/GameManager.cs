@@ -221,7 +221,6 @@ public class GameManager : NetworkBehaviour
         if (Input.GetKeyUp(KeyCode.S) && initialize)
         {
             Rpc_InitializeBoard();
-            //Rpc_Testing();
             int[] roles = new[]
             {
                         UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7),
@@ -229,6 +228,11 @@ public class GameManager : NetworkBehaviour
                     };
             Rpc_InitializePlayers(roles);
             initialize = false;
+
+        }
+        if (Input.GetKeyUp(KeyCode.E) && isServer)
+        {
+            Cmd_Epidemic();
         }
     }
 
@@ -257,6 +261,7 @@ public class GameManager : NetworkBehaviour
             playersGameObjects[i].GetComponent<Player>().Initialize(roles[i], startingHand);
             players.Add(playersGameObjects[i].GetComponent<Player>());
         }
+
     }
 
     [Command]
@@ -389,33 +394,26 @@ public class GameManager : NetworkBehaviour
     [Command]
     void Cmd_Epidemic()
     {
-        Epidemic();
-        Rpc_TryUpdateStacks();
-        //Rpc_Epidemic();
-    }
-
-    /// <summary>
-    /// Epidemic Method
-    /// </summary>
-    public void Epidemic()
-    {
         Card bottomCard = infectCardStack.cards[0]; // Pick the bottom card of the stack
         InfectCity(bottomCard, 3); // Infect the city coressponding to that card
-        //Add bottom card to discards
-        SyncListinfectionDiscardSort.Add(bottomCard.Id);
-        infectDiscardStack.cards.Add(bottomCard);
+    
         //Shuffle discards here
         infectDiscardStack.shuffleStack();
         //And then combine stacks
-        for (int i = 0; i < SyncListPlayerDiscardSort.Count; i++)
+        for (int i = 0; i < SyncListinfectionDiscardSort.Count; i++)
         {
-            SyncListinfectionSort.Add(SyncListPlayerDiscardSort[i]);
+            SyncListinfectionSort.Add(SyncListinfectionDiscardSort[i]);
         }
         SyncListinfectionDiscardSort = new SyncListInt();
+
+        infectCardStack.SortCardsToList(SyncListinfectionSort);
+        infectDiscardStack.SortCardsToList(SyncListinfectionDiscardSort);
         //Set infectionRate & increment epidemicCount
         epidemicCount++;
         infectionRate = epidemicCount > 3 ? 3 : epidemicCount > 5 ? 4 : infectionRate;
+        Rpc_TryUpdateStacks();
     }
+
     //The cities are infected from the top of the stack up during initialization
 
     public Card[] SortCardsToList(Card[] cards, SyncListInt sortListInt)
@@ -438,7 +436,6 @@ public class GameManager : NetworkBehaviour
             InfectCity(infectionCard, infectRate);
             infectRate = increment >= 3 ? infectRate - 1 : infectRate;
         }
-        
     }
 
     /// <summary>
@@ -464,21 +461,23 @@ public class GameManager : NetworkBehaviour
         City infectedCity = GetCityFromID(infectionCard.Id);
         infectedCity.IncrementDiseaseSpread(infectedCity.color, infectRate);
         Cmd_ReduceInfectionSyncListInt(infectedCity.cityId);
+        Cmd_TryUpdateStacks();
         SetDiseaseSpread(infectedCity.color, infectRate);
-    }
-    
-    [Command]
-    void Cmd_ReduceInfectionSyncListInt(int removal)
-    {
-        SyncListinfectionDiscardSort.Add(removal);
-        SyncListinfectionSort.Remove(removal);
-        Debug.Log("Infectionlist new length:" + SyncListinfectionSort.Count);
     }
 
     [Command]
-    public void Cmd_RemoveFromCityList(int removal)
+    void Cmd_ReduceInfectionSyncListInt(int card)
     {
-        SyncListPlayerCardSort.Remove(removal);
+        SyncListinfectionDiscardSort.Add(card);
+        SyncListinfectionSort.Remove(card);
+        Debug.Log("Infectionlist new length:" + SyncListinfectionSort.Count);
+    }
+    
+
+    [Command]
+    public void Cmd_RemoveFromCityList(int card)
+    {
+        SyncListPlayerCardSort.Remove(card);
         Debug.Log("PlayerList new length:" + SyncListPlayerCardSort.Count);
     }
 
