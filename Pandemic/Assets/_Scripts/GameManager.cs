@@ -216,38 +216,22 @@ public class GameManager : NetworkBehaviour
     //[ServerCallback]
     private void Update()
     {
-
-        if (Input.GetKeyUp(KeyCode.S))
+        if (Input.GetKeyUp(KeyCode.S) && initialize)
         {
             Rpc_InitializeBoard();
-
+            //Rpc_Testing();
             int[] roles = new[]
             {
                         UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7),
                         UnityEngine.Random.Range(0, 7)
                     };
             Rpc_InitializePlayers(roles);
+            initialize = false;
         }
-        if (Input.GetKeyUp(KeyCode.KeypadEnter) && isClient)
-        {
-            Cmd_TryUpdateStacks();
-        }
-        initialize = false;
-        if (isServer)
-        {
-            if (netIdentity.observers.Count >= testingPlayers && initialize)
-            {
-                    Rpc_InitializeBoard();
 
-                    int[] roles = new[]
-                    {
-                        UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7),
-                        UnityEngine.Random.Range(0, 7)
-                    };
-                    Rpc_InitializePlayers(roles);
-                    initialize = false;
-            }
-        }
+        
+
+        //netIdentity.observers[1].playerControllers[0].gameObject;
     }
 
     [ClientRpc]
@@ -256,6 +240,12 @@ public class GameManager : NetworkBehaviour
         int[] startingHands = { 47, 46, 45, 44, 43, 42 };
 
         GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (var i in playersGameObjects)
+        {
+            players.Add(i.GetComponent<Player>());
+        }
+
         int count = 47;
 
         for (int i = 0; i < playersGameObjects.Length; i++)
@@ -290,13 +280,13 @@ public class GameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void Rpc_Testing(int i, int j , int k , int l)
+    private void Rpc_Testing()
     {
         //Outbreak Testing code forthwith
-        City HongKong = cities[i];
-        City Shanghai = cities[j];
-        City Kolkata = cities[k];
-        City Bangkok = cities[l];
+        City HongKong = cities[4];
+        City Shanghai = cities[5];
+        City Kolkata = cities[6];
+        City Bangkok = cities[7];
 
         InfectCity(Bangkok.cityId, Bangkok, 2);
         InfectCity(HongKong.cityId, HongKong, 2);
@@ -368,13 +358,9 @@ public class GameManager : NetworkBehaviour
 
         infectCardStack = new GameObject("infectCardStack").AddComponent<Stack>();
         infectCardStack.Initialize(Stack.cardType.INFECTION);
-        //infectCardStack.cards = SortCardsToList(infectCardStack.cards, SyncListinfectionSort);
-        //infectCardStack.SortCardsToList(SyncListinfectionSort);
 
         playerCardStack = new GameObject("playerCardStack").AddComponent<Stack>();
         playerCardStack.Initialize(Stack.cardType.PLAYER_STACK);
-        //playerCardStack.cards = SortCardsToList(playerCardStack.cards, SyncListPlayerCardSort);
-        //playerCardStack.SortCardsToList(SyncListPlayerCardSort);
        
         infectDiscardStack = new GameObject("infectDiscardStack").AddComponent<Stack>();
         infectDiscardStack.Initialize(Stack.cardType.INFECTION);
@@ -407,6 +393,20 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    [Command]
+    void Cmd_Epidemic()
+    {
+        Epidemic();
+        //Rpc_Epidemic();
+    }
+
+    [ClientRpc]
+    private void Rpc_Epidemic()
+    {
+        throw new NotImplementedException();
+    }
+
+
     /// <summary>
     /// Epidemic Method
     /// </summary>
@@ -415,17 +415,21 @@ public class GameManager : NetworkBehaviour
         Card bottomCard = infectCardStack.cards[0]; // Pick the bottom card of the stack
         InfectCity(bottomCard, 3); // Infect the city coressponding to that card
         //Add bottom card to discards
-        //infectCardStack = Stack.removeCard(infectCardStack, bottomCard.name);//infectCardStack
-        //infectDiscardStack = Stack.addCard(infectCardStack,infectDiscardStack, bottomCard.name);//infectCardStack
+        SyncListinfectionDiscardSort.Add(bottomCard.Id);
+        infectDiscardStack.cards.Add(bottomCard);
         //Shuffle discards here
         infectDiscardStack.shuffleStack();
         //And then combine stacks
-        //infectCardStack = CombineStacks(infectCardStack, infectDiscardStack);
+        //infectCardStack = Stack.combineStacks(infectCardStack, infectDiscardStack);
+        
+        for (int i = 0; i < SyncListPlayerDiscardSort.Count; i++)
+        {
+            SyncListinfectionSort.Add(SyncListPlayerDiscardSort[i]);
+        }
+        SyncListinfectionDiscardSort = new SyncListInt();
         //Set infectionRate & increment epidemicCount
         epidemicCount++;
         infectionRate = epidemicCount > 3 ? 3 : epidemicCount > 5 ? 4 : infectionRate;
-        //Then infect cities
-        InfectCities();
     }
     //The cities are infected from the top of the stack up during initialization
 
