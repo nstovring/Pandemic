@@ -9,6 +9,8 @@ public class Player : NetworkBehaviour
 {
     [SyncVar]
     public int cityID;
+    [SyncVar]
+    public bool active;
 
     //used in the cure 
     public int [] discardArray;
@@ -25,12 +27,15 @@ public class Player : NetworkBehaviour
     public int[][] actionsTaken;
     int count;
     private int currentCard;
+    
 
 
 
     //[ClientRpc]
     public void Initialize(int role, Card[] startingHand)
     {
+        //active = false;
+        
         gameManager = GameManager.instance;
 
         count = 0;
@@ -54,6 +59,14 @@ public class Player : NetworkBehaviour
         //this.role = (_roleCard) GameManager.roleCardStack.cards[role]; //GameManager.roleCardStack.roleCards.Contains(role); //Error?
         MoveToCity(cityID);
         CurrentCity.UpdatePawns();
+    }
+    public void startTurn()
+    {
+        active = true;
+        count = 0;
+        actionsTaken = new int[1000][];
+        actionsLeft = 4;
+
     }
 
     public void shareKnowledge(Player[] allPlayers, int playerNo, int cardIndex)
@@ -93,9 +106,13 @@ public class Player : NetworkBehaviour
         }
     }
 
-    void EndTurn()
+    public void EndTurn()
     {
+        actionsLeft = 0;
+        hand.drawPlayerCards();
         GameManager.instance.InfectCities();
+        //active = false;
+        GameManager.instance.CmdSwitchTurn();
     }
 
     void InputMoveToCity()
@@ -576,7 +593,6 @@ public class Player : NetworkBehaviour
         otherPlayerArea.SetActive(false);
         playerSelection.SetActive(false);
     }
-    
 
     
 

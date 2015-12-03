@@ -274,7 +274,12 @@ public class GameManager : NetworkBehaviour
     [Command]
     public void CmdSwitchTurn()
     {
+        int lastTurn = turnOrder;
         turnOrder = turnOrder == netIdentity.observers.Count+1 ? 1: turnOrder++;
+        players[lastTurn].active = false;
+        players[turnOrder].active = true;
+        players[turnOrder].startTurn();
+
     }
 
     [ClientRpc]

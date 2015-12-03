@@ -33,6 +33,7 @@ public class Hand : NetworkBehaviour
         actionButtonChildren[0].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(currentCardValue); });
         //cure button
         actionButtonChildren[2].GetComponent<Button>().onClick.AddListener(delegateCure);
+        actionButtonChildren[3].GetComponent<Button>().onClick.AddListener(delegateEndTurn);
 
 
         //    GameObject CardsOnHand = GameObject.Find("CardsOnHand");
@@ -73,7 +74,14 @@ public class Hand : NetworkBehaviour
             this.cards = cards;
         }
     }
-
+    private void delegateEndTurn()
+    {
+        if (player.isLocalPlayer)
+        {
+            player.EndTurn();
+        }
+            
+    }
     private void delegateCure()
     {
         if (player.isLocalPlayer)
@@ -112,21 +120,38 @@ public class Hand : NetworkBehaviour
 
         if (player.isLocalPlayer) currentCardValue = cards[inputCard].Id;
     }
-
+    public void drawPlayerCards()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            
+            addToHand(GameManager.playerCardStack.cards[GameManager.playerCardStack.cards.Count - 1 - i]);
+            GameManager.instance.Cmd_RemoveFromCityList(GameManager.playerCardStack.cards.Count - 1 - i);
+        }
+            
+    }
     public void addToHand(Card inputCard)
     {
-        for (int i = 0; i < cards.Length; i++)
-        {
-            if (cards[i] == null)
-            {
-                cards[i] = inputCard;
-                Debug.Log("cards added to hand " + cards[i].Id);
-                CardButtons[i].SetActive(true);
-                CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
-                break;
-            }
-        }
 
+            for (int i = 0; i < cards.Length; i++)
+            {
+                if (cards[i] == null)
+                {
+                    cards[i] = inputCard;
+                    Debug.Log("cards added to hand " + cards[i].Id);
+                    CardButtons[i].SetActive(true);
+                    CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
+                    if (inputCard is _epidemicCard)
+                    {
+                        Debug.Log("OH NO! EPIDEMIC! EVERYONE DIES");
+                    //GameManager.instance.Cmd_Epidemic();
+                       Cmd_discard(i);
+                        
+                    }
+                    break;
+                }
+            }
+        
     }
 
 
