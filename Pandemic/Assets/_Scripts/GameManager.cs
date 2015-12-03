@@ -111,8 +111,11 @@ public class GameManager : NetworkBehaviour
             };
 
     //General Game Variables
+    [SyncVar]
     int infectionRate = 2;
+    [SyncVar]
     int epidemicCount = 0;
+    [SyncVar]
     int outbreakCounter = 0;
     int maxSingleDisease = 24;
 
@@ -194,7 +197,6 @@ public class GameManager : NetworkBehaviour
     }
 
     public int testingPlayers = 2;
-    private float timer = 5f;
 
     [ClientRpc]
     public void Rpc_TryUpdateStacks()
@@ -228,10 +230,6 @@ public class GameManager : NetworkBehaviour
             Rpc_InitializePlayers(roles);
             initialize = false;
         }
-
-        
-
-        //netIdentity.observers[1].playerControllers[0].gameObject;
     }
 
     [ClientRpc]
@@ -392,15 +390,9 @@ public class GameManager : NetworkBehaviour
     void Cmd_Epidemic()
     {
         Epidemic();
+        Rpc_TryUpdateStacks();
         //Rpc_Epidemic();
     }
-
-    [ClientRpc]
-    private void Rpc_Epidemic()
-    {
-        throw new NotImplementedException();
-    }
-
 
     /// <summary>
     /// Epidemic Method
@@ -415,8 +407,6 @@ public class GameManager : NetworkBehaviour
         //Shuffle discards here
         infectDiscardStack.shuffleStack();
         //And then combine stacks
-        //infectCardStack = Stack.combineStacks(infectCardStack, infectDiscardStack);
-        
         for (int i = 0; i < SyncListPlayerDiscardSort.Count; i++)
         {
             SyncListinfectionSort.Add(SyncListPlayerDiscardSort[i]);
