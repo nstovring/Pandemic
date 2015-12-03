@@ -259,6 +259,7 @@ public class GameManager : NetworkBehaviour
             playersGameObjects[i].GetComponent<Player>().Initialize(roles[i], startingHand);
             players.Add(playersGameObjects[i].GetComponent<Player>());
         }
+        players[0].active = true;
     }
 
     [Command]
@@ -394,7 +395,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [Command]
-    void Cmd_Epidemic()
+    public void Cmd_Epidemic()
     {
         Epidemic();
         //Rpc_Epidemic();
@@ -463,7 +464,7 @@ public class GameManager : NetworkBehaviour
     {
         for (int i = 1; i < infectionRate; i++)
         {
-            Card infectionCard = infectCardStack.cards[infectCardStack.cards.Count - i];
+            Card infectionCard = infectCardStack.cards[SyncListinfectionSort.Count - i];
             InfectCity(infectionCard, 1);
         }
         CheckForOutbreak();
