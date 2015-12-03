@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Networking;
+using System.Collections;
 
 [Serializable]
 public class GameManager : NetworkBehaviour
@@ -222,19 +223,22 @@ public class GameManager : NetworkBehaviour
         if (Input.GetKeyUp(KeyCode.S) && initialize && isServer)
         {
             Rpc_InitializeBoard();
+            
+            //Rpc_InitializeStacks();
+        }
+        if (Input.GetKeyUp(KeyCode.D) && initialize && isServer)
+        {
             int[] roles = new[]
             {
                         UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7), UnityEngine.Random.Range(0, 7),
                         UnityEngine.Random.Range(0, 7)
                     };
             Rpc_InitializePlayers(roles);
-            //Rpc_InitializeStacks();
-            initialize = false;
-
         }
         if (Input.GetKeyUp(KeyCode.E) && isServer)
         {
             Rpc_InitializeStacks();
+            initialize = false;
         }
     }
 
@@ -252,10 +256,6 @@ public class GameManager : NetworkBehaviour
         Cmd_ChangePlayerSyncList(indexInts);
     }
 
-    void Cmd_InitializeStacks()
-    {
-        
-    }
 
     [Command]
     void Cmd_ChangePlayerSyncList(int[] indexInts)
@@ -277,29 +277,26 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void Rpc_InitializePlayers(int[] roles)
     {
-        int[] startingHands = { 47, 46, 45, 44, 43, 42 };
-
         GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
 
         foreach (var i in playersGameObjects)
         {
             players.Add(i.GetComponent<Player>());
         }
+        StartCoroutine("DelayPlayerInitialization", roles);
 
-        int count = 47;
-
-        for (int i = 0; i < playersGameObjects.Length; i++)
-        {
-            Card[] startingHand = new Card[5];
-            for (int j = 0; j < startingHand.Length; j++)
-            {
-                startingHand[j] = playerCardStack.cards[count];
-                count--;
-            }
-            playersGameObjects[i].GetComponent<Player>().Initialize(roles[i], startingHand);
-            players.Add(playersGameObjects[i].GetComponent<Player>());
-        }
         players[0].active = true;
+    }
+
+    private IEnumerator DelayPlayerInitialization(int[] roles)
+    {
+        GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
+        playersGameObjects[0].GetComponent<Player>().Initialize(roles[0]);
+        yield return new WaitForSeconds(1);
+        if (netIdentity.observers.Count > 1)
+        {
+            playersGameObjects[1].GetComponent<Player>().Initialize(roles[1]);
+        }
     }
 
     [Command]
@@ -442,9 +439,6 @@ public class GameManager : NetworkBehaviour
         //Cmd_ReduceInfectionSyncListInt(infectedCity.cityId);
         SyncListinfectionDiscardSort.Add(infectedCity.cityId);
         SyncListinfectionSort.Remove(infectedCity.cityId);
-        //InfectCity(bottomCard, 3); // Infect the city coressponding to that card
-        //Add to discards
-        //infectio
         //Shuffle discards here
         infectDiscardStack.shuffleStack();
         //And then combine stacks

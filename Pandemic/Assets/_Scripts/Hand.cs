@@ -19,7 +19,7 @@ public class Hand : NetworkBehaviour
     public Player player;
 
 
-    public void Initialize(Card[] cards, Player owner)
+    public void Initialize(Player owner)
     {
         gm = GameManager.instance;
 
@@ -41,12 +41,12 @@ public class Hand : NetworkBehaviour
 
         actionButtonChildren[3].GetComponent<Button>().onClick.AddListener(delegateEndTurn);
 
-
-
-        //    GameObject CardsOnHand = GameObject.Find("CardsOnHand");
-       CardsOnHand = GameObject.Find("HandArea"); //moved the actual declartion up to the... beginning part of code?
+        CardsOnHand = GameObject.Find("HandArea"); //moved the actual declartion up to the... beginning part of code?
 
         player = owner;
+
+        
+        //GameManager.instance.Rpc_TryUpdateStacks();
 
         if (player.isLocalPlayer)
         {
@@ -93,12 +93,10 @@ public class Hand : NetworkBehaviour
             if (player.isServer)
             {
                 player.Rpc_MoveToCityCard(currentCardValue);
-                Debug.Log("currentCardValue " + currentCardValue);
             }
             else
             {
                 player.Cmd_MoveToCityCard(currentCardValue);
-                Debug.Log("currentCardValue " + currentCardValue);
             }
 
         }
@@ -110,15 +108,15 @@ public class Hand : NetworkBehaviour
     }
     public void drawPlayerCards()
     {
-        int num = GameManager.instance.SyncListPlayerCardSort.Count -1;
-        List<Card> tempAllCards = GameManager.playerCardStack.cards;
-        addToHand(tempAllCards[num]);
-        GameManager.instance.Cmd_RemoveFromCityList(tempAllCards[num].Id);
+            int num = GameManager.instance.SyncListPlayerCardSort.Count - 1;
+            List<Card> tempAllCards = GameManager.playerCardStack.cards;
 
-        addToHand(tempAllCards[num-1]);
-        GameManager.instance.Cmd_RemoveFromCityList(tempAllCards[num-1].Id);
-        GameManager.instance.Rpc_TryUpdateStacks();
+            addToHand(tempAllCards[num]);
+            GameManager.instance.Cmd_RemoveFromCityList(tempAllCards[num].Id);
 
+            addToHand(tempAllCards[num - 1]);
+            GameManager.instance.Cmd_RemoveFromCityList(tempAllCards[num - 1].Id);
+            GameManager.instance.Rpc_TryUpdateStacks();
     }
     public void addToHand(Card inputCard)
     {
@@ -136,16 +134,18 @@ public class Hand : NetworkBehaviour
                     //discard(i);
                     return;
                 }
-                cards[i] = GameManager.AllCardsStack.cards[inputCard.Id-1];
-                    CardButtons[i].SetActive(true);
-                    CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
-                    CardButtons[i].GetComponentInChildren<Image>().sprite = inputCard.image;
-                    if (this.cards[i].GetType() == typeof(_cityCard))
+                    cards[i] = GameManager.AllCardsStack.cards[inputCard.Id-1];
+                    if (CardButtons[i] != null)
                     {
-                        int i1 = i;
-                        CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCard(i1); });
+                        CardButtons[i].SetActive(true);
+                        CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
+                        CardButtons[i].GetComponentInChildren<Image>().sprite = inputCard.image;
+                        if (this.cards[i].GetType() == typeof (_cityCard))
+                        {
+                            int i1 = i;
+                            CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCard(i1); });
+                        }
                     }
-                    
                     break;
                 }
             }

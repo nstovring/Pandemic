@@ -29,7 +29,7 @@ public class Player : NetworkBehaviour
     private int currentCard;
     
     //[ClientRpc]
-    public void Initialize(int role, Card[] startingHand)
+    public void Initialize(int role)
     {
         //active = false;
         
@@ -39,9 +39,11 @@ public class Player : NetworkBehaviour
         actionsTaken = new int[1000][];
         actionsLeft = 4;
 
+        //Debug.Log(GameManager.instance.SyncListPlayerCardSort.Count);
+
         hand = new GameObject("Hand").AddComponent<Hand>();
         hand.transform.parent = transform;
-        hand.Initialize(startingHand, this);
+        hand.Initialize(this);
 
         cityID = 4;
         CurrentCity = GameManager.GetCityFromID(4);
