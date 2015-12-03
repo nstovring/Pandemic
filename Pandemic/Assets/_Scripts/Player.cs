@@ -502,15 +502,26 @@ public class Player : NetworkBehaviour
 
     //When called, checks cityID with cards of the players, expand for further info.
     public void startTrade() {
+        for (int i = 0; i < GameManager.players.Count; i++) {
+            Debug.Log(GameManager.players.Count);
+            if (GameManager.players[i] == isLocalPlayer) {
+                for (int j = 0; j < GameManager.players[i].hand.cards.Length; j++) {
+                    //print(GameManager.players[i].hand.cards[j].Id);
+                    Debug.Log(GameManager.players[i].hand.cards.Length);
+                }
+            }
+        }
+
+
         playerSelection = GameObject.Find("PlayerSelection");
-        playerSelection.SetActive(true);
+        //playerSelection.SetActive(true);
         bool trade = false;
 
         //Runs through all the players, inluding yourself. lel
         for (int i = 0; i < GameManager.players.Count; i++) {
             for (int j = 0; j < GameManager.players[i].hand.cards.Length; j++) {
                 if (GameManager.players[i].cityID == GameManager.players[i].hand.cards[j].Id) {
-
+                    trade = true;
                     //If you dont have the card, display the one who has it, and if you click on them, you get that card
                     if (GameManager.players[i] != isLocalPlayer)
                     {
@@ -545,7 +556,8 @@ public class Player : NetworkBehaviour
         {
             if (hand.cards[i].Id == cardID)
             {
-                hand.cards[i] = null;
+                this.hand.discard(i);
+                //this.hand.updateCards();
             }
         }
         for (int i = 0; i < this.hand.cards.Length; i++)
@@ -553,6 +565,7 @@ public class Player : NetworkBehaviour
             if (player.hand.cards[i] = null)
             {
                 player.hand.cards[i] = GameManager.AllCardsStack.cards[cardID];
+               // player.hand.updateCards();
                 exitTrade();
                 break;
             }
@@ -565,13 +578,15 @@ public class Player : NetworkBehaviour
 
         for (int i = 0; i < player.hand.cards.Length; i++) {
             if (player.hand.cards[i].Id == cardID) {
-                player.hand.cards[i] = null;
+                player.hand.discard(i);
+              //  player.hand.updateCards();
             }
         }
 
         for (int i = 0; i < this.hand.cards.Length; i++) {
             if (this.hand.cards[i] = null) {
                 this.hand.cards[i] = GameManager.AllCardsStack.cards[cardID];
+             //  this.hand.updateCards();
                 exitTrade();
                 break;
             }
@@ -582,7 +597,10 @@ public class Player : NetworkBehaviour
     public void exitTrade() {
         playerSelection.SetActive(false);
     }
-    
+
+
+
+
 
     
 

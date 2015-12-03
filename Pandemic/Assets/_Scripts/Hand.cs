@@ -11,6 +11,7 @@ public class Hand : NetworkBehaviour
     public GameObject[] CardButtons = new GameObject[7];
     public GameObject cardPrefab;
     GameManager gm;
+    GameObject CardsOnHand; //moved it here.
 
     public int currentCardValue = -1;
 
@@ -33,10 +34,11 @@ public class Hand : NetworkBehaviour
         actionButtonChildren[0].GetComponent<Button>().onClick.AddListener(delegate { DelegateMove(currentCardValue); });
         //cure button
         actionButtonChildren[2].GetComponent<Button>().onClick.AddListener(delegateCure);
-
+        //trade button
+        actionButtonChildren[1].GetComponent<Button>().onClick.AddListener(delegate { owner.startTrade(); });
 
         //    GameObject CardsOnHand = GameObject.Find("CardsOnHand");
-        GameObject CardsOnHand = GameObject.Find("HandArea");
+       CardsOnHand = GameObject.Find("HandArea"); //moved the actual declartion up to the... beginning part of code?
 
         player = owner;
 
@@ -68,6 +70,7 @@ public class Hand : NetworkBehaviour
                 }
             }
         }
+
         else
         {
             this.cards = cards;
@@ -129,7 +132,6 @@ public class Hand : NetworkBehaviour
 
     }
 
-
     //overloaded method for actionButtons
     //[ClientRpc]
     //[Command]
@@ -172,7 +174,6 @@ public class Hand : NetworkBehaviour
         }
     }
 
-
     public void discardArray(int[] discards)
     {
         //Debug.Log("start discard");
@@ -214,7 +215,41 @@ public class Hand : NetworkBehaviour
         }
     }
 
+    public void updateCards()
+    {
+        if (player.isLocalPlayer)
+        {
+            //  this.cards = cards;
+            for (int i = 0; i < CardButtons.Length; i++)
+            {
+                CardButtons[i] = CardsOnHand.transform.GetChild(i).gameObject;
 
+
+                if (i < cards.Length)
+                {
+                    print(CardButtons[i].GetComponentInChildren<Text>().text = cards[i].name);
+
+                    CardButtons[i].GetComponentInChildren<Text>().text = cards[i].name;
+                    CardButtons[i].GetComponent<Image>().sprite = cards[i].image;
+
+                    addToHand(cards[i]);
+                    if (cards[i].GetType() == typeof(_cityCard))
+                    {
+                        int i1 = i;
+                        CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCard(i1); });
+
+
+                    }
+                }
+                else
+                {
+                    CardButtons[i].SetActive(false);
+                }
+            }
+        }
+
+
+    }
 
 }
 
