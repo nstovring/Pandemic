@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
@@ -49,36 +50,17 @@ public class Hand : NetworkBehaviour
 
         if (player.isLocalPlayer)
         {
-            //  this.cards = cards;
             for (int i = 0; i < CardButtons.Length; i++)
             {
                 CardButtons[i] = CardsOnHand.transform.GetChild(i).gameObject;
-
-
-                if (i < cards.Length)
-                {
-                    CardButtons[i].GetComponentInChildren<Text>().text = cards[i].name;
-                    CardButtons[i].GetComponent<Image>().sprite = cards[i].image;
-
-                    addToHand(cards[i]);
-                    if (cards[i].GetType() == typeof(_cityCard))
-                    {
-                        int i1 = i;
-                        CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCard(i1); });
-
-
-                    }
-                }
-                else
-                {
-                    CardButtons[i].SetActive(false);
-                }
+                CardButtons[i].SetActive(false);
             }
+            drawPlayerCards();
         }
 
         else
         {
-            this.cards = cards;
+            drawPlayerCards();
         }
     }
     private void delegateEndTurn()
@@ -124,38 +106,46 @@ public class Hand : NetworkBehaviour
 
     void ChooseCard(int inputCard)
     {
-
         if (player.isLocalPlayer && player.active) currentCardValue = cards[inputCard].Id;
     }
     public void drawPlayerCards()
     {
-        int n = GameManager.instance.SyncListPlayerCardSort.Count -1;
-        addToHand(GameManager.playerCardStack.cards[n]);
-        GameManager.instance.Cmd_RemoveFromCityList(n);
-        Debug.Log(GameManager.playerCardStack.cards.Count);
-        Debug.Log(n);
-        addToHand(GameManager.playerCardStack.cards[n-1]);
-        GameManager.instance.Cmd_RemoveFromCityList(n-1);
+        int num = GameManager.instance.SyncListPlayerCardSort.Count -1;
+        List<Card> tempAllCards = GameManager.playerCardStack.cards;
+        addToHand(tempAllCards[num]);
+        GameManager.instance.Cmd_RemoveFromCityList(tempAllCards[num].Id);
+
+        addToHand(tempAllCards[num-1]);
+        GameManager.instance.Cmd_RemoveFromCityList(tempAllCards[num-1].Id);
+        GameManager.instance.Rpc_TryUpdateStacks();
 
     }
     public void addToHand(Card inputCard)
     {
-
-            for (int i = 0; i < cards.Length; i++)
+        
+        for (int i = 0; i < cards.Length; i++)
             {
-                if (!cards[i] is Card)
+            if (cards[i] == null)
                 {
-                    cards[i] = inputCard;
-                    Debug.Log("cards added to hand " + cards[i].Id);
+                if (inputCard is _epidemicCard)
+                {
+                    Debug.Log("OH NO! EPIDEMIC! EVERYONE DIES");
+                    GameManager.instance.Cmd_Epidemic();
+                    GameManager.instance.Cmd_AddToCityDiscardList(inputCard.Id);
+                    cards[i] = null;
+                    //discard(i);
+                    return;
+                }
+                cards[i] = GameManager.AllCardsStack.cards[inputCard.Id-1];
                     CardButtons[i].SetActive(true);
                     CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
-                    if (inputCard is _epidemicCard)
+                    CardButtons[i].GetComponentInChildren<Image>().sprite = inputCard.image;
+                    if (this.cards[i].GetType() == typeof(_cityCard))
                     {
-                        Debug.Log("OH NO! EPIDEMIC! EVERYONE DIES");
-                        GameManager.instance.Cmd_Epidemic();
-                        Cmd_discard(i);
-                        
+                        int i1 = i;
+                        CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCard(i1); });
                     }
+                    
                     break;
                 }
             }

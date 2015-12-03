@@ -28,9 +28,6 @@ public class Player : NetworkBehaviour
     int count;
     private int currentCard;
     
-
-
-
     //[ClientRpc]
     public void Initialize(int role, Card[] startingHand)
     {
@@ -97,6 +94,7 @@ public class Player : NetworkBehaviour
         {
             for (int j = 0; j < GameManager.instance.SyncListPlayerCardSort.Count; j++)
             {
+                //Debug.Log(GameManager.instance.SyncListPlayerCardSort[j]);
                 if (hand.cards[i].Id == GameManager.instance.SyncListPlayerCardSort[j])
                 {
                     GameManager.instance.Cmd_RemoveFromCityList(hand.cards[i].Id);
@@ -125,7 +123,7 @@ public class Player : NetworkBehaviour
                 if (hit.transform.tag == "City" && actionsLeft > 0 && CityIsConnected(hit.transform.GetComponent<City>().cityId))
                 {
                     MoveToCity(hit.transform.GetComponent<City>().cityId);
-                    Cmd_UpdateSyncListCards();
+                    //Cmd_UpdateSyncListCards();
                 }
                 if (hit.transform.tag == "DiseaseCube" && actionsLeft > 0)
                 {
