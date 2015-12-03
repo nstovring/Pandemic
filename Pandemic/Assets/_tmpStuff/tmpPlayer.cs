@@ -12,7 +12,7 @@ public class tmpPlayer : MonoBehaviour {
 
 
     public void Start () {
-        //role = new GameObject("role").AddComponent<_roleCard>();
+        //roleCard = new GameObject("roleCard").AddComponent<_roleCard>();
         print("Start of Player");
  
         hand = new GameObject("hand").AddComponent<Hand>();
