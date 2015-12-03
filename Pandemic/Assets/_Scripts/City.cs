@@ -73,21 +73,24 @@ public class City : NetworkBehaviour
        //check if medic prevents disease spread in his city
         for (int i = 0; i < players.Length; i++)
         {
-            if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.blueCure)
+            if (players[i] != null)
             {
-                return;
-            }
-            if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.yellowCure)
-            {
-                return;
-            }
-            if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.blackCure)
-            {
-                return;
-            }
-            if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.redCure)
-            {
-                return;
+                if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.blueCure)
+                {
+                    return;
+                }
+                if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.yellowCure)
+                {
+                    return;
+                }
+                if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.blackCure)
+                {
+                    return;
+                }
+                if (players[i].roleCard.role == _roleCard.roleType.MEDIC && GameManager.instance.redCure)
+                {
+                    return;
+                }
             }
         }
 
