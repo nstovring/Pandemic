@@ -116,7 +116,7 @@ public class Hand : NetworkBehaviour
 
             addToHand(tempAllCards[num - 1]);
             GameManager.instance.Cmd_RemoveFromCityList(tempAllCards[num - 1].Id);
-            GameManager.instance.Rpc_TryUpdateStacks();
+            GameManager.instance.Cmd_TryUpdateStacks();
     }
     public void addToHand(Card inputCard)
     {

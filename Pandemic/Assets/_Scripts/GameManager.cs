@@ -106,9 +106,9 @@ public class GameManager : NetworkBehaviour
             new int[] { 41, 43 },
             new int[] { 41, 42, 44 },
             new int[] { 1, 41, 43, 45 },
-            new int[] { 44, 45 },
+            new int[] { 44, 46 },
             new int[] { 40, 41, 45, 47 },
-            new int[] { 1, 39, 40, 46 },
+            new int[] { 1, 39, 40, 46, 48},
             new int[] { 13, 38, 47 }
             };
 
@@ -217,14 +217,24 @@ public class GameManager : NetworkBehaviour
         Rpc_TryUpdateStacks();
     }
 
+    void Awake()
+    {
+        //NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, netIdentity.observers[1]);
+    }
+
     //[ServerCallback]
     private void Update()
     {
+        if (isServer)
+        {
+            if (netIdentity.observers.Count > 1 && isServer)
+            {
+                NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, netIdentity.observers[1]);
+            }
+        }
         if (Input.GetKeyUp(KeyCode.S) && initialize && isServer)
         {
             Rpc_InitializeBoard();
-            
-            //Rpc_InitializeStacks();
         }
         if (Input.GetKeyUp(KeyCode.D) && initialize && isServer)
         {
@@ -293,10 +303,7 @@ public class GameManager : NetworkBehaviour
         GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
         playersGameObjects[0].GetComponent<Player>().Initialize(roles[0]);
         yield return new WaitForSeconds(1);
-        if (netIdentity.observers.Count > 1)
-        {
-            playersGameObjects[1].GetComponent<Player>().Initialize(roles[1]);
-        }
+        playersGameObjects[1].GetComponent<Player>().Initialize(roles[1]);
     }
 
     [Command]
