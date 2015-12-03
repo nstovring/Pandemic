@@ -18,12 +18,11 @@ public class Hand : NetworkBehaviour
 
     public Player player;
 
+    public SyncListInt SyncListHandSort;
 
     public void Initialize(Player owner)
     {
         gm = GameManager.instance;
-
-
 
         GameObject actionButtons = GameObject.Find("ActionButtons");
         GameObject[] actionButtonChildren = new GameObject[4];
@@ -38,16 +37,12 @@ public class Hand : NetworkBehaviour
 
         //trade button
         actionButtonChildren[1].GetComponent<Button>().onClick.AddListener(delegate { owner.startTrade(); });
-
         actionButtonChildren[3].GetComponent<Button>().onClick.AddListener(delegateEndTurn);
 
         CardsOnHand = GameObject.Find("HandArea"); //moved the actual declartion up to the... beginning part of code?
 
         player = owner;
-
         
-        //GameManager.instance.Rpc_TryUpdateStacks();
-
         if (player.isLocalPlayer)
         {
             for (int i = 0; i < CardButtons.Length; i++)
@@ -133,8 +128,10 @@ public class Hand : NetworkBehaviour
                     cards[i] = null;
                     //discard(i);
                     return;
-                }
+                    }
                     cards[i] = GameManager.AllCardsStack.cards[inputCard.Id-1];
+                    SyncListHandSort.Add(cards[i].Id);
+
                     if (CardButtons[i] != null)
                     {
                         CardButtons[i].SetActive(true);
@@ -149,7 +146,6 @@ public class Hand : NetworkBehaviour
                     break;
                 }
             }
-        
     }
 
     //overloaded method for actionButtons
@@ -174,44 +170,17 @@ public class Hand : NetworkBehaviour
         }
     }
 
-    [Command]
-    public void Cmd_discard(int cardID)
-    {
-        for (int i = 0; i < cards.Length; i++)
-        {
-            if (cards[i] is Card)
-            {
-                if (cardID == cards[i].Id)
-                {
-                    if (CardButtons[i] != null)
-                    {
-                        CardButtons[i].SetActive(false);
-                    }
-                    cards[i] = null;
-                    break;
-                }
-            }
-        }
-    }
-
     public void discardArray(int[] discards)
     {
         //Debug.Log("start discard");
         for (int i = 0; i < discards.Length; i++)
         {
-          //Debug.Log("checking " + i + " of discards");
-           
             for (int j = 0; j < cards.Length; j++)
             {
-               /* Debug.Log("checking " + j + " of cards");
-                Debug.Log(cards[j].Id);
-                Debug.Log(discards[i]);*/
                 if (cards[j] is Card)
                 {
-                    Debug.Log("YAY");
                     if (cards[j].Id == discards[i])
                     {
-                        Debug.Log("WHY WON'T YOU WORK");
                         CardButtons[i].SetActive(false);
                         cards[j] = null;
                     }

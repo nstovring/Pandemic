@@ -227,9 +227,9 @@ public class GameManager : NetworkBehaviour
     {
         if (isServer)
         {
-            if (netIdentity.observers.Count > 1 && isServer)
+            foreach (var i in netIdentity.observers)
             {
-                NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, netIdentity.observers[1]);
+                NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, i);
             }
         }
         if (Input.GetKeyUp(KeyCode.S) && initialize && isServer)
