@@ -225,12 +225,16 @@ public class GameManager : NetworkBehaviour
     //[ServerCallback]
     private void Update()
     {
+        if (isServer)
+        {
+            if (netIdentity.observers.Count > 1 && isServer)
+            {
+                NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, netIdentity.observers[1]);
+            }
+        }
+
         if (Input.GetKeyUp(KeyCode.S) && initialize && isServer)
         {
-            foreach (var i in netIdentity.observers)
-            {
-                NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, i);
-            }
             Rpc_InitializeBoard();
             initialize = false;
         }
@@ -267,7 +271,6 @@ public class GameManager : NetworkBehaviour
     [Command]
     void Cmd_ChangePlayerSyncList(int[] indexInts)
     {
-        //SyncListPlayerCardSort = new SyncListInt();
         int length = SyncListPlayerCardSort.Count;
         for (int i = length-1; i >= 0; i--)
         {
@@ -300,10 +303,7 @@ public class GameManager : NetworkBehaviour
         GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
         playersGameObjects[0].GetComponent<Player>().Initialize(roles[0]);
         yield return new WaitForSeconds(1);
-        /*if (playersGameObjects[1] != null)
-        {
-            //playersGameObjects[1].GetComponent<Player>().Initialize(roles[1]);
-        }*/
+        playersGameObjects[1].GetComponent<Player>().Initialize(roles[1]);
     }
 
     [Command]

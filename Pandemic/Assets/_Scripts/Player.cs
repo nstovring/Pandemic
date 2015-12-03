@@ -29,7 +29,18 @@ public class Player : NetworkBehaviour
     int count;
     private int currentCard;
 
-   
+
+    void Awake()
+    {
+        if (isServer)
+        {
+            NetworkIdentity netIdentity = GetComponent<NetworkIdentity>();
+            netIdentity.localPlayerAuthority = true;
+            netIdentity.AssignClientAuthority(connectionToClient);
+        }
+        //NetworkServer.SpawnWithClientAuthority(hand.transform.gameObject, connectionToClient);
+    }
+
     //[ClientRpc]
     public void Initialize(int role)
     {
@@ -41,14 +52,8 @@ public class Player : NetworkBehaviour
         actionsTaken = new int[1000][];
         actionsLeft = 4;
 
-        
-        NetworkIdentity netIdentity = GetComponent<NetworkIdentity>();
-        foreach (var i in netIdentity.observers)
-        {
-            NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, i);
-        }
-
         hand = new GameObject("Hand").AddComponent<Hand>();
+
         hand.transform.parent = transform;
 
         hand.Initialize(this);

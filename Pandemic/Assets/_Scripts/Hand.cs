@@ -22,14 +22,17 @@ public class Hand : NetworkBehaviour
 
     void Awake()
     {
-        return;
+        if (isServer)
+        {
+            NetworkIdentity netIdentity = GetComponent<NetworkIdentity>();
+            netIdentity.localPlayerAuthority = true;
+            netIdentity.AssignClientAuthority(connectionToClient);
+        }
     }
 
     public void Initialize(Player owner)
     {
         gm = GameManager.instance;
-
-
 
         GameObject actionButtons = GameObject.Find("ActionButtons");
         GameObject[] actionButtonChildren = new GameObject[4];
