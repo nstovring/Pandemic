@@ -93,6 +93,10 @@ public class Player : NetworkBehaviour
         }
     }
 
+    void EndTurn()
+    {
+        GameManager.instance.InfectCities();
+    }
 
     void InputMoveToCity()
     {
