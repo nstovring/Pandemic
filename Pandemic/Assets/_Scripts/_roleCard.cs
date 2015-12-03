@@ -3,6 +3,7 @@ using System.Collections;
 
 public class _roleCard : Card {
 
+    //This enum is used to denote a type to each rolecard instantiated. Other thant that, this class is inherits from the abstract Card class.
     public enum roleType { MEDIC, DISPATCHER, QURANTINE_SPECIALIST, CONTINGENCY, RESEARCHER, SCIENTIST, OPERATIONS_EXPERT };
 
     public roleType role;
