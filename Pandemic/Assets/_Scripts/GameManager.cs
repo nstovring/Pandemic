@@ -261,13 +261,18 @@ public class GameManager : NetworkBehaviour
             playersGameObjects[i].GetComponent<Player>().Initialize(roles[i], startingHand);
             players.Add(playersGameObjects[i].GetComponent<Player>());
         }
-
+        players[0].active = true;
     }
 
     [Command]
     public void CmdSwitchTurn()
     {
+        int lastTurn = turnOrder;
         turnOrder = turnOrder == netIdentity.observers.Count+1 ? 1: turnOrder++;
+        players[lastTurn].active = false;
+        players[turnOrder].active = true;
+        players[turnOrder].startTurn();
+
     }
 
     [ClientRpc]
@@ -392,7 +397,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [Command]
-    void Cmd_Epidemic()
+    public void Cmd_Epidemic()
     {
         Card bottomCard = infectCardStack.cards[0]; // Pick the bottom card of the stack
         InfectCity(bottomCard, 3); // Infect the city coressponding to that card
@@ -445,7 +450,7 @@ public class GameManager : NetworkBehaviour
     {
         for (int i = 1; i < infectionRate; i++)
         {
-            Card infectionCard = infectCardStack.cards[infectCardStack.cards.Count - i];
+            Card infectionCard = infectCardStack.cards[SyncListinfectionSort.Count - i];
             InfectCity(infectionCard, 1);
         }
         CheckForOutbreak();

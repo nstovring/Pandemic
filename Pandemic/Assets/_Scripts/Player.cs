@@ -9,6 +9,8 @@ public class Player : NetworkBehaviour
 {
     [SyncVar]
     public int cityID;
+    [SyncVar]
+    public bool active;
 
     //used in the cure 
     public int [] discardArray;
@@ -17,20 +19,23 @@ public class Player : NetworkBehaviour
     public Hand hand;
     public City CurrentCity;
 
-    //public _roleCard role;
+    //public _roleCard roleCard;
 
-    public _roleCard role;
+    public _roleCard roleCard;
     GameManager gameManager;
     public int actionsLeft;
     public int[][] actionsTaken;
     int count;
     private int currentCard;
+    
 
 
 
     //[ClientRpc]
     public void Initialize(int role, Card[] startingHand)
     {
+        //active = false;
+        
         gameManager = GameManager.instance;
 
         count = 0;
@@ -49,11 +54,19 @@ public class Player : NetworkBehaviour
 
         Card tempRole = GameManager.roleCardStack.cards[role];
 
-        this.role = tempRole as _roleCard;
+        this.roleCard = tempRole as _roleCard;
 
-        //this.role = (_roleCard) GameManager.roleCardStack.cards[role]; //GameManager.roleCardStack.roleCards.Contains(role); //Error?
+        //this.roleCard = (_roleCard) GameManager.roleCardStack.cards[roleCard]; //GameManager.roleCardStack.roleCards.Contains(roleCard); //Error?
         MoveToCity(cityID);
         CurrentCity.UpdatePawns();
+    }
+    public void startTurn()
+    {
+        active = true;
+        count = 0;
+        actionsTaken = new int[1000][];
+        actionsLeft = 4;
+
     }
 
     public void shareKnowledge(Player[] allPlayers, int playerNo, int cardIndex)
@@ -93,9 +106,13 @@ public class Player : NetworkBehaviour
         }
     }
 
-    void EndTurn()
+    public void EndTurn()
     {
+        actionsLeft = 0;
+        hand.drawPlayerCards();
         GameManager.instance.InfectCities();
+        //active = false;
+        GameManager.instance.CmdSwitchTurn();
     }
 
     void InputMoveToCity()
@@ -218,6 +235,24 @@ public class Player : NetworkBehaviour
     public void MoveToCity(int ID)
     {
 
+        //If medic roleCard and cure, remove disease cubes
+        if (roleCard.role == _roleCard.roleType.MEDIC && gameManager.blueCure)
+        {
+            CurrentCity.ReduceDiseaseSpread("Blue", roleCard);
+        }
+        if (roleCard.role == _roleCard.roleType.MEDIC && gameManager.yellowCure)
+        {
+            CurrentCity.ReduceDiseaseSpread("Yellow", roleCard);
+        }
+        if (roleCard.role == _roleCard.roleType.MEDIC && gameManager.blackCure)
+        {
+            CurrentCity.ReduceDiseaseSpread("Black", roleCard);
+        }
+        if (roleCard.role == _roleCard.roleType.MEDIC && gameManager.redCure)
+        {
+            CurrentCity.ReduceDiseaseSpread("Red", roleCard);
+        }
+
         CurrentCity.removePlayer(this);
         CurrentCity.UpdatePawns();
 
@@ -263,7 +298,7 @@ public class Player : NetworkBehaviour
                 actionsLeft--;
                 break;
         }
-        GameManager.GetCityFromID(cityID).ReduceDiseaseSpread(colour, role);
+        GameManager.GetCityFromID(cityID).ReduceDiseaseSpread(colour, roleCard);
     }
 
     private void buildResearchCenter(int cityID, _cityCard city)
@@ -500,67 +535,75 @@ public class Player : NetworkBehaviour
     GameObject[] playerCardButtons = new GameObject[7];
     GameObject[] playerSelectionButtons = new GameObject[3];
 
-    //When called, checks cityID with cards of the players. If true, it assigns the players to the playerSelection buttons of the trade screen
+    //When called, checks cityID with cards of the players, expand for further info.
     public void startTrade() {
         playerSelection = GameObject.Find("PlayerSelection");
+        playerSelection.SetActive(true);
         bool trade = false;
 
         //Runs through all the players, inluding yourself. lel
         for (int i = 0; i < GameManager.players.Count; i++) {
             for (int j = 0; j < GameManager.players[i].hand.cards.Length; j++) {
                 if (GameManager.players[i].cityID == GameManager.players[i].hand.cards[j].Id) {
+
+                    //If you dont have the card, display the one who has it, and if you click on them, you get that card
+                    if (GameManager.players[i] != isLocalPlayer)
+                    {
+                        playerSelectionButtons[i] = playerSelection.transform.GetChild(i).gameObject;
+                        playerSelectionButtons[i].GetComponentInChildren<Text>().text = GameManager.players[i].name;
+                        playerSelectionButtons[i].GetComponent<Button>().onClick.AddListener(delegate { takeCard(GameManager.players[i].hand.cards[j].Id, GameManager.players[i]); });
+                    }
+
+                    //If you have the card, disply all the other players. If you click on one of em, they get the card
+                    else {
+                        for (int x = 0; x < GameManager.players.Count; x++) {
+                            if (GameManager.players[i] != isLocalPlayer) {
+                                playerSelectionButtons[i] = playerSelection.transform.GetChild(i).gameObject;
+                                playerSelectionButtons[i].GetComponentInChildren<Text>().text = GameManager.players[i].name;
+                                playerSelectionButtons[i].GetComponent<Button>().onClick.AddListener(delegate { giveCard(GameManager.players[i].hand.cards[j].Id, GameManager.players[i]); });
+                            }
+                        }
+                    }
                     trade = true;
                     break;
                 }
             }
             if (trade == true) { break; }
         }
-
-        //if the above is true, initiate protocol 12345679, where is 8!!!????
-        if (trade == true) {
-            playerSelection.SetActive(true);
-            for (int i = 0; i < GameManager.players.Count; i++)
-            {
-                if (GameManager.players[i] != isLocalPlayer)
-                {
-                   playerSelectionButtons[i] = playerSelection.transform.GetChild(i).gameObject;
-                   playerSelectionButtons[i].GetComponentInChildren<Text>().text = GameManager.players[i].name;
-                   playerSelectionButtons[i].GetComponent<Button>().onClick.AddListener(delegate { tradePlayerSelection(GameManager.players[i]); });
-
-                }
-            }
-        }
     }
 
 
-    //When called, dispalys the selected player's cards
-    public void tradePlayerSelection(Player player)
+    //Gives a card to the other player
+    public void giveCard(int cardID, Player player)
     {
-        otherPlayerArea = GameObject.Find("OtherPlayerArea");
-        otherPlayerArea.SetActive(true);
-
-        for (int i = 0; i < playerCardButtons.Length; i++) {
-            playerCardButtons[i] = otherPlayerArea.transform.GetChild(i).gameObject;
-
-            if (i < player.hand.cards.Length)
+        for (int i = 0; i < player.hand.cards.Length; i++)
+        {
+            if (hand.cards[i].Id == cardID)
             {
-                int cardID = i;
-                playerCardButtons[i].GetComponentInChildren<Text>().text = player.hand.cards[i].name;
-                playerCardButtons[i].GetComponent<Image>().sprite = player.hand.cards[i].image;
-
-                if (player.hand.cards[i].GetType() == typeof(_cityCard)) {
-                    playerCardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { takeCard(player.hand.cards[i].Id); });
-                }
-            }
-            else {
-               // playerCardButtons[i].SetActive(false);
+                hand.cards[i] = null;
             }
         }
-    }
+        for (int i = 0; i < this.hand.cards.Length; i++)
+        {
+            if (player.hand.cards[i] = null)
+            {
+                player.hand.cards[i] = GameManager.AllCardsStack.cards[cardID];
+                exitTrade();
+                break;
+            }
+        }
 
+    }
 
     //Takes a card from the other player
-    private void takeCard (int cardID) {
+    private void takeCard (int cardID, Player player) {
+
+        for (int i = 0; i < player.hand.cards.Length; i++) {
+            if (player.hand.cards[i].Id == cardID) {
+                player.hand.cards[i] = null;
+            }
+        }
+
         for (int i = 0; i < this.hand.cards.Length; i++) {
             if (this.hand.cards[i] = null) {
                 this.hand.cards[i] = GameManager.AllCardsStack.cards[cardID];
@@ -570,13 +613,10 @@ public class Player : NetworkBehaviour
         }
     }
 
-
     //Exits the entire trading debacle
     public void exitTrade() {
-        otherPlayerArea.SetActive(false);
         playerSelection.SetActive(false);
     }
-    
 
     
 

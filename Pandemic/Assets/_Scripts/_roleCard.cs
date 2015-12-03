@@ -11,7 +11,7 @@ public class _roleCard : Card {
     void Start () {
         /*for (int i = 0; i < 7; i++)
         {
-            if(transform.name = role.)
+            if(transform.name = roleCard.)
         }*/
 	}
 	
