@@ -18,12 +18,21 @@ public class Hand : NetworkBehaviour
 
     public Player player;
 
+    public SyncListInt SyncListHandSort = new SyncListInt();
+
+    void Awake()
+    {
+        if (isServer)
+        {
+            NetworkIdentity netIdentity = GetComponent<NetworkIdentity>();
+            netIdentity.localPlayerAuthority = true;
+            netIdentity.AssignClientAuthority(connectionToClient);
+        }
+    }
 
     public void Initialize(Player owner)
     {
         gm = GameManager.instance;
-
-
 
         GameObject actionButtons = GameObject.Find("ActionButtons");
         GameObject[] actionButtonChildren = new GameObject[4];
@@ -38,16 +47,12 @@ public class Hand : NetworkBehaviour
 
         //trade button
         actionButtonChildren[1].GetComponent<Button>().onClick.AddListener(delegate { owner.startTrade(); });
-
         actionButtonChildren[3].GetComponent<Button>().onClick.AddListener(delegateEndTurn);
 
         CardsOnHand = GameObject.Find("HandArea"); //moved the actual declartion up to the... beginning part of code?
 
         player = owner;
-
         
-        //GameManager.instance.Rpc_TryUpdateStacks();
-
         if (player.isLocalPlayer)
         {
             for (int i = 0; i < CardButtons.Length; i++)
@@ -127,31 +132,41 @@ public class Hand : NetworkBehaviour
                 {
                 if (inputCard is _epidemicCard)
                 {
-                    Debug.Log("OH NO! EPIDEMIC! EVERYONE DIES");
                     GameManager.instance.Cmd_Epidemic();
                     GameManager.instance.Cmd_AddToCityDiscardList(inputCard.Id);
                     cards[i] = null;
-                    //discard(i);
                     return;
                 }
-                    cards[i] = GameManager.AllCardsStack.cards[inputCard.Id-1];
-                    if (CardButtons[i] != null)
+                cards[i] = GameManager.AllCardsStack.cards[inputCard.Id-1];
+                Cmd_IncrementSyncList(cards[i].Id);
+                if (CardButtons[i] != null)
+                {
+                    CardButtons[i].SetActive(true);
+                    CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
+                    CardButtons[i].GetComponentInChildren<Image>().sprite = inputCard.image;
+                    if (this.cards[i].GetType() == typeof (_cityCard))
                     {
-                        CardButtons[i].SetActive(true);
-                        CardButtons[i].GetComponentInChildren<Text>().text = inputCard.name;
-                        CardButtons[i].GetComponentInChildren<Image>().sprite = inputCard.image;
-                        if (this.cards[i].GetType() == typeof (_cityCard))
-                        {
-                            int i1 = i;
-                            CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCard(i1); });
-                        }
+                        int i1 = i;
+                        CardButtons[i].GetComponent<Button>().onClick.AddListener(delegate { ChooseCard(i1); });
                     }
+                 }
                     break;
-                }
+                 }
             }
-        
     }
 
+    [Command]
+    void Cmd_IncrementSyncList(int card)
+    {
+                SyncListHandSort.Add(card);
+
+    }
+    [Command]
+    void Cmd_ReduceSyncList(int card)
+    {
+        SyncListHandSort.Add(card);
+
+    }
     //overloaded method for actionButtons
     //[ClientRpc]
     //[Command]
@@ -167,26 +182,7 @@ public class Hand : NetworkBehaviour
                     {
                         CardButtons[i].SetActive(false);
                     }
-                    cards[i] = null;
-                    break;
-                }
-            }
-        }
-    }
-
-    [Command]
-    public void Cmd_discard(int cardID)
-    {
-        for (int i = 0; i < cards.Length; i++)
-        {
-            if (cards[i] is Card)
-            {
-                if (cardID == cards[i].Id)
-                {
-                    if (CardButtons[i] != null)
-                    {
-                        CardButtons[i].SetActive(false);
-                    }
+                    Cmd_ReduceSyncList(cardID);
                     cards[i] = null;
                     break;
                 }
@@ -199,19 +195,12 @@ public class Hand : NetworkBehaviour
         //Debug.Log("start discard");
         for (int i = 0; i < discards.Length; i++)
         {
-          //Debug.Log("checking " + i + " of discards");
-           
             for (int j = 0; j < cards.Length; j++)
             {
-               /* Debug.Log("checking " + j + " of cards");
-                Debug.Log(cards[j].Id);
-                Debug.Log(discards[i]);*/
                 if (cards[j] is Card)
                 {
-                    Debug.Log("YAY");
                     if (cards[j].Id == discards[i])
                     {
-                        Debug.Log("WHY WON'T YOU WORK");
                         CardButtons[i].SetActive(false);
                         cards[j] = null;
                     }

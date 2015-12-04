@@ -219,7 +219,7 @@ public class GameManager : NetworkBehaviour
 
     void Awake()
     {
-        //NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, netIdentity.observers[1]);
+            
     }
 
     //[ServerCallback]
@@ -232,11 +232,13 @@ public class GameManager : NetworkBehaviour
                 NetworkServer.SpawnWithClientAuthority(this.transform.gameObject, netIdentity.observers[1]);
             }
         }
+
         if (Input.GetKeyUp(KeyCode.S) && initialize && isServer)
         {
             Rpc_InitializeBoard();
+            initialize = false;
         }
-        if (Input.GetKeyUp(KeyCode.D) && initialize && isServer)
+        if (Input.GetKeyUp(KeyCode.D) && isServer)
         {
             int[] roles = new[]
             {
@@ -248,7 +250,6 @@ public class GameManager : NetworkBehaviour
         if (Input.GetKeyUp(KeyCode.E) && isServer)
         {
             Rpc_InitializeStacks();
-            initialize = false;
         }
     }
 
@@ -270,7 +271,6 @@ public class GameManager : NetworkBehaviour
     [Command]
     void Cmd_ChangePlayerSyncList(int[] indexInts)
     {
-        //SyncListPlayerCardSort = new SyncListInt();
         int length = SyncListPlayerCardSort.Count;
         for (int i = length-1; i >= 0; i--)
         {
